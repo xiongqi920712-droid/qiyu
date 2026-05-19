@@ -81,6 +81,13 @@ table .neg { color:var(--red); }
 .prod-card .pfactory input { flex:1; min-width:0; }
 .prod-card .prow { display:flex; justify-content:space-between; align-items:center; padding:3px 0; font-size:12px; border-bottom:1px dotted var(--cream); }
 .prod-card .prow:last-child { border-bottom:none; }
+
+/* Input/Output group styling */
+.input-group { background:#FAF8F4; border-radius:6px; padding:6px 10px 2px; margin:6px 0 4px; border:1px solid #EFEBE0; }
+.input-group .ig-title { font-size:10px; font-weight:600; color:var(--brown); margin-bottom:4px; letter-spacing:.5px; }
+.output-group { background:#F4F8F2; border-radius:6px; padding:6px 10px 2px; margin:4px 0; border:1px solid #E0EBE0; }
+.output-group .og-title { font-size:10px; font-weight:600; color:var(--green); margin-bottom:4px; letter-spacing:.5px; }
+.prod-card .prow input:focus { outline:2px solid var(--brown); outline-offset:1px; border-color:var(--brown); }
 .prod-card .plabel { color:var(--tlight); white-space:nowrap; }
 .prod-card .pval { font-weight:500; display:flex; align-items:center; gap:2px; }
 .prod-card .pval input::-webkit-inner-spin-button { opacity:0.5; }
@@ -551,32 +558,35 @@ function render() {
         <span style="color:var(--tlight);">·</span>
         <input type="text" value="${escAttr(p.factoryNote)}" style="width:auto;min-width:50px;flex:1;${istyle}" data-key="${key}" data-field="factoryNote" placeholder="备注">
       ${hasTiers ? `<div class="prow" style="margin-bottom:4px;"><span class="plabel">批量阶梯</span><span class="pval"><select style="padding:1px 4px;border:1px solid var(--border);border-radius:3px;font-size:11px;font-weight:500;background:var(--card);" data-key="${key}" data-field="tierSelect">${tierOpts}</select></span></div>` : ''}
-      <div class="prow"><span class="plabel">出厂成本</span>
-        <span class="pval">¥<input type="number" value="${p.oem}" step="0.01" min="0" style="${istyle}" data-key="${key}" data-field="oem"></span>
+      <div class="input-group">
+        <div class="ig-title">📝 输入参数</div>
+        <div class="prow"><span class="plabel">出厂成本</span>
+          <span class="pval">¥<input type="number" value="${p.oem}" step="0.01" min="0" style="${istyle}" data-key="${key}" data-field="oem"></span>
+        </div>
+        <div class="prow"><span class="plabel">投流成本</span>
+          <span class="pval">¥<input type="number" value="${p.ad}" step="0.5" min="0" style="${istyle}" data-key="${key}" data-field="ad"></span>
+        </div>
+        <div class="prow"><span class="plabel">包装费</span>
+          <span class="pval">¥<input type="number" value="${p.packaging}" step="0.1" min="0" style="${istyle}" data-key="${key}" data-field="packaging"></span>
+        </div>
+        <div class="prow"><span class="plabel">快递费</span>
+          <span class="pval">¥<input type="number" value="${p.shipping}" step="0.1" min="0" style="${istyle}" data-key="${key}" data-field="shipping"></span>
+        </div>
+        <div class="prow"><span class="plabel">零售价</span>
+          <span class="pval">¥<input type="number" value="${p.price}" step="1" min="1" style="width:62px;padding:1px 4px;border:1px solid var(--border);border-radius:3px;font-size:12px;font-weight:700;text-align:center;" data-key="${key}" data-field="price"></span>
+        </div>
+        <div class="prow"><span class="plabel">月销量</span>
+          <span class="pval"><input type="number" value="${p.vol}" step="500" min="0" style="width:66px;padding:1px 4px;border:1px solid var(--border);border-radius:3px;font-size:11px;font-weight:500;text-align:center;" data-key="${key}" data-field="vol"></span>
+        </div>
       </div>
-      <div class="prow"><span class="plabel">投流成本</span>
-        <span class="pval">¥<input type="number" value="${p.ad}" step="0.5" min="0" style="${istyle}" data-key="${key}" data-field="ad"></span>
+      <div class="output-group">
+        <div class="og-title">📊 计算结果</div>
+        <div class="prow"><span class="plabel">单件总成本</span><span class="pval">¥${u.totalCost.toFixed(2)}</span></div>
+        <div class="prow"><span class="plabel">单件毛利</span><span class="pval" style="color:${color};">¥${u.unitProfit.toFixed(2)}</span></div>
+        <div class="prow"><span class="plabel">毛利率</span><span class="pval" style="color:${color};font-size:16px;font-weight:700;">${u.margin.toFixed(1)}%</span></div>
+        <div class="prow"><span class="plabel">月营收</span><span class="pval">¥${(p.price*p.vol).toLocaleString()}</span></div>
+        <div class="prow"><span class="plabel">贡献毛利<sup style="color:var(--tlight);font-size:9px;">①</sup></span><span class="pval">¥${(u.unitProfit*p.vol).toLocaleString()}</span></div>
       </div>
-      <div class="prow"><span class="plabel">包装费</span>
-        <span class="pval">¥<input type="number" value="${p.packaging}" step="0.1" min="0" style="${istyle}" data-key="${key}" data-field="packaging"></span>
-      </div>
-      <div class="prow"><span class="plabel">快递费</span>
-        <span class="pval">¥<input type="number" value="${p.shipping}" step="0.1" min="0" style="${istyle}" data-key="${key}" data-field="shipping"></span>
-      </div>
-      <div class="prow" style="border-top:1px solid var(--border);padding-top:4px;margin-top:4px;">
-        <span class="plabel">零售价</span>
-        <span class="pval">¥<input type="number" value="${p.price}" step="1" min="1" style="width:62px;padding:1px 4px;border:1px solid var(--border);border-radius:3px;font-size:12px;font-weight:700;text-align:center;" data-key="${key}" data-field="price"></span>
-      </div>
-      <div class="prow"><span class="plabel">月销量</span>
-        <span class="pval"><input type="number" value="${p.vol}" step="500" min="0" style="width:66px;padding:1px 4px;border:1px solid var(--border);border-radius:3px;font-size:11px;font-weight:500;text-align:center;" data-key="${key}" data-field="vol"></span>
-      </div>
-      <div class="prow" style="border-top:1px solid var(--border);padding-top:4px;margin-top:4px;">
-        <span class="plabel">单件总成本</span><span class="pval">¥${u.totalCost.toFixed(2)}</span>
-      </div>
-      <div class="prow"><span class="plabel">单件毛利</span><span class="pval" style="color:${color};">¥${u.unitProfit.toFixed(2)}</span></div>
-      <div class="prow"><span class="plabel">毛利率</span><span class="pval" style="color:${color};font-size:16px;font-weight:700;">${u.margin.toFixed(1)}%</span></div>
-      <div class="prow"><span class="plabel">月营收</span><span class="pval">¥${(p.price*p.vol).toLocaleString()}</span></div>
-      <div class="prow"><span class="plabel">月毛利</span><span class="pval">¥${(u.unitProfit*p.vol).toLocaleString()}</span></div>
     </div>`;
   });
   document.getElementById('productCards').innerHTML = phtml;
