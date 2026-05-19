@@ -180,6 +180,27 @@ table .neg { color:var(--red); }
   </div>
 </div>
 
+<!-- ======== 综合损益分析 ======== -->
+<div class="card">
+  <h2>🧮 综合损益分析 <span class="badge">团队总账</span></h2>
+  <p style="font-size:12px;color:var(--tlight);margin-bottom:10px;">
+    各品贡献毛利之和 − 团队固定成本 = 团队净利润 &nbsp;|&nbsp;
+    <sup style="color:var(--tlight);font-size:10px;">①</sup>贡献毛利 = 营收 − 变动成本（出厂/物流/佣金/投流/退货），尚未扣除团队固定成本
+  </p>
+  <div class="grid-2" style="margin-bottom:12px;">
+    <div>
+      <div class="bar-chart" id="waterfallChart"><!-- rendered --></div>
+    </div>
+    <div>
+      <table id="summaryTable"><tbody><!-- rendered --></tbody></table>
+    </div>
+  </div>
+  <div class="note">
+    <strong>结论：</strong>当三品贡献毛利之和 &gt; 团队月固定成本 ¥<span id="fixedCostDisplay">20,000</span> 时，项目整体盈利。
+    当前稳态净利润 = 贡献毛利总额 − 固定成本。单品亏损可由其他品弥补，关注综合健康度。
+  </div>
+</div>
+
 <!-- ======== 运营参数 ======== -->
 <div class="card">
   <h2>⚙️ 运营参数 <span class="badge">商业计划书模型</span></h2>
@@ -269,18 +290,36 @@ table .neg { color:var(--red); }
 // ============================================================
 const PRODUCT_DEFAULTS = {
   essence: {
-    name: '艾草精华贴', factory: '来艾·10万级', factoryNote: '含税运到库',
-    oem: 12.66, ad: 6, price: 83, vol: 8000,
+    name: '艾草精华贴', factory: '来艾', factoryNote: '含税运到库',
+    tiers: [
+      { label: '5千套', oem: 15.50 },
+      { label: '1万套', oem: 14.86 },
+      { label: '5万套', oem: 13.50 },
+      { label: '10万套', oem: 12.66 },
+    ],
+    selectedTier: 3, ad: 6, price: 83, vol: 8000,
     packaging: 0, shipping: 0,
   },
   moxa: {
-    name: '艾灸器', factory: '时珍本草·5000', factoryNote: '含税含到库运费',
-    oem: 10.92, ad: 4, price: 68, vol: 3000,
+    name: '艾灸器', factory: '时珍本草', factoryNote: '含税含到库运费',
+    tiers: [
+      { label: '5千套', oem: 10.92 },
+      { label: '1万套', oem: 10.80 },
+      { label: '5万套', oem: 10.70 },
+      { label: '10万套', oem: 10.62 },
+    ],
+    selectedTier: 0, ad: 4, price: 68, vol: 3000,
     packaging: 0, shipping: 0,
   },
   stick: {
-    name: '60艾条', factory: '时珍本草·1万起', factoryNote: '含税不含运',
-    oem: 12.70, ad: 3, price: 68, vol: 2000,
+    name: '60艾条', factory: '时珍本草', factoryNote: '含税不含运',
+    tiers: [
+      { label: '5千套', oem: 13.50 },
+      { label: '1万套', oem: 12.70 },
+      { label: '5万套', oem: 12.30 },
+      { label: '10万套', oem: 11.95 },
+    ],
+    selectedTier: 1, ad: 3, price: 68, vol: 2000,
     packaging: 1.0, shipping: 5.5,
   },
 };
@@ -313,7 +352,16 @@ function loadState() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const data = JSON.parse(raw);
-      if (data.prods) prods = data.prods;
+      if (data.prods) {
+        prods = data.prods;
+        // Migrate old data: add tiers if missing
+        ['essence', 'moxa', 'stick'].forEach(key => {
+          if (!prods[key].tiers && PRODUCT_DEFAULTS[key]) {
+            prods[key].tiers = JSON.parse(JSON.stringify(PRODUCT_DEFAULTS[key].tiers));
+            prods[key].selectedTier = -1;
+          }
+        });
+      }
       if (data.ctrl) {
         Object.keys(data.ctrl).forEach(k => {
           if (ctrl.hasOwnProperty(k)) ctrl[k] = data.ctrl[k];
@@ -473,48 +521,59 @@ function render() {
   const keys = ['essence', 'moxa', 'stick'];
   let phtml = '';
   const istyle = 'width:56px;padding:1px 4px;border:1px solid var(--border);border-radius:3px;font-size:11px;font-weight:500;text-align:center;';
+  const selStyle = 'padding:1px 4px;border:1px solid var(--border);border-radius:3px;font-size:11px;font-weight:500;background:var(--card);';
   keys.forEach(key => {
     const p = prods[key];
     const u = calcUnit(p);
     const color = u.margin >= 70 ? 'var(--green)' : u.margin >= 50 ? 'var(--gold)' : 'var(--red)';
-    phtml += `<div class="prod-card">
-      <div class="pname">${p.name}</div>
-      <div class="pfactory">
-        <input type="text" value="${escAttr(p.factory)}" style="width:auto;min-width:50px;flex:1;${istyle}" data-key="${key}" data-field="factory" placeholder="代工厂">
-        <span style="color:var(--tlight);">·</span>
-        <input type="text" value="${escAttr(p.factoryNote)}" style="width:auto;min-width:50px;flex:1;${istyle}" data-key="${key}" data-field="factoryNote" placeholder="备注">
-      </div>
-      <div class="prow"><span class="plabel">出厂成本</span>
-        <span class="pval">¥<input type="number" value="${p.oem}" step="0.01" min="0" style="${istyle}" data-key="${key}" data-field="oem"></span>
-      </div>
-      <div class="prow"><span class="plabel">投流成本</span>
-        <span class="pval">¥<input type="number" value="${p.ad}" step="0.5" min="0" style="${istyle}" data-key="${key}" data-field="ad"></span>
-      </div>
-      <div class="prow"><span class="plabel">包装费</span>
-        <span class="pval">¥<input type="number" value="${p.packaging}" step="0.1" min="0" style="${istyle}" data-key="${key}" data-field="packaging"></span>
-      </div>
-      <div class="prow"><span class="plabel">快递费</span>
-        <span class="pval">¥<input type="number" value="${p.shipping}" step="0.1" min="0" style="${istyle}" data-key="${key}" data-field="shipping"></span>
-      </div>
-      <div class="prow" style="border-top:1px solid var(--border);padding-top:4px;margin-top:4px;">
-        <span class="plabel">零售价</span>
-        <span class="pval">¥<input type="number" value="${p.price}" step="1" min="1" style="width:62px;padding:1px 4px;border:1px solid var(--border);border-radius:3px;font-size:12px;font-weight:700;text-align:center;" data-key="${key}" data-field="price"></span>
-      </div>
-      <div class="prow"><span class="plabel">月销量</span>
-        <span class="pval"><input type="number" value="${p.vol}" step="500" min="0" style="width:66px;padding:1px 4px;border:1px solid var(--border);border-radius:3px;font-size:11px;font-weight:500;text-align:center;" data-key="${key}" data-field="vol"></span>
-      </div>
-      <div class="prow" style="border-top:1px solid var(--border);padding-top:4px;margin-top:4px;">
-        <span class="plabel">单件总成本</span><span class="pval">¥${u.totalCost.toFixed(2)}</span>
-      </div>
-      <div class="prow"><span class="plabel">单件毛利</span><span class="pval" style="color:${color};">¥${u.unitProfit.toFixed(2)}</span></div>
-      <div class="prow"><span class="plabel">毛利率</span><span class="pval" style="color:${color};font-size:16px;font-weight:700;">${u.margin.toFixed(1)}%</span></div>
-      <div class="prow"><span class="plabel">月营收</span><span class="pval">¥${(p.price*p.vol).toLocaleString()}</span></div>
-      <div class="prow"><span class="plabel">月毛利</span><span class="pval">¥${(u.unitProfit*p.vol).toLocaleString()}</span></div>
-    </div>`;
+    // Build tier options
+    const hasTiers = p.tiers && p.tiers.length > 0;
+    let tierOpts = '';
+    if (hasTiers) {
+      p.tiers.forEach((t, ti) => {
+        tierOpts += '<option value="' + ti + '"' + (ti === p.selectedTier ? ' selected' : '') + '>' + t.label + ' ¥' + t.oem.toFixed(2) + '</option>';
+      });
+      tierOpts += '<option value="-1"' + (p.selectedTier === -1 ? ' selected' : '') + '>手动输入</option>';
+    }
+    phtml += '<div class="prod-card">'
+      + '<div class="pname">' + p.name + '</div>'
+      + '<div class="pfactory">'
+      + '<input type="text" value="' + escAttr(p.factory) + '" style="width:auto;min-width:50px;flex:1;' + istyle + '" data-key="' + key + '" data-field="factory" placeholder="代工厂">'
+      + '<span style="color:var(--tlight);">·</span>'
+      + '<input type="text" value="' + escAttr(p.factoryNote) + '" style="width:auto;min-width:50px;flex:1;' + istyle + '" data-key="' + key + '" data-field="factoryNote" placeholder="备注">'
+      + '</div>'
+      + (hasTiers ? '<div class="prow" style="margin-bottom:4px;"><span class="plabel">批量阶梯</span><span class="pval"><select style="' + selStyle + '" data-key="' + key + '" data-field="tierSelect">' + tierOpts + '</select></span></div>' : '')
+      + '<div class="prow"><span class="plabel">出厂成本</span>'
+      + '<span class="pval">¥<input type="number" value="' + p.oem + '" step="0.01" min="0" style="' + istyle + '" data-key="' + key + '" data-field="oem"></span>'
+      + '</div>'
+      + '<div class="prow"><span class="plabel">投流成本</span>'
+      + '<span class="pval">¥<input type="number" value="' + p.ad + '" step="0.5" min="0" style="' + istyle + '" data-key="' + key + '" data-field="ad"></span>'
+      + '</div>'
+      + '<div class="prow"><span class="plabel">包装费</span>'
+      + '<span class="pval">¥<input type="number" value="' + p.packaging + '" step="0.1" min="0" style="' + istyle + '" data-key="' + key + '" data-field="packaging"></span>'
+      + '</div>'
+      + '<div class="prow"><span class="plabel">快递费</span>'
+      + '<span class="pval">¥<input type="number" value="' + p.shipping + '" step="0.1" min="0" style="' + istyle + '" data-key="' + key + '" data-field="shipping"></span>'
+      + '</div>'
+      + '<div class="prow" style="border-top:1px solid var(--border);padding-top:4px;margin-top:4px;">'
+      + '<span class="plabel">零售价</span>'
+      + '<span class="pval">¥<input type="number" value="' + p.price + '" step="1" min="1" style="width:62px;padding:1px 4px;border:1px solid var(--border);border-radius:3px;font-size:12px;font-weight:700;text-align:center;" data-key="' + key + '" data-field="price"></span>'
+      + '</div>'
+      + '<div class="prow"><span class="plabel">月销量</span>'
+      + '<span class="pval"><input type="number" value="' + p.vol + '" step="500" min="0" style="width:66px;padding:1px 4px;border:1px solid var(--border);border-radius:3px;font-size:11px;font-weight:500;text-align:center;" data-key="' + key + '" data-field="vol"></span>'
+      + '</div>'
+      + '<div class="prow" style="border-top:1px solid var(--border);padding-top:4px;margin-top:4px;">'
+      + '<span class="plabel">单件总成本</span><span class="pval">¥' + u.totalCost.toFixed(2) + '</span>'
+      + '</div>'
+      + '<div class="prow"><span class="plabel">单件毛利</span><span class="pval" style="color:' + color + ';">¥' + u.unitProfit.toFixed(2) + '</span></div>'
+      + '<div class="prow"><span class="plabel">毛利率</span><span class="pval" style="color:' + color + ';font-size:16px;font-weight:700;">' + u.margin.toFixed(1) + '%</span></div>'
+      + '<div class="prow"><span class="plabel">月营收</span><span class="pval">¥' + (p.price*p.vol).toLocaleString() + '</span></div>'
+      + '<div class="prow"><span class="plabel">贡献毛利<sup style="color:var(--tlight);font-size:9px;">①</sup></span><span class="pval">¥' + (u.unitProfit*p.vol).toLocaleString() + '</span></div>'
+      + '</div>';
   });
   document.getElementById('productCards').innerHTML = phtml;
 
-  // Bind product input changes (delegated)
+  // Bind product input changes
   document.querySelectorAll('#productCards input').forEach(el => {
     el.addEventListener('input', () => {
       const key = el.dataset.key;
@@ -523,6 +582,10 @@ function render() {
       const val = el.value;
       if (['oem','ad','packaging','shipping','price'].includes(field)) {
         prods[key][field] = parseFloat(val) || 0;
+        // If user manually edits oem, deselect tier
+        if (field === 'oem' && prods[key].tiers) {
+          prods[key].selectedTier = -1;
+        }
       } else if (field === 'vol') {
         prods[key][field] = parseInt(val) || 0;
       } else {
@@ -532,6 +595,22 @@ function render() {
       render();
     });
   });
+  // Bind tier selector
+  document.querySelectorAll('#productCards select').forEach(el => {
+    el.addEventListener('change', () => {
+      const key = el.dataset.key;
+      if (!key || !prods[key] || !prods[key].tiers) return;
+      const ti = parseInt(el.value);
+      prods[key].selectedTier = ti;
+      if (ti >= 0 && ti < prods[key].tiers.length) {
+        prods[key].oem = prods[key].tiers[ti].oem;
+      }
+      saveState();
+      render();
+    });
+  });  // ---- Comprehensive P&L Summary ----
+  renderSummary(m);
+  document.getElementById('fixedCostDisplay').textContent = ctrl.fixedCost.toLocaleString();
 
   // ---- 12-Month P&L ----
   let head = '<tr><th>项目</th>';
@@ -598,6 +677,91 @@ function render() {
 
 function escAttr(s) {
   return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderSummary(m) {
+  // Bar chart: each product contribution + fixed cost deduction = net profit
+  const colors = ['var(--green)', 'var(--blue)', 'var(--gold)'];
+  const names = ['艾草精华贴', '艾灸器', '艾条'];
+  const keys = ['essence', 'moxa', 'stick'];
+  const maxVal = Math.max(m.totalRevenue, 1);
+
+  let barHtml = '';
+  keys.forEach((key, i) => {
+    const p = prods[key];
+    const contrib = p.price * p.vol - m.details[i].cost;
+    const pct = Math.min(contrib / maxVal * 100, 100);
+    barHtml += '<div class="bar-item">'
+      + '<span class="bl" style="min-width:72px;">' + names[i] + '</span>'
+      + '<div class="bt"><div class="bf" style="width:' + pct + '%;background:' + colors[i] + ';"></div></div>'
+      + '<span class="bv">¥' + contrib.toLocaleString() + '</span>'
+      + '</div>';
+  });
+  // Total contribution bar
+  const totalContrib = m.totalRevenue - m.totalCost;
+  const totalPct = Math.min(totalContrib / maxVal * 100, 100);
+  barHtml += '<div class="bar-item">'
+    + '<span class="bl" style="min-width:72px;font-weight:600;">贡献合计</span>'
+    + '<div class="bt"><div class="bf" style="width:' + totalPct + '%;background:var(--dark);"></div></div>'
+    + '<span class="bv" style="font-weight:600;">¥' + totalContrib.toLocaleString() + '</span>'
+    + '</div>';
+  // Fixed cost bar
+  const fcPct = Math.min(ctrl.fixedCost / maxVal * 100, 100);
+  barHtml += '<div class="bar-item">'
+    + '<span class="bl" style="min-width:72px;">减：团队固定成本</span>'
+    + '<div class="bt"><div class="bf" style="width:' + fcPct + '%;background:var(--red);"></div></div>'
+    + '<span class="bv" style="color:var(--red);">-¥' + ctrl.fixedCost.toLocaleString() + '</span>'
+    + '</div>';
+  // Net profit bar
+  const netPct = m.netProfit > 0 ? Math.min(m.netProfit / maxVal * 100, 100) : 0;
+  const netColor = m.netProfit >= 0 ? 'var(--green)' : 'var(--red)';
+  barHtml += '<div class="bar-item">'
+    + '<span class="bl" style="min-width:72px;font-weight:700;">团队净利润</span>'
+    + '<div class="bt"><div class="bf" style="width:' + netPct + '%;background:' + netColor + ';"></div></div>'
+    + '<span class="bv" style="font-weight:700;color:' + netColor + ';">¥' + m.netProfit.toLocaleString() + '</span>'
+    + '</div>';
+
+  document.getElementById('waterfallChart').innerHTML = barHtml;
+
+  // Summary table
+  let shtml = '<tr style="font-weight:600;color:var(--tlight);font-size:11px;"><th style="text-align:left;">项目</th><th class="num">月营收</th><th class="num">变动成本</th><th class="num">贡献毛利</th><th class="num">毛利率</th></tr>';
+  keys.forEach((key, i) => {
+    const d = m.details[i];
+    const contrib = d.rev - d.cost;
+    const margin = d.rev > 0 ? (contrib / d.rev * 100) : 0;
+    shtml += '<tr>'
+      + '<td>' + names[i] + '</td>'
+      + '<td class="num">¥' + d.rev.toLocaleString() + '</td>'
+      + '<td class="num">¥' + d.cost.toLocaleString() + '</td>'
+      + '<td class="num" style="font-weight:600;">¥' + contrib.toLocaleString() + '</td>'
+      + '<td class="num">' + margin.toFixed(1) + '%</td>'
+      + '</tr>';
+  });
+  // Total row
+  shtml += '<tr class="total">'
+    + '<td>合计</td>'
+    + '<td class="num">¥' + m.totalRevenue.toLocaleString() + '</td>'
+    + '<td class="num">¥' + m.totalCost.toLocaleString() + '</td>'
+    + '<td class="num" style="font-weight:700;">¥' + totalContrib.toLocaleString() + '</td>'
+    + '<td class="num">' + m.weightedMargin.toFixed(1) + '%</td>'
+    + '</tr>';
+  // Fixed cost row
+  shtml += '<tr>'
+    + '<td style="color:var(--red);">减：团队固定成本</td>'
+    + '<td></td><td></td>'
+    + '<td class="num" style="color:var(--red);">-¥' + ctrl.fixedCost.toLocaleString() + '</td>'
+    + '<td></td>'
+    + '</tr>';
+  // Net profit row
+  const netCls = m.netProfit >= 0 ? 'style="font-weight:700;color:var(--green);"' : 'style="font-weight:700;color:var(--red);"';
+  shtml += '<tr ' + netCls + '>'
+    + '<td>团队净利润</td>'
+    + '<td></td><td></td>'
+    + '<td class="num">¥' + m.netProfit.toLocaleString() + '</td>'
+    + '<td class="num">' + (m.totalRevenue > 0 ? (m.netProfit / m.totalRevenue * 100).toFixed(1) + '%' : '-') + '</td>'
+    + '</tr>';
+
+  document.getElementById('summaryTable').innerHTML = shtml;
 }
 
 function calcInvest() {
