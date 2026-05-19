@@ -213,32 +213,32 @@ table .neg { color:var(--red); }
   <h2>⚙️ 运营参数 <span class="badge">商业计划书模型</span></h2>
   <div class="control-row">
     <div class="control-group">
-      <label>平台佣金率</label>
+      <label>平台佣金率 <span style="font-weight:400;color:#999;">(商业计划书基准5%)</span></label>
       <input type="range" id="ctrlComm" min="2" max="15" step="0.5" value="5">
       <div class="cval" id="ctrlCommVal">5%</div>
     </div>
     <div class="control-group">
-      <label>退货率</label>
+      <label>退货率 <span style="font-weight:400;color:#999;">(基准8%)</span></label>
       <input type="range" id="ctrlRet" min="3" max="25" step="1" value="8">
       <div class="cval" id="ctrlRetVal">8%</div>
     </div>
     <div class="control-group">
-      <label>其他成本/件</label>
+      <label>其他成本/件 <span style="font-weight:400;color:#999;">(基准¥0.5)</span></label>
       <input type="range" id="ctrlOther" min="0" max="2" step="0.1" value="0.5">
       <div class="cval" id="ctrlOtherVal">¥0.5</div>
     </div>
     <div class="control-group">
-      <label>月固定成本</label>
+      <label>月固定成本 <span style="font-weight:400;color:#999;">(基准¥20,000)</span></label>
       <input type="range" id="ctrlFixed" min="1" max="1000000" step="1000" value="20000">
       <div class="cval" id="ctrlFixedVal"><input type="number" id="ctrlFixedInput" value="20000" step="1000" min="1" max="10000000" style="width:90px;padding:1px 4px;border:1px solid var(--border);border-radius:3px;font-size:12px;font-weight:600;text-align:center;"></div>
     </div>
     <div class="control-group">
-      <label>达人分佣率</label>
+      <label>达人分佣率 <span style="font-weight:400;color:#999;">(按渠道策略调整)</span></label>
       <input type="range" id="ctrlKol" min="0" max="30" step="1" value="0">
       <div class="cval" id="ctrlKolVal">0%</div>
     </div>
     <div class="control-group">
-      <label>达人渠道占比</label>
+      <label>达人渠道占比 <span style="font-weight:400;color:#999;">(按渠道策略调整)</span></label>
       <input type="range" id="ctrlKolShare" min="0" max="100" step="5" value="0">
       <div class="cval" id="ctrlKolShareVal">0%</div>
     </div>
@@ -846,10 +846,20 @@ function bindControls() {
 // INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
-  // Try loading saved state, else use defaults
-  if (!loadState()) {
-    prods = JSON.parse(JSON.stringify(PRODUCT_DEFAULTS));
-  }
+  // Load saved state, merge with defaults for any missing products/fields
+  loadState();
+  // Ensure all 3 products exist with complete data
+  ['essence', 'moxa', 'stick'].forEach(key => {
+    if (!prods[key] || typeof prods[key].price === 'undefined') {
+      prods[key] = JSON.parse(JSON.stringify(PRODUCT_DEFAULTS[key]));
+    } else {
+      // Fill in any missing fields from defaults
+      const def = PRODUCT_DEFAULTS[key];
+      Object.keys(def).forEach(f => {
+        if (typeof prods[key][f] === 'undefined') prods[key][f] = JSON.parse(JSON.stringify(def[f]));
+      });
+    }
+  });
   // Sync slider positions from loaded ctrl
   document.getElementById('ctrlComm').value = ctrl.commRate;
   document.getElementById('ctrlRet').value = ctrl.retRate;
