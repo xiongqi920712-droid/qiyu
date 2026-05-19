@@ -6,406 +6,302 @@
 <title>适元草 · 成本毛利率计算模型</title>
 <style>
 :root {
-  --brand-green: #5A7A4A;
-  --brand-brown: #C4956A;
-  --brand-cream: #F5F0E8;
-  --brand-dark: #3A5F41;
-  --brand-gold: #C5975B;
-  --text: #2C2C2C;
-  --text-light: #666;
-  --bg: #F8F6F2;
-  --card: #fff;
-  --border: #E8E3DA;
-  --green-light: #E8F5E1;
-  --red: #D35D5D;
-  --blue: #4A8DB7;
-  --shadow-sm: 0 1px 4px rgba(0,0,0,0.06);
+  --green: #5A7A4A; --brown: #C4956A; --cream: #F5F0E8;
+  --dark: #3A5F41; --gold: #C5975B; --text: #2C2C2C;
+  --tlight: #666; --bg: #F8F6F2; --card: #fff;
+  --border: #E8E3DA; --green-light: #E8F5E1; --red: #D35D5D;
+  --blue: #4A8DB7; --shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  padding: 24px;
-  line-height: 1.6;
+  font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
+  background: var(--bg); color: var(--text); padding: 20px; line-height:1.5;
 }
-.container { max-width: 1280px; margin: 0 auto; }
+.container { max-width: 1320px; margin:0 auto; }
 
 /* Header */
 .header {
-  text-align: center;
-  padding: 24px 24px 18px;
-  background: linear-gradient(135deg, var(--brand-green), var(--brand-dark));
-  color: #fff;
-  border-radius: 16px 16px 0 0;
+  text-align:center; padding:20px 20px 14px;
+  background:linear-gradient(135deg,var(--green),var(--dark)); color:#fff;
+  border-radius:14px 14px 0 0;
 }
-.header h1 { font-size: 24px; font-weight: 700; }
-.header h1 small { font-size: 16px; font-weight: 400; opacity: 0.9; }
-.header p { font-size: 13px; opacity: 0.8; margin-top: 4px; }
+.header h1 { font-size:22px; }
+.header h1 small { font-size:15px; font-weight:400; opacity:.9; }
+.header p { font-size:12px; opacity:.75; margin-top:3px; }
 
 /* Product Bar */
 .product-bar {
-  background: var(--brand-dark);
-  padding: 10px 24px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  border-radius: 0 0 16px 16px;
-  margin-bottom: 24px;
+  background:var(--dark); padding:8px 16px;
+  display:flex; align-items:center; gap:6px; flex-wrap:wrap;
+  border-radius:0 0 14px 14px; margin-bottom:20px;
 }
-.product-tabs {
-  display: flex;
-  gap: 4px;
-  flex-wrap: wrap;
-  flex: 1;
-}
+.product-tabs { display:flex; gap:3px; flex-wrap:wrap; flex:1; }
 .product-tab {
-  padding: 6px 16px;
-  border-radius: 6px;
-  background: rgba(255,255,255,0.1);
-  color: rgba(255,255,255,0.7);
-  border: 1px solid transparent;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 500;
-  transition: all 0.2s;
-  white-space: nowrap;
+  padding:5px 14px; border-radius:5px;
+  background:rgba(255,255,255,.1); color:rgba(255,255,255,.7);
+  border:1px solid transparent; cursor:pointer; font-size:12px; font-weight:500;
+  transition:all .15s; white-space:nowrap;
 }
-.product-tab:hover { background: rgba(255,255,255,0.18); color: #fff; }
-.product-tab.active { background: #fff; color: var(--brand-dark); border-color: #fff; }
-.product-tab .dot {
-  display: inline-block;
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  margin-right: 4px;
-}
+.product-tab:hover { background:rgba(255,255,255,.18); color:#fff; }
+.product-tab.active { background:#fff; color:var(--dark); }
+.product-tab .dot { display:inline-block; width:6px; height:6px; border-radius:50%; margin-right:4px; }
 .btn-sm {
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: 1px solid rgba(255,255,255,0.3);
-  background: transparent;
-  color: rgba(255,255,255,0.85);
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
+  padding:5px 10px; border-radius:5px; border:1px solid rgba(255,255,255,.25);
+  background:transparent; color:rgba(255,255,255,.85); font-size:11px; font-weight:500;
+  cursor:pointer; transition:all .15s; white-space:nowrap;
 }
-.btn-sm:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.5); }
-.btn-sm.primary {
-  background: var(--brand-brown);
-  border-color: var(--brand-brown);
-  color: #fff;
-}
-.btn-sm.primary:hover { background: #b8875a; }
-.btn-sm.danger:hover { background: rgba(211,93,93,0.3); border-color: var(--red); color: #fcc; }
+.btn-sm:hover { background:rgba(255,255,255,.12); }
+.btn-sm.primary { background:var(--brown); border-color:var(--brown); color:#fff; }
+.btn-sm.primary:hover { background:#b8875a; }
 
-/* Context menu */
-.dropdown { position: relative; display: inline-block; }
+/* Dropdown */
+.dropdown { position:relative; display:inline-block; }
 .dropdown-menu {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 4px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-  z-index: 100;
-  min-width: 160px;
-  display: none;
-  overflow: hidden;
+  position:absolute; top:100%; right:0; margin-top:3px;
+  background:var(--card); border:1px solid var(--border); border-radius:8px;
+  box-shadow:0 4px 16px rgba(0,0,0,.12); z-index:100; min-width:150px; display:none; overflow:hidden;
 }
-.dropdown-menu.open { display: block; }
+.dropdown-menu.open { display:block; }
 .dropdown-item {
-  padding: 8px 14px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background 0.15s;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--text);
-  border: none;
-  background: none;
-  width: 100%;
-  text-align: left;
+  padding:7px 12px; font-size:12px; cursor:pointer; transition:background .15s;
+  display:flex; align-items:center; gap:6px; color:var(--text);
+  border:none; background:none; width:100%; text-align:left;
 }
-.dropdown-item:hover { background: var(--brand-cream); }
-.dropdown-item.danger { color: var(--red); }
-.dropdown-divider { height: 1px; background: var(--border); margin: 4px 0; }
+.dropdown-item:hover { background:var(--cream); }
+.dropdown-item.danger { color:var(--red); }
+.dropdown-divider { height:1px; background:var(--border); margin:3px 0; }
 
-/* Modal overlay */
+/* Modal */
 .modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  z-index: 200;
-  justify-content: center;
-  align-items: center;
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,.4);
+  z-index:200; justify-content:center; align-items:center;
 }
-.modal-overlay.open { display: flex; }
+.modal-overlay.open { display:flex; }
 .modal {
-  background: var(--card);
-  border-radius: 12px;
-  padding: 24px;
-  width: 90%;
-  max-width: 420px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  background:var(--card); border-radius:12px; padding:22px; width:90%; max-width:400px; box-shadow:0 8px 32px rgba(0,0,0,.2);
 }
-.modal h3 { font-size: 16px; margin-bottom: 12px; }
-.modal input[type="text"] {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1.5px solid var(--border);
-  border-radius: 6px;
-  font-size: 14px;
-  margin-bottom: 16px;
+.modal h3 { font-size:15px; margin-bottom:10px; }
+.modal input[type="text"], .modal textarea {
+  width:100%; padding:7px 10px; border:1.5px solid var(--border); border-radius:6px; font-size:13px; margin-bottom:12px;
 }
-.modal input[type="text"]:focus { outline: none; border-color: var(--brand-green); box-shadow: 0 0 0 3px rgba(90,122,74,0.1); }
-.modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.modal input[type="text"]:focus, .modal textarea:focus { outline:none; border-color:var(--green); box-shadow:0 0 0 3px rgba(90,122,74,.1); }
+.modal textarea { min-height:60px; resize:vertical; }
+.modal-actions { display:flex; gap:8px; justify-content:flex-end; }
 .modal-actions button {
-  padding: 7px 18px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  border: 1.5px solid var(--border);
-  background: var(--card);
-  color: var(--text);
+  padding:6px 16px; border-radius:6px; font-size:12px; font-weight:500; cursor:pointer;
+  border:1.5px solid var(--border); background:var(--card); color:var(--text);
 }
-.modal-actions button.primary { background: var(--brand-green); border-color: var(--brand-green); color: #fff; }
-.modal-actions button.primary:hover { background: var(--brand-dark); }
-.modal-actions button:hover { background: var(--bg); }
+.modal-actions button.primary { background:var(--green); border-color:var(--green); color:#fff; }
+.modal-actions button.primary:hover { background:var(--dark); }
+.modal-actions button:hover { background:var(--bg); }
 
-/* Main Grid */
-.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+/* Grid */
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
 
-/* Cards */
+/* Card */
 .card {
-  background: var(--card);
-  border-radius: 12px;
-  padding: 20px 24px;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--border);
+  background:var(--card); border-radius:10px; padding:16px 18px;
+  box-shadow:var(--shadow); border:1px solid var(--border);
+  margin-bottom:18px;
 }
 .card h3 {
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 16px;
-  padding-bottom: 8px;
-  border-bottom: 2px solid var(--brand-cream);
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  font-size:14px; font-weight:600; margin-bottom:12px; padding-bottom:6px;
+  border-bottom:2px solid var(--cream); display:flex; align-items:center; gap:6px;
+  flex-wrap:wrap;
 }
 .card h3 .badge {
-  font-size: 11px;
-  background: var(--brand-cream);
-  color: var(--brand-green);
-  padding: 2px 10px;
-  border-radius: 10px;
-  font-weight: 500;
+  font-size:10px; background:var(--cream); color:var(--green);
+  padding:2px 8px; border-radius:8px; font-weight:500;
 }
 
 /* Forms */
-.form-group { margin-bottom: 12px; }
+.form-group { margin-bottom:10px; }
 .form-group label {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 13px;
-  font-weight: 500;
-  margin-bottom: 4px;
+  display:flex; justify-content:space-between; align-items:center;
+  font-size:12px; font-weight:500; margin-bottom:3px;
 }
-.form-group label .hint { font-weight: 400; font-size: 11px; color: var(--text-light); }
-.input-row { display: flex; align-items: center; gap: 8px; }
+.form-group label .hint { font-weight:400; font-size:10px; color:var(--tlight); }
+.input-row { display:flex; align-items:center; gap:6px; }
 .input-row input[type="number"] {
-  flex: 1;
-  padding: 7px 10px;
-  border: 1.5px solid var(--border);
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
-  background: #fff;
-  transition: border-color 0.2s;
-  min-width: 0;
-  width: 100%;
+  flex:1; padding:6px 8px; border:1.5px solid var(--border); border-radius:5px;
+  font-size:13px; font-weight:500; background:#fff; min-width:0; width:100%;
 }
-.input-row input[type="number"]:focus {
-  outline: none;
-  border-color: var(--brand-green);
-  box-shadow: 0 0 0 3px rgba(90,122,74,0.1);
-}
-.input-row .unit { font-size: 13px; color: var(--text-light); white-space: nowrap; min-width: 20px; }
+.input-row input[type="number"]:focus { outline:none; border-color:var(--green); box-shadow:0 0 0 3px rgba(90,122,74,.1); }
+.input-row .unit { font-size:12px; color:var(--tlight); white-space:nowrap; min-width:18px; }
 input[type="range"] {
-  flex: 1;
-  height: 4px;
-  -webkit-appearance: none;
-  appearance: none;
-  background: var(--border);
-  border-radius: 2px;
-  outline: none;
+  flex:1; height:4px; -webkit-appearance:none; appearance:none; background:var(--border); border-radius:2px; outline:none;
 }
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--brand-green);
-  cursor: pointer;
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance:none; width:15px; height:15px; border-radius:50%; background:var(--green); cursor:pointer; }
+.range-value { min-width:48px; text-align:right; font-size:12px; font-weight:600; }
+
+/* Metric Cards */
+.metric-card { text-align:center; padding:16px 10px; border-radius:8px; background:var(--card); border:1px solid var(--border); }
+.metric-card .label { font-size:11px; color:var(--tlight); font-weight:500; letter-spacing:.3px; }
+.metric-card .value { font-size:28px; font-weight:800; margin:2px 0; letter-spacing:-.5px; }
+.metric-card .sub { font-size:11px; color:var(--tlight); }
+.metric-card.green .value { color:var(--green); }
+.metric-card.gold .value { color:var(--gold); }
+.metric-card.red .value { color:var(--red); }
+.metric-card.blue .value { color:var(--blue); }
+
+/* Cost bars */
+.cost-item { display:flex; align-items:center; gap:6px; margin-bottom:4px; }
+.cost-item .cl { font-size:11px; min-width:64px; text-align:right; color:var(--tlight); }
+.cost-item .ct { flex:1; height:20px; background:var(--bg); border-radius:3px; overflow:hidden; }
+.cost-item .cf { height:100%; border-radius:3px; transition:width .3s; min-width:2px; }
+.cost-item .cv { font-size:11px; min-width:52px; font-weight:500; text-align:right; }
+.cost-item .cp { font-size:10px; min-width:36px; color:var(--tlight); text-align:right; }
+
+/* Comparison table */
+.comp-table { overflow-x:auto; margin:8px 0; }
+.comp-table table { width:100%; border-collapse:collapse; font-size:12px; min-width:600px; }
+.comp-table th, .comp-table td { padding:7px 8px; text-align:center; border-bottom:1px solid var(--border); }
+.comp-table th { background:var(--cream); font-weight:600; font-size:11px; position:sticky; top:0; }
+.comp-table td:first-child { text-align:left; font-weight:500; }
+.comp-table .hl { font-weight:700; font-size:14px; }
+.comp-table .factory-col { border-left:3px solid transparent; }
+.comp-table .selected-factory { background:var(--green-light); }
+
+/* Factory list */
+.factory-list { margin:6px 0; }
+.factory-item {
+  display:flex; align-items:center; gap:6px; padding:6px 8px;
+  border:1px solid var(--border); border-radius:6px; margin-bottom:4px;
+  cursor:pointer; transition:all .15s; font-size:12px;
 }
-.range-value { min-width: 54px; text-align: right; font-size: 13px; font-weight: 600; }
-
-/* Metrics */
-.metric-card {
-  text-align: center;
-  padding: 20px 16px;
-  border-radius: 10px;
-  background: var(--card);
-  border: 1px solid var(--border);
+.factory-item:hover { border-color:var(--brown); }
+.factory-item.active { border-color:var(--green); background:var(--green-light); }
+.factory-item input[type="checkbox"] { width:15px; height:15px; cursor:pointer; accent-color:var(--green); }
+.factory-item .fi-name { flex:1; font-weight:500; }
+.factory-item .fi-price { color:var(--tlight); font-size:11px; }
+.factory-item .fi-margin { font-size:11px; font-weight:600; }
+.factory-item .fi-actions { display:flex; gap:3px; }
+.factory-item .fi-actions button {
+  border:none; background:transparent; cursor:pointer; font-size:13px; padding:2px 4px; border-radius:3px; opacity:.5;
 }
-.metric-card .label { font-size: 12px; color: var(--text-light); font-weight: 500; letter-spacing: 0.3px; }
-.metric-card .value { font-size: 32px; font-weight: 800; margin: 4px 0; letter-spacing: -0.5px; }
-.metric-card .sub { font-size: 12px; color: var(--text-light); }
-.metric-card.green .value { color: var(--brand-green); }
-.metric-card.gold .value { color: var(--brand-gold); }
-.metric-card.red .value { color: var(--red); }
-.metric-card.blue .value { color: var(--blue); }
+.factory-item .fi-actions button:hover { opacity:1; background:var(--bg); }
 
-/* Cost Breakdown */
-.cost-bar-container { margin: 8px 0; }
-.cost-item { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-.cost-item .bar-label { font-size: 12px; min-width: 72px; text-align: right; color: var(--text-light); }
-.cost-item .bar-track { flex: 1; height: 22px; background: var(--bg); border-radius: 4px; overflow: hidden; position: relative; }
-.cost-item .bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s ease; min-width: 2px; }
-.cost-item .bar-value { font-size: 12px; min-width: 60px; font-weight: 500; text-align: right; }
-.cost-item .bar-pct { font-size: 11px; min-width: 40px; color: var(--text-light); text-align: right; }
+/* Factory detail form (expandable) */
+.factory-detail {
+  display:none; padding:10px 12px; margin:4px 0 8px;
+  background:var(--bg); border-radius:6px; border:1px solid var(--border);
+}
+.factory-detail.open { display:block; }
+.factory-detail .fd-header {
+  display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;
+}
+.factory-detail .fd-name { font-size:13px; font-weight:600; }
+.factory-detail .fd-note {
+  font-size:11px; color:var(--tlight); margin-bottom:8px; cursor:pointer;
+  border-bottom:1px dashed var(--border); padding-bottom:4px;
+}
 
-/* Scenarios */
-.scenario-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+/* Scenario tabs */
+.scenario-tabs { display:flex; gap:6px; margin-bottom:12px; }
 .scenario-tab {
-  flex: 1; padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 8px;
-  background: var(--card); cursor: pointer; text-align: center; transition: all 0.2s; font-size: 13px; font-weight: 500;
+  flex:1; padding:6px 8px; border:1.5px solid var(--border); border-radius:6px;
+  background:var(--card); cursor:pointer; text-align:center; transition:all .15s; font-size:12px; font-weight:500;
 }
-.scenario-tab:hover { border-color: var(--brand-brown); }
-.scenario-tab.active { border-color: var(--brand-green); background: var(--green-light); color: var(--brand-dark); }
-.scenario-tab .tag { display: block; font-size: 11px; font-weight: 400; color: var(--text-light); margin-top: 2px; }
+.scenario-tab:hover { border-color:var(--brown); }
+.scenario-tab.active { border-color:var(--green); background:var(--green-light); color:var(--dark); }
+.scenario-tab .tag { display:block; font-size:10px; font-weight:400; color:var(--tlight); margin-top:1px; }
 
 /* Tables */
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-table th { text-align: left; padding: 8px 8px 8px 0; font-weight: 600; color: var(--text-light); border-bottom: 2px solid var(--border); font-size: 12px; }
-table td { padding: 8px 8px 8px 0; border-bottom: 1px solid var(--border); }
-table td:last-child { text-align: right; }
-table tr:last-child td { border-bottom: none; }
-table .total td { font-weight: 700; border-top: 2px solid var(--border); }
+table { width:100%; border-collapse:collapse; font-size:12px; }
+table th { text-align:left; padding:6px 6px 6px 0; font-weight:600; color:var(--tlight); border-bottom:2px solid var(--border); font-size:11px; }
+table td { padding:6px 6px 6px 0; border-bottom:1px solid var(--border); }
+table td:last-child { text-align:right; }
+table .total td { font-weight:700; border-top:2px solid var(--border); }
 
 /* Sensitivity */
-.sens-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; font-size: 12px; }
-.sens-row .sens-price { min-width: 52px; font-weight: 500; }
-.sens-row .sens-bar { flex: 1; height: 18px; background: var(--bg); border-radius: 4px; overflow: hidden; }
-.sens-row .sens-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
-.sens-row .sens-fill.positive { background: var(--brand-green); }
-.sens-row .sens-fill.negative { background: var(--red); }
-.sens-row .sens-label { min-width: 72px; text-align: right; font-weight: 500; }
+.sens-row { display:flex; align-items:center; gap:6px; margin-bottom:3px; font-size:11px; }
+.sens-row .sp { min-width:48px; font-weight:500; }
+.sens-row .sb { flex:1; height:16px; background:var(--bg); border-radius:3px; overflow:hidden; }
+.sens-row .sf { height:100%; border-radius:3px; transition:width .3s; }
+.sens-row .sf.p { background:var(--green); }
+.sens-row .sf.n { background:var(--red); }
+.sens-row .sl { min-width:64px; text-align:right; font-weight:500; }
 
 /* Note */
-.note {
-  background: #FFF9E6; border-left: 3px solid var(--brand-gold); padding: 10px 14px;
-  border-radius: 6px; font-size: 12px; color: #665; margin-top: 12px;
-}
-
-/* Separator */
-.sep { height: 1px; background: var(--border); margin: 20px 0; }
-
-/* Batch pricing */
-.batch-input { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 8px 0; }
-.batch-input .bi { display: flex; flex-direction: column; gap: 2px; }
-.batch-input .bi label { font-size: 11px; color: var(--text-light); }
-.batch-input .bi input { padding: 5px 8px; border: 1.5px solid var(--border); border-radius: 4px; font-size: 13px; }
-
-/* Footer */
-.footer { text-align: center; padding: 20px; font-size: 12px; color: var(--text-light); }
-
-/* Toast */
+.note { background:#FFF9E6; border-left:3px solid var(--gold); padding:8px 12px; border-radius:5px; font-size:11px; color:#665; margin-top:10px; }
+.sep { height:1px; background:var(--border); margin:16px 0; }
 .toast {
-  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-  background: var(--text); color: #fff; padding: 10px 20px; border-radius: 8px;
-  font-size: 13px; font-weight: 500; z-index: 300; opacity: 0;
-  transition: opacity 0.3s; pointer-events: none;
+  position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+  background:var(--text); color:#fff; padding:8px 18px; border-radius:6px;
+  font-size:12px; font-weight:500; z-index:300; opacity:0; transition:opacity .25s; pointer-events:none;
 }
-.toast.show { opacity: 1; }
+.toast.show { opacity:1; }
+.footer { text-align:center; padding:16px; font-size:11px; color:var(--tlight); }
+
+/* badge dot for factory colors */
+.f-color { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:4px; }
 
 /* Responsive */
-@media (max-width: 820px) {
-  .grid-2 { grid-template-columns: 1fr; }
-  .grid-3 { grid-template-columns: 1fr 1fr; }
-  .grid-4 { grid-template-columns: repeat(2, 1fr); }
-  body { padding: 12px; }
+@media (max-width:820px) {
+  .grid-2 { grid-template-columns:1fr; }
+  .grid-3 { grid-template-columns:1fr 1fr; }
+  .grid-4 { grid-template-columns:repeat(2,1fr); }
+  body { padding:10px; }
 }
-@media (max-width: 500px) {
-  .grid-3 { grid-template-columns: 1fr; }
-  .grid-4 { grid-template-columns: 1fr 1fr; }
-  .product-bar { flex-direction: column; align-items: stretch; }
+@media (max-width:500px) {
+  .grid-3 { grid-template-columns:1fr; }
+  .grid-4 { grid-template-columns:1fr 1fr; }
+  .product-bar { flex-direction:column; align-items:stretch; }
 }
+
+/* Batch inline */
+.batch-input { display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; }
+.batch-input .bi { display:flex; flex-direction:column; gap:2px; }
+.batch-input .bi label { font-size:10px; color:var(--tlight); }
+.batch-input .bi input { padding:4px 6px; border:1.5px solid var(--border); border-radius:4px; font-size:12px; }
 </style>
 </head>
 <body>
-
 <div class="container">
 
 <!-- Header -->
 <div class="header">
   <h1>适元草 <small>· 成本毛利率计算模型</small></h1>
-  <p>多产品管理 · 实时计算 · 自动保存到浏览器</p>
+  <p>多产品 · 多代工厂对比 · 自动保存到浏览器</p>
 </div>
 
 <!-- Product Bar -->
 <div class="product-bar" id="productBar">
   <div class="product-tabs" id="productTabs"></div>
+  <button class="btn-sm primary" id="btnNewProduct">+ 新建</button>
   <div class="dropdown">
-    <button class="btn-sm primary" id="btnNewProduct">+ 新建产品</button>
-  </div>
-  <div class="dropdown">
-    <button class="btn-sm" id="btnProductMenu">☰ 管理 ▾</button>
+    <button class="btn-sm" id="btnProductMenu">☰ ▾</button>
     <div class="dropdown-menu" id="productMenu">
       <button class="dropdown-item" data-action="rename">✏️ 重命名</button>
-      <button class="dropdown-item" data-action="duplicate">📋 复制产品</button>
+      <button class="dropdown-item" data-action="duplicate">📋 复制</button>
       <div class="dropdown-divider"></div>
-      <button class="dropdown-item" data-action="export">📤 导出全部数据</button>
+      <button class="dropdown-item" data-action="export">📤 导出数据</button>
       <button class="dropdown-item" data-action="import">📥 导入数据</button>
       <div class="dropdown-divider"></div>
-      <button class="dropdown-item danger" data-action="delete">🗑️ 删除此产品</button>
+      <button class="dropdown-item danger" data-action="delete">🗑️ 删除</button>
     </div>
   </div>
   <input type="file" id="importFile" accept=".json" style="display:none">
 </div>
 
-<!-- Main Grid -->
 <div class="grid-2">
 
-<!-- LEFT: Inputs -->
+<!-- ============ LEFT ============ -->
 <div>
 
-  <div class="card" style="margin-bottom:24px;">
-    <h3>📦 基础参数</h3>
-    <div class="grid-2" style="gap:12px;">
+  <!-- 基础参数 -->
+  <div class="card">
+    <h3>📦 基础参数 <span class="badge">所有代工厂共用</span></h3>
+    <div class="grid-2" style="gap:10px;">
       <div class="form-group">
         <label>零售价 <span class="hint">¥/盒</span></label>
-        <div class="input-row">
-          <input type="number" id="retailPrice" value="49.9" step="1" min="1" max="999">
-        </div>
+        <div class="input-row"><input type="number" id="retailPrice" value="49.9" step="1" min="1" max="999"></div>
       </div>
       <div class="form-group">
         <label>每盒片数</label>
-        <div class="input-row">
-          <input type="number" id="stickersPerBox" value="5" step="1" min="1" max="50">
-          <span class="unit">贴</span>
-        </div>
+        <div class="input-row"><input type="number" id="stickersPerBox" value="5" step="1" min="1" max="50"><span class="unit">贴</span></div>
       </div>
     </div>
     <div class="form-group">
@@ -415,57 +311,20 @@ table .total td { font-weight: 700; border-top: 2px solid var(--border); }
         <span class="range-value" id="boxesPerOrderVal">1 盒</span>
       </div>
     </div>
-  </div>
-
-  <div class="card" style="margin-bottom:24px;">
-    <h3>💰 成本参数 <span class="badge">核心</span></h3>
-    <div class="form-group">
-      <label>代工厂出厂价 <span class="hint">单贴含包装</span></label>
-      <div class="input-row">
-        <input type="number" id="oemUnitPrice" value="2.00" step="0.05" min="0" max="20">
-        <span class="unit">¥/贴</span>
-      </div>
-    </div>
-    <div class="form-group">
-      <label>外盒包装 <span class="hint">纸盒 + 铝箔袋</span></label>
-      <div class="input-row">
-        <input type="number" id="packagingCost" value="1.50" step="0.1" min="0" max="20">
-        <span class="unit">¥/盒</span>
-      </div>
-    </div>
-    <div class="grid-2" style="gap:12px;">
-      <div class="form-group">
-        <label>快递费 <span class="hint">全国均价</span></label>
-        <div class="input-row">
-          <input type="number" id="shippingCost" value="5.5" step="0.5" min="0" max="30">
-          <span class="unit">¥/单</span>
-        </div>
-      </div>
-      <div class="form-group">
-        <label>退货运费 <span class="hint">往返损耗</span></label>
-        <div class="input-row">
-          <input type="number" id="returnShipping" value="6.0" step="0.5" min="0" max="30">
-          <span class="unit">¥/单</span>
-        </div>
-      </div>
-    </div>
-    <div class="grid-2" style="gap:12px;">
+    <div class="grid-2" style="gap:10px;">
       <div class="form-group">
         <label>平台佣金率</label>
         <div class="input-row">
-          <input type="range" id="platformRate" min="0" max="20" step="0.5" value="5">
+          <input type="range" id="platformRate" min="0" max="20" step=".5" value="5">
           <span class="range-value" id="platformRateVal">5%</span>
         </div>
       </div>
       <div class="form-group">
-        <label>投流成本 <span class="hint">千川/信息流</span></label>
-        <div class="input-row">
-          <input type="number" id="adCost" value="5.0" step="0.5" min="0" max="50">
-          <span class="unit">¥/盒</span>
-        </div>
+        <label>投流成本 <span class="hint">¥/盒</span></label>
+        <div class="input-row"><input type="number" id="adCost" value="5.0" step=".5" min="0" max="50"></div>
       </div>
     </div>
-    <div class="grid-2" style="gap:12px;">
+    <div class="grid-2" style="gap:10px;">
       <div class="form-group">
         <label>达人分佣率 <span class="hint">CPS</span></label>
         <div class="input-row">
@@ -482,138 +341,161 @@ table .total td { font-weight: 700; border-top: 2px solid var(--border); }
       </div>
     </div>
     <div class="form-group">
-      <label>其他成本 <span class="hint">耗材/打包/标签等</span></label>
-      <div class="input-row">
-        <input type="number" id="otherCost" value="0.5" step="0.1" min="0" max="20">
-        <span class="unit">¥/盒</span>
+      <label>其他成本 <span class="hint">耗材/打包/标签等 ¥/盒</span></label>
+      <div class="input-row"><input type="number" id="otherCost" value="0.5" step=".1" min="0" max="20"></div>
+    </div>
+  </div>
+
+  <!-- 代工厂管理 -->
+  <div class="card">
+    <h3>🏭 代工厂管理 <span class="badge">勾选对比</span></h3>
+    <p style="font-size:11px;color:var(--tlight);margin-bottom:8px;">
+      勾选多个代工厂 → 右侧自动生成对比表。点击厂名展开编辑报价。
+    </p>
+    <div class="factory-list" id="factoryList"></div>
+    <button class="btn-sm primary" id="btnAddFactory" style="margin-top:4px;">+ 添加代工厂</button>
+    <div style="margin-top:8px;display:none;" id="factoryDetailArea">
+      <div class="factory-detail open" id="factoryDetail">
+        <div class="fd-header">
+          <span class="fd-name" id="fdName">-</span>
+          <button class="btn-sm" id="fdDelete" style="color:var(--red);border-color:rgba(211,93,93,.3);">删除</button>
+        </div>
+        <div class="fd-note" id="fdNote" title="点击编辑备注">备注</div>
+        <div class="grid-2" style="gap:8px;">
+          <div class="form-group">
+            <label>出厂单价 <span class="hint">单贴</span></label>
+            <div class="input-row"><input type="number" id="fdOem" value="2.00" step=".05" min="0"><span class="unit">¥/贴</span></div>
+          </div>
+          <div class="form-group">
+            <label>包装成本 <span class="hint">/盒</span></label>
+            <div class="input-row"><input type="number" id="fdPack" value="1.50" step=".1" min="0"><span class="unit">¥/盒</span></div>
+          </div>
+        </div>
+        <div class="grid-2" style="gap:8px;">
+          <div class="form-group">
+            <label>快递费 <span class="hint">/单</span></label>
+            <div class="input-row"><input type="number" id="fdShip" value="5.5" step=".5" min="0"><span class="unit">¥/单</span></div>
+          </div>
+          <div class="form-group">
+            <label>退货运费</label>
+            <div class="input-row"><input type="number" id="fdReturnShip" value="6.0" step=".5" min="0"><span class="unit">¥/单</span></div>
+          </div>
+        </div>
+        <div style="margin-top:8px;">
+          <label style="font-size:11px;font-weight:500;display:block;margin-bottom:4px;">批量阶梯报价 <span class="hint">可选</span></label>
+          <div class="batch-input">
+            <div class="bi"><label>首批 5000盒</label><input type="number" id="fdT1" value="2.20" step=".05" min="0"></div>
+            <div class="bi"><label>追量 20000盒</label><input type="number" id="fdT2" value="1.80" step=".05" min="0"></div>
+            <div class="bi"><label>规模 50000盒</label><input type="number" id="fdT3" value="1.50" step=".05" min="0"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="card" style="margin-bottom:24px;">
+  <!-- 固定成本 -->
+  <div class="card">
     <h3>🏢 月固定成本</h3>
-    <div class="grid-2" style="gap:12px;">
+    <div class="grid-2" style="gap:10px;">
       <div class="form-group">
         <label>人力成本</label>
-        <div class="input-row">
-          <input type="number" id="fixedSalary" value="15000" step="1000" min="0">
-          <span class="unit">¥/月</span>
-        </div>
+        <div class="input-row"><input type="number" id="fixedSalary" value="15000" step="1000" min="0"><span class="unit">¥/月</span></div>
       </div>
       <div class="form-group">
         <label>仓储/场地</label>
-        <div class="input-row">
-          <input type="number" id="fixedRent" value="3000" step="500" min="0">
-          <span class="unit">¥/月</span>
-        </div>
+        <div class="input-row"><input type="number" id="fixedRent" value="3000" step="500" min="0"><span class="unit">¥/月</span></div>
       </div>
     </div>
     <div class="form-group">
       <label>其他固定支出</label>
-      <div class="input-row">
-        <input type="number" id="fixedOther" value="2000" step="500" min="0">
-        <span class="unit">¥/月</span>
-      </div>
-    </div>
-  </div>
-
-  <div class="card" style="margin-bottom:24px;">
-    <h3>📊 批量阶梯报价 <span class="badge">可选</span></h3>
-    <p style="font-size:12px;color:var(--text-light);margin-bottom:10px;">不同采购量对应的出厂单价，用于预测规模效应</p>
-    <div class="batch-input">
-      <div class="bi">
-        <label>首批 5000盒</label>
-        <input type="number" id="tier1Price" value="2.20" step="0.05" min="0">
-      </div>
-      <div class="bi">
-        <label>追量 20000盒</label>
-        <input type="number" id="tier2Price" value="1.80" step="0.05" min="0">
-      </div>
-      <div class="bi">
-        <label>规模 50000盒</label>
-        <input type="number" id="tier3Price" value="1.50" step="0.05" min="0">
-      </div>
+      <div class="input-row"><input type="number" id="fixedOther" value="2000" step="500" min="0"><span class="unit">¥/月</span></div>
     </div>
   </div>
 
 </div>
 
-<!-- RIGHT: Results -->
+<!-- ============ RIGHT ============ -->
 <div>
 
-  <div class="card" style="margin-bottom:24px;">
-    <h3>🎯 场景预设</h3>
-    <p style="font-size:12px;color:var(--text-light);margin-bottom:8px;">一键填入典型场景参数</p>
+  <!-- 场景预设 -->
+  <div class="card">
+    <h3>🎯 场景预设 <span class="badge">快速填充当前代工厂</span></h3>
     <div class="scenario-tabs">
-      <button class="scenario-tab active" data-scenario="normal">基准 <span class="tag">出厂¥2.0 · 佣金5%</span></button>
-      <button class="scenario-tab" data-scenario="optimistic">乐观 <span class="tag">出厂¥1.5 · 佣金3%</span></button>
-      <button class="scenario-tab" data-scenario="conservative">保守 <span class="tag">出厂¥2.5 · 佣金8%</span></button>
+      <button class="scenario-tab active" data-scenario="normal">基准 <span class="tag">¥2.0/贴</span></button>
+      <button class="scenario-tab" data-scenario="optimistic">乐观 <span class="tag">¥1.5/贴</span></button>
+      <button class="scenario-tab" data-scenario="conservative">保守 <span class="tag">¥2.5/贴</span></button>
     </div>
   </div>
 
-  <div class="card" style="margin-bottom:24px;">
-    <h3>📈 核心指标</h3>
+  <!-- 核心指标 -->
+  <div class="card">
+    <h3>📈 核心指标 <span class="badge" id="primaryFactoryLabel">当前代工厂</span></h3>
     <div class="grid-4" id="metricCards">
       <div class="metric-card green">
         <div class="label">单盒总成本</div>
         <div class="value" id="mCost">¥--</div>
-        <div class="sub" id="mCostSub">含所有可变成本</div>
+        <div class="sub" id="mCostSub"></div>
       </div>
       <div class="metric-card gold">
         <div class="label">单盒毛利</div>
         <div class="value" id="mProfit">¥--</div>
-        <div class="sub" id="mProfitSub">零售价 - 总成本</div>
+        <div class="sub" id="mProfitSub"></div>
       </div>
       <div class="metric-card blue">
         <div class="label">毛利率</div>
         <div class="value" id="mMargin">--%</div>
-        <div class="sub" id="mMarginSub">毛利 ÷ 零售价</div>
+        <div class="sub" id="mMarginSub"></div>
       </div>
       <div class="metric-card" id="metricBe">
         <div class="label">月保本销量</div>
         <div class="value" id="mBreakEven">--</div>
-        <div class="sub" id="mBreakEvenSub">盒/月</div>
+        <div class="sub" id="mBreakEvenSub"></div>
       </div>
     </div>
   </div>
 
-  <div class="card" style="margin-bottom:24px;">
-    <h3>🔍 单盒成本结构</h3>
+  <!-- 代工厂对比 -->
+  <div class="card" id="comparisonSection" style="display:none;">
+    <h3>🔁 代工厂对比 <span class="badge" id="compCount">0 家</span></h3>
+    <div class="comp-table" id="compTable"></div>
+  </div>
+
+  <!-- 成本结构 -->
+  <div class="card">
+    <h3>🔍 单盒成本结构 <span class="badge" id="structureFactoryLabel">当前代工厂</span></h3>
     <div class="cost-bar-container" id="costBreakdown"></div>
   </div>
 
-  <div class="card" style="margin-bottom:24px;">
-    <h3>📊 批量规模预测</h3>
-    <p style="font-size:12px;color:var(--text-light);margin-bottom:10px;">不同采购量级下的成本变化</p>
-    <table class="volume-table">
-      <thead><tr><th>批次</th><th>采购量</th><th>出厂单价</th><th>单盒成本</th><th>毛利率</th><th>月净利(5000盒)</th></tr></thead>
-      <tbody id="volumeBody"></tbody>
-    </table>
+  <!-- 批量规模 -->
+  <div class="card">
+    <h3>📊 批量规模预测 <span class="badge" id="tiersFactoryLabel">当前代工厂</span></h3>
+    <table><thead><tr><th>批次</th><th>采购量</th><th>出厂单价</th><th>单盒成本</th><th>毛利率</th><th>月净利(5000盒)</th></tr></thead><tbody id="volumeBody"></tbody></table>
   </div>
 
-  <div class="card" style="margin-bottom:24px;">
-    <h3>📉 售价敏感性分析</h3>
-    <p style="font-size:12px;color:var(--text-light);margin-bottom:8px;">不同零售价下的毛利率变化</p>
+  <!-- 售价敏感性 -->
+  <div class="card">
+    <h3>📉 售价敏感性分析 <span class="badge" id="sensFactoryLabel">当前代工厂</span></h3>
     <div class="sens-grid" id="sensitivityChart"></div>
   </div>
 
   <div class="note">
-    <strong>💡 使用说明：</strong> 所有数据自动保存到浏览器，刷新不丢失<br>
-    · 左侧参数调整后右侧实时更新<br>
-    · 点击「+ 新建产品」管理不同品类的独立模型<br>
-    · 导出为 JSON 文件可分享给他人导入<br>
-    · 数据仅存储在本地浏览器，不会上传
+    <strong>💡</strong> 所有数据自动保存到浏览器。<br>
+    · 勾选多个代工厂 → 右侧自动生成对比表<br>
+    · 点击厂名展开编辑报价<br>
+    · 场景预设仅作用于当前编辑的代工厂<br>
+    · 导出 JSON 可分享给他人
   </div>
 </div>
 </div>
 
 <hr class="sep">
 
+<!-- 月度损益 -->
 <div class="card">
-  <h3>📋 月度损益预估</h3>
-  <div class="grid-3" style="gap:24px;">
+  <h3>📋 月度损益预估 <span class="badge" id="pnlFactoryLabel">当前代工厂</span></h3>
+  <div class="grid-3" style="gap:18px;">
     <div>
-      <h4 style="font-size:14px;margin-bottom:12px;">📌 场景假设</h4>
+      <h4 style="font-size:13px;margin-bottom:10px;">📌 场景假设</h4>
       <div class="form-group">
         <label>月均销量 <span class="hint">盒</span></label>
         <div class="input-row">
@@ -622,7 +504,7 @@ table .total td { font-weight: 700; border-top: 2px solid var(--border); }
         </div>
       </div>
       <div class="form-group">
-        <label>达人直播占比 <span class="hint">含分佣的渠道占比</span></label>
+        <label>达人直播占比</label>
         <div class="input-row">
           <input type="range" id="kolShare" min="0" max="100" step="5" value="60">
           <span class="range-value" id="kolShareVal">60%</span>
@@ -630,377 +512,739 @@ table .total td { font-weight: 700; border-top: 2px solid var(--border); }
       </div>
     </div>
     <div>
-      <h4 style="font-size:14px;margin-bottom:12px;">💰 月度损益表</h4>
+      <h4 style="font-size:13px;margin-bottom:10px;">💰 月度损益表</h4>
       <table><tbody id="pnlBody"></tbody></table>
     </div>
     <div>
-      <h4 style="font-size:14px;margin-bottom:12px;">📈 销量 vs 利润</h4>
-      <div id="profitChart" style="padding:4px 0;">
-        <div class="sens-row"><span class="sens-price">2000盒</span><div class="sens-bar"><div class="sens-fill positive" id="pc1" style="width:0%"></div></div><span class="sens-label" id="pc1l">¥0</span></div>
-        <div class="sens-row"><span class="sens-price">5000盒</span><div class="sens-bar"><div class="sens-fill positive" id="pc2" style="width:0%"></div></div><span class="sens-label" id="pc2l">¥0</span></div>
-        <div class="sens-row"><span class="sens-price">1万盒</span><div class="sens-bar"><div class="sens-fill positive" id="pc3" style="width:0%"></div></div><span class="sens-label" id="pc3l">¥0</span></div>
-        <div class="sens-row"><span class="sens-price">2万盒</span><div class="sens-bar"><div class="sens-fill positive" id="pc4" style="width:0%"></div></div><span class="sens-label" id="pc4l">¥0</span></div>
-        <div class="sens-row"><span class="sens-price">5万盒</span><div class="sens-bar"><div class="sens-fill positive" id="pc5" style="width:0%"></div></div><span class="sens-label" id="pc5l">¥0</span></div>
+      <h4 style="font-size:13px;margin-bottom:10px;">📈 销量 vs 利润</h4>
+      <div id="profitChart">
+        <div class="sens-row"><span class="sp">2000盒</span><div class="sb"><div class="sf p" id="pc1"></div></div><span class="sl" id="pc1l">¥0</span></div>
+        <div class="sens-row"><span class="sp">5000盒</span><div class="sb"><div class="sf p" id="pc2"></div></div><span class="sl" id="pc2l">¥0</span></div>
+        <div class="sens-row"><span class="sp">1万盒</span><div class="sb"><div class="sf p" id="pc3"></div></div><span class="sl" id="pc3l">¥0</span></div>
+        <div class="sens-row"><span class="sp">2万盒</span><div class="sb"><div class="sf p" id="pc4"></div></div><span class="sl" id="pc4l">¥0</span></div>
+        <div class="sens-row"><span class="sp">5万盒</span><div class="sb"><div class="sf p" id="pc5"></div></div><span class="sl" id="pc5l">¥0</span></div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="footer">
-  湖北蕲愈科技有限公司 · 适元草品牌 &nbsp;|&nbsp; 数据仅存储在本地浏览器
-</div>
+<div class="footer">湖北蕲愈科技有限公司 · 适元草品牌 · 数据仅存储在本地浏览器</div>
 </div>
 
 <!-- Modal -->
 <div class="modal-overlay" id="modalOverlay">
   <div class="modal" id="modalContent">
-    <h3 id="modalTitle">新建产品</h3>
-    <input type="text" id="modalInput" placeholder="输入产品名称…" maxlength="30">
+    <h3 id="modalTitle">操作</h3>
+    <input type="text" id="modalInput" placeholder="" maxlength="30">
+    <textarea id="modalTextarea" style="display:none;" placeholder="输入备注…"></textarea>
     <div class="modal-actions">
       <button id="modalCancel">取消</button>
       <button class="primary" id="modalConfirm">确定</button>
     </div>
   </div>
 </div>
-
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
 // ============================================================
-// PRODUCT MANAGEMENT
+// DATA MODEL
 // ============================================================
-const STORAGE_KEY = 'qiyu_cost_model_v2';
+const STORAGE_KEY = 'qiyu_cost_model_v3';
 
-// Default products with initial data
-const DEFAULTS = {
+function defaultFactory(name) {
+  return {
+    oemUnitPrice: 2.00, packagingCost: 1.50, shippingCost: 5.5, returnShipping: 6.0,
+    tier1Price: 2.20, tier2Price: 1.80, tier3Price: 1.50, note: '',
+  };
+}
+
+const DEFAULT_PRODUCTS = {
   '蕲艾护颈贴': {
     retailPrice: 49.9, stickersPerBox: 5, boxesPerOrder: 1,
-    oemUnitPrice: 2.00, packagingCost: 1.50, shippingCost: 5.5, returnShipping: 6.0,
     platformRate: 5, adCost: 5.0, kolRate: 0, returnRate: 8, otherCost: 0.5,
     fixedSalary: 15000, fixedRent: 3000, fixedOther: 2000,
     monthlyVolume: 5000, kolShare: 60,
-    tier1Price: 2.20, tier2Price: 1.80, tier3Price: 1.50,
+    factories: {
+      '李时珍国灸集团': { oemUnitPrice: 2.00, packagingCost: 1.50, shippingCost: 5.5, returnShipping: 6.0, tier1Price: 2.20, tier2Price: 1.80, tier3Price: 1.50, note: '龙头企业，资质完整' },
+      '蕲春艾生堂':     { oemUnitPrice: 1.80, packagingCost: 1.30, shippingCost: 5.0, returnShipping: 5.5, tier1Price: 2.00, tier2Price: 1.60, tier3Price: 1.30, note: '支持OEM定制' },
+      '南阳嵘祥药业':   { oemUnitPrice: 1.50, packagingCost: 1.20, shippingCost: 5.0, returnShipping: 5.5, tier1Price: 1.70, tier2Price: 1.40, tier3Price: 1.20, note: '8年老厂，艾灸贴专业' },
+    },
+    selectedFactories: ['李时珍国灸集团', '蕲春艾生堂'],
+    activeFactory: '李时珍国灸集团',
   },
   '随身草灸': {
     retailPrice: 39.9, stickersPerBox: 6, boxesPerOrder: 1,
-    oemUnitPrice: 1.80, packagingCost: 1.80, shippingCost: 5.5, returnShipping: 6.0,
     platformRate: 5, adCost: 4.0, kolRate: 0, returnRate: 8, otherCost: 0.5,
     fixedSalary: 15000, fixedRent: 3000, fixedOther: 2000,
     monthlyVolume: 3000, kolShare: 60,
-    tier1Price: 2.00, tier2Price: 1.60, tier3Price: 1.30,
+    factories: {
+      '蕲春千年艾': { oemUnitPrice: 1.80, packagingCost: 1.80, shippingCost: 5.5, returnShipping: 6.0, tier1Price: 2.00, tier2Price: 1.60, tier3Price: 1.30, note: '综合产品线' },
+    },
+    selectedFactories: ['蕲春千年艾'],
+    activeFactory: '蕲春千年艾',
   },
   '三伏柔贴': {
     retailPrice: 59.9, stickersPerBox: 5, boxesPerOrder: 1,
-    oemUnitPrice: 2.50, packagingCost: 1.80, shippingCost: 5.5, returnShipping: 6.0,
     platformRate: 5, adCost: 6.0, kolRate: 0, returnRate: 8, otherCost: 0.5,
     fixedSalary: 15000, fixedRent: 3000, fixedOther: 2000,
     monthlyVolume: 2000, kolShare: 60,
-    tier1Price: 2.80, tier2Price: 2.30, tier3Price: 1.80,
+    factories: {
+      '河南赫艾堂': { oemUnitPrice: 2.50, packagingCost: 1.80, shippingCost: 5.5, returnShipping: 6.0, tier1Price: 2.80, tier2Price: 2.30, tier3Price: 1.80, note: '价格低，适合测品' },
+    },
+    selectedFactories: ['河南赫艾堂'],
+    activeFactory: '河南赫艾堂',
   },
 };
 
 let products = {};
 let currentName = '';
-let activeModal = null; // 'new', 'rename', 'duplicate'
 
-// Load from localStorage
+// ---- Load / Save ----
 function loadProducts() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const data = JSON.parse(raw);
       if (data.products && data.current) {
-        products = data.products;
+        products = migrateProductData(data.products);
         currentName = data.current;
         if (!products[currentName]) currentName = Object.keys(products)[0] || '';
         return;
       }
     }
-  } catch (e) { /* ignore */ }
-  // Fallback to defaults
-  products = JSON.parse(JSON.stringify(DEFAULTS));
+  } catch(e) {}
+  products = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS));
   currentName = Object.keys(products)[0];
 }
 
+function migrateProductData(data) {
+  // Convert old flat format to new factory-based format
+  const result = {};
+  Object.keys(data).forEach(name => {
+    const p = data[name];
+    if (p.factories) {
+      // Already new format — ensure activeFactory and selectedFactories exist
+      if (!p.activeFactory) p.activeFactory = Object.keys(p.factories)[0] || '';
+      if (!p.selectedFactories || p.selectedFactories.length === 0) {
+        p.selectedFactories = Object.keys(p.factories).slice(0, 1);
+      }
+      result[name] = p;
+    } else {
+      // Old flat format — migrate
+      const fName = '默认代工厂';
+      result[name] = {
+        retailPrice: p.retailPrice || 49.9,
+        stickersPerBox: p.stickersPerBox || 5,
+        boxesPerOrder: p.boxesPerOrder || 1,
+        platformRate: p.platformRate || 5,
+        adCost: p.adCost || 5,
+        kolRate: p.kolRate || 0,
+        returnRate: p.returnRate || 8,
+        otherCost: p.otherCost || 0.5,
+        fixedSalary: p.fixedSalary || 15000,
+        fixedRent: p.fixedRent || 3000,
+        fixedOther: p.fixedOther || 2000,
+        monthlyVolume: p.monthlyVolume || 5000,
+        kolShare: p.kolShare || 60,
+        factories: {
+          [fName]: {
+            oemUnitPrice: p.oemUnitPrice || 2.00,
+            packagingCost: p.packagingCost || 1.50,
+            shippingCost: p.shippingCost || 5.5,
+            returnShipping: p.returnShipping || 6.0,
+            tier1Price: p.tier1Price || 2.20,
+            tier2Price: p.tier2Price || 1.80,
+            tier3Price: p.tier3Price || 1.50,
+            note: '',
+          },
+        },
+        selectedFactories: [fName],
+        activeFactory: fName,
+      };
+    }
+  });
+  return result;
+}
+
 function saveProducts() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({
-      products: products,
-      current: currentName,
-    }));
-  } catch (e) { /* ignore */ }
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ products, current: currentName })); } catch(e) {}
 }
 
-function getCurrentProduct() {
-  return products[currentName] || null;
-}
+// ---- Current product helpers ----
+function cur() { return products[currentName]; }
+function factories() { const p = cur(); return p ? p.factories : {}; }
+function activeFactoryName() { const p = cur(); return p ? p.activeFactory || Object.keys(p.factories)[0] || '' : ''; }
+function getFactory(name) { const f = factories(); return f ? f[name] : null; }
+function activeFactory() { return getFactory(activeFactoryName()); }
 
-function getAllProductNames() {
-  return Object.keys(products);
-}
-
-// ============================================================
-// STATE (synced to current product)
-// ============================================================
-// state is a proxy: reads from/writes to the current product object
+// State proxy — reads/writes shared params from current product
 const state = new Proxy({}, {
-  get(target, prop) {
-    const p = getCurrentProduct();
-    return p ? p[prop] : undefined;
+  get(t, prop) {
+    const p = cur();
+    if (p && prop in p) return p[prop];
+    const f = activeFactory();
+    if (f && prop in f) return f[prop];
+    return undefined;
   },
-  set(target, prop, value) {
-    const p = getCurrentProduct();
-    if (p) { p[prop] = value; saveProducts(); }
+  set(t, prop, val) {
+    const p = cur();
+    if (!p) return true;
+    if (prop in p) { p[prop] = val; saveProducts(); return true; }
+    const f = activeFactory();
+    if (f && prop in f) { f[prop] = val; saveProducts(); }
     return true;
   }
 });
 
 // ============================================================
-// CALCULATIONS
+// CALC
 // ============================================================
-function calc() {
+function calcForFactory(factoryData) {
   const P = state.retailPrice || 0;
   const N = state.stickersPerBox || 1;
   const BPO = state.boxesPerOrder || 1;
-  const OEM = state.oemUnitPrice || 0;
-  const PKG = state.packagingCost || 0;
-  const SHP = state.shippingCost || 0;
-  const RSHP = state.returnShipping || 0;
   const COMM = (state.platformRate || 0) / 100;
   const AD = state.adCost || 0;
   const KOL = (state.kolRate || 0) / 100;
   const RET = (state.returnRate || 0) / 100;
   const OTH = state.otherCost || 0;
 
-  const returnLossPerSoldBox = RET * (N * OEM + PKG + SHP/BPO + RSHP/BPO);
-  const shippingPerBox = SHP / BPO;
-  const commissionPerBox = P * COMM;
+  const OEM = factoryData.oemUnitPrice || 0;
+  const PKG = factoryData.packagingCost || 0;
+  const SHP = factoryData.shippingCost || 0;
+  const RSHP = factoryData.returnShipping || 0;
+
+  const returnLoss = RET * (N * OEM + PKG + SHP/BPO + RSHP/BPO);
+  const shipPerBox = SHP / BPO;
+  const commPerBox = P * COMM;
   const kolPerBox = P * KOL;
 
-  const totalVarCost = (N * OEM) + PKG + shippingPerBox + commissionPerBox + AD + kolPerBox + OTH + returnLossPerSoldBox;
-  const grossProfit = P - totalVarCost;
-  const grossMargin = P > 0 ? grossProfit / P : 0;
+  const totalCost = (N * OEM) + PKG + shipPerBox + commPerBox + AD + kolPerBox + OTH + returnLoss;
+  const profit = P - totalCost;
+  const margin = P > 0 ? profit / P : 0;
 
-  const kolSharePct = (state.kolShare || 0) / 100;
-  const weightedKolPerBox = P * KOL * kolSharePct;
-  const totalVarCostPnL = (N * OEM) + PKG + shippingPerBox + commissionPerBox + AD + weightedKolPerBox + OTH + returnLossPerSoldBox;
-  const profitPerBoxPnL = P - totalVarCostPnL;
-
-  const fixedTotal = (state.fixedSalary || 0) + (state.fixedRent || 0) + (state.fixedOther || 0);
-  const beVolume = profitPerBoxPnL > 0 ? Math.ceil(fixedTotal / profitPerBoxPnL) : Infinity;
-
-  const vol = state.monthlyVolume || 0;
-  const monthlyRevenue = vol * P;
-  const monthlyCOGS = vol * (N * OEM + PKG);
-  const monthlyShipping = vol * shippingPerBox;
-  const monthlyCommission = vol * commissionPerBox;
-  const monthlyAd = vol * AD;
-  const monthlyKol = vol * weightedKolPerBox;
-  const monthlyReturnLoss = vol * returnLossPerSoldBox;
-  const monthlyOtherVar = vol * OTH;
-  const monthlyTotalVar = monthlyCOGS + monthlyShipping + monthlyCommission + monthlyAd + monthlyKol + monthlyReturnLoss + monthlyOtherVar;
-  const monthlyGrossProfit = monthlyRevenue - monthlyTotalVar;
-  const monthlyNetProfit = monthlyGrossProfit - fixedTotal;
-
+  // Volume tiers
   const tiers = [
-    { volume: '首批', qty: 5000, price: state.tier1Price || OEM },
-    { volume: '追量', qty: 20000, price: state.tier2Price || OEM },
-    { volume: '规模', qty: 50000, price: state.tier3Price || OEM },
-  ];
-  const tierResults = tiers.map(t => {
+    { label: '首批', qty: 5000, price: factoryData.tier1Price || OEM },
+    { label: '追量', qty: 20000, price: factoryData.tier2Price || OEM },
+    { label: '规模', qty: 50000, price: factoryData.tier3Price || OEM },
+  ].map(t => {
     const oem = t.price;
-    const rls = RET * (N * oem + PKG + shippingPerBox + RSHP/BPO);
-    const tc = (N * oem) + PKG + shippingPerBox + commissionPerBox + AD + kolPerBox + OTH + rls;
+    const rl = RET * (N * oem + PKG + shipPerBox + RSHP/BPO);
+    const tc = (N * oem) + PKG + shipPerBox + commPerBox + AD + kolPerBox + OTH + rl;
     const gp = P - tc;
     const gm = P > 0 ? gp / P : 0;
-    const np = (gp * 5000) - fixedTotal;
-    return { ...t, oemPrice: oem, totalCost: tc, margin: gm, monthlyProfit: np };
+    return { label: t.label, qty: t.qty, oemPrice: oem, totalCost: tc, margin: gm, monthlyProfit: (gp * 5000) - (state.fixedSalary||0) - (state.fixedRent||0) - (state.fixedOther||0) };
   });
 
-  const sensPrices = [29.9, 39.9, 49.9, 59.9, 69.9];
-  const sensResults = sensPrices.map(sp => {
-    const c = commissionPerBox / P * sp;
-    const k = kolPerBox / P * sp;
-    const tc = (N * OEM) + PKG + shippingPerBox + c + AD + k + OTH + returnLossPerSoldBox;
-    const gp = sp - tc;
-    const gm = sp > 0 ? gp / sp : 0;
-    return { price: sp, cost: tc, profit: gp, margin: gm };
-  });
+  const breakdown = [
+    { label: '出厂成本', value: N * OEM, color: '#5A7A4A' },
+    { label: '包装成本', value: PKG, color: '#C4956A' },
+    { label: '快递费', value: shipPerBox, color: '#4A8DB7' },
+    { label: '平台佣金', value: commPerBox, color: '#D35D5D' },
+    { label: '投流成本', value: AD, color: '#8B5CF6' },
+    { label: '退货损耗', value: returnLoss, color: '#E88D3B' },
+    { label: '其他成本', value: OTH, color: '#999' },
+  ];
 
-  const volPoints = [2000, 5000, 10000, 20000, 50000];
-  const volProfits = volPoints.map(v => {
-    const rev = v * P;
-    const varC = v * totalVarCostPnL;
-    return rev - varC - fixedTotal;
-  });
+  return { totalCost, profit, margin, tiers, breakdown, OEM, PKG, SHP, shipPerBox, commPerBox, kolPerBox, returnLoss };
+}
 
-  return {
-    totalVarCost, grossProfit, grossMargin,
-    profitPerBoxPnL, fixedTotal, beVolume,
-    monthlyRevenue, monthlyCOGS, monthlyShipping, monthlyCommission,
-    monthlyAd, monthlyKol, monthlyReturnLoss, monthlyOtherVar,
-    monthlyTotalVar, monthlyGrossProfit, monthlyNetProfit,
-    tierResults, sensResults, volProfits,
-    returnLossPerSoldBox, shippingPerBox, commissionPerBox, kolPerBox,
-    weightedKolPerBox,
-    breakdown: [
-      { label: '出厂成本', value: N * OEM, color: '#5A7A4A' },
-      { label: '包装成本', value: PKG, color: '#C4956A' },
-      { label: '快递费', value: shippingPerBox, color: '#4A8DB7' },
-      { label: '平台佣金', value: commissionPerBox, color: '#D35D5D' },
-      { label: '投流成本', value: AD, color: '#8B5CF6' },
-      { label: '退货损耗', value: returnLossPerSoldBox, color: '#E88D3B' },
-      { label: '其他成本', value: OTH, color: '#999' },
-    ],
-  };
+function calcPrimary() {
+  const f = activeFactory();
+  return f ? calcForFactory(f) : null;
+}
+
+function calcAllFactories() {
+  const fs = factories();
+  const result = {};
+  Object.keys(fs).forEach(name => { result[name] = calcForFactory(fs[name]); });
+  return result;
+}
+
+function calcPnL(factoryResult) {
+  const P = state.retailPrice || 0;
+  const N = state.stickersPerBox || 1;
+  const BPO = state.boxesPerOrder || 1;
+  const vol = state.monthlyVolume || 0;
+  const kolSharePct = (state.kolShare || 0) / 100;
+  const COMM = (state.platformRate || 0) / 100;
+  const KOL = (state.kolRate || 0) / 100;
+  const RET = (state.returnRate || 0) / 100;
+  const AD = state.adCost || 0;
+  const OTH = state.otherCost || 0;
+  const fixedTotal = (state.fixedSalary||0) + (state.fixedRent||0) + (state.fixedOther||0);
+
+  const OEM = factoryResult.OEM;
+  const PKG = factoryResult.PKG;
+  const SHP = factoryResult.shipPerBox; // already per box
+  const commPerBox = factoryResult.commPerBox;
+  const kolPerBox = factoryResult.kolPerBox;
+  const returnLoss = factoryResult.returnLoss;
+  const weightedKol = kolPerBox * kolSharePct;
+
+  const revenue = vol * P;
+  const cogs = vol * (N * OEM + PKG);
+  const shipping = vol * SHP;
+  const commission = vol * commPerBox;
+  const ad = vol * AD;
+  const kol = vol * weightedKol;
+  const retLoss = vol * returnLoss;
+  const otherVar = vol * OTH;
+  const totalVar = cogs + shipping + commission + ad + kol + retLoss + otherVar;
+  const gross = revenue - totalVar;
+  const net = gross - fixedTotal;
+
+  const beUnit = ((P - (cogs+shipping+commission+ad+weightedKol+retLoss+otherVar)/vol) > 0)
+    ? Math.ceil(fixedTotal / (P - (cogs+shipping+commission+ad+weightedKol+retLoss+otherVar)/vol))
+    : Infinity;
+
+  return { revenue, cogs, shipping, commission, ad, kol, retLoss, otherVar, totalVar, gross, net, fixedTotal, beUnit };
 }
 
 // ============================================================
 // RENDER
 // ============================================================
-function render() {
-  const r = calc();
-  const P = state.retailPrice || 0;
+const FACTORY_COLORS = ['#5A7A4A','#C4956A','#4A8DB7','#8B5CF6','#D35D5D','#E88D3B','#2C2C2C','#6B7B8D'];
 
-  // Metrics
-  document.getElementById('mCost').textContent = '¥' + r.totalVarCost.toFixed(2);
-  document.getElementById('mCostSub').textContent = `含${state.stickersPerBox}贴出厂 + 包装 + 履约`;
-  document.getElementById('mProfit').textContent = '¥' + r.grossProfit.toFixed(2);
-  document.getElementById('mProfitSub').textContent = `零售价${P.toFixed(1)} - 成本${r.totalVarCost.toFixed(2)}`;
-  document.getElementById('mMargin').textContent = (r.grossMargin * 100).toFixed(1) + '%';
-  document.getElementById('mMarginSub').textContent = (r.grossMargin * 100) >= 40 ? '✅ 健康毛利' : '⚠️ 偏低';
-  document.getElementById('mBreakEven').textContent = r.beVolume === Infinity ? '∞' : r.beVolume.toLocaleString();
-  document.getElementById('mBreakEvenSub').textContent = `月固定 ¥${r.fixedTotal.toLocaleString()}`;
+function render() {
+  const r = calcPrimary();
+  if (!r) return;
+  const P = state.retailPrice || 0;
+  const fName = activeFactoryName();
+  const allResults = calcAllFactories();
+  const selected = cur() ? (cur().selectedFactories || []) : [];
+
+  // ---- Update factory labels ----
+  const label = fName || '当前';
+  ['primaryFactoryLabel','structureFactoryLabel','tiersFactoryLabel','sensFactoryLabel','pnlFactoryLabel']
+    .forEach(id => { const el=document.getElementById(id); if(el) el.textContent = label; });
+
+  // ---- Metrics ----
+  document.getElementById('mCost').textContent = '¥' + r.totalCost.toFixed(2);
+  document.getElementById('mCostSub').textContent = `${state.stickersPerBox}贴出厂 + 履约`;
+  document.getElementById('mProfit').textContent = '¥' + r.profit.toFixed(2);
+  document.getElementById('mProfitSub').textContent = `零售价${P.toFixed(1)} - 成本${r.totalCost.toFixed(2)}`;
+  document.getElementById('mMargin').textContent = (r.margin * 100).toFixed(1) + '%';
+  document.getElementById('mMarginSub').textContent = r.margin >= 0.4 ? '✅ 健康毛利' : r.margin >= 0.2 ? '⚠️ 一般' : '❌ 偏低';
+
+  const pnl = calcPnL(r);
+  document.getElementById('mBreakEven').textContent = pnl.beUnit === Infinity ? '∞' : pnl.beUnit.toLocaleString();
+  document.getElementById('mBreakEvenSub').textContent = `月固定 ¥${pnl.fixedTotal.toLocaleString()}`;
 
   const mc = document.getElementById('metricCards').children[2];
-  if (r.grossMargin >= 0.4) mc.className = 'metric-card green';
-  else if (r.grossMargin >= 0.2) mc.className = 'metric-card gold';
+  if (r.margin >= 0.4) mc.className = 'metric-card green';
+  else if (r.margin >= 0.2) mc.className = 'metric-card gold';
   else mc.className = 'metric-card red';
 
-  // Cost breakdown
-  const total = r.breakdown.reduce((s, i) => s + i.value, 0) || 1;
-  const colors = ['#5A7A4A','#C4956A','#4A8DB7','#D35D5D','#8B5CF6','#E88D3B','#999'];
-  let html = '';
+  // ---- Cost breakdown ----
+  const total = r.breakdown.reduce((s,i) => s + i.value, 0) || 1;
+  const costColors = ['#5A7A4A','#C4956A','#4A8DB7','#D35D5D','#8B5CF6','#E88D3B','#999'];
+  let bhtml = '';
   r.breakdown.forEach((item, i) => {
     if (item.value <= 0) return;
-    const pct = (item.value / total * 100);
-    html += `<div class="cost-item">
-      <span class="bar-label">${item.label}</span>
-      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${colors[i]};"></div></div>
-      <span class="bar-value">¥${item.value.toFixed(2)}</span>
-      <span class="bar-pct">${pct.toFixed(1)}%</span>
+    const pct = item.value / total * 100;
+    bhtml += `<div class="cost-item">
+      <span class="cl">${item.label}</span>
+      <div class="ct"><div class="cf" style="width:${pct}%;background:${costColors[i]};"></div></div>
+      <span class="cv">¥${item.value.toFixed(2)}</span>
+      <span class="cp">${pct.toFixed(1)}%</span>
     </div>`;
   });
-  html += `<div class="cost-item" style="font-weight:700;border-top:1px solid var(--border);padding-top:6px;">
-    <span class="bar-label">合计</span>
-    <div class="bar-track" style="background:transparent;"></div>
-    <span class="bar-value">¥${total.toFixed(2)}</span>
-    <span class="bar-pct">100%</span>
+  bhtml += `<div class="cost-item" style="font-weight:700;border-top:1px solid var(--border);padding-top:4px;">
+    <span class="cl">合计</span><div class="ct" style="background:transparent;"></div>
+    <span class="cv">¥${total.toFixed(2)}</span><span class="cp">100%</span>
   </div>`;
-  document.getElementById('costBreakdown').innerHTML = html;
+  document.getElementById('costBreakdown').innerHTML = bhtml;
 
-  // Volume tiers
+  // ---- Volume tiers ----
   let vhtml = '';
-  r.tierResults.forEach(t => {
-    const mClass = t.margin >= 0.4 ? 'green' : t.margin >= 0.2 ? 'gold' : 'red';
-    const pClass = t.monthlyProfit >= 0 ? 'green' : 'red';
+  r.tiers.forEach(t => {
+    const mc = t.margin >= 0.4 ? 'green' : t.margin >= 0.2 ? 'gold' : 'red';
     vhtml += `<tr>
-      <td>${t.volume}</td><td>${t.qty.toLocaleString()}</td>
-      <td>¥${t.oemPrice.toFixed(2)}</td>
-      <td>¥${t.totalCost.toFixed(2)}</td>
-      <td style="color:var(--${mClass});font-weight:600;">${(t.margin*100).toFixed(1)}%</td>
-      <td style="color:var(--${pClass});font-weight:600;">${t.monthlyProfit>=0?'+':''}¥${t.monthlyProfit.toFixed(0)}</td>
+      <td>${t.label}</td><td>${t.qty.toLocaleString()}</td>
+      <td>¥${t.oemPrice.toFixed(2)}</td><td>¥${t.totalCost.toFixed(2)}</td>
+      <td style="color:var(--${mc});font-weight:600;">${(t.margin*100).toFixed(1)}%</td>
+      <td style="color:${t.monthlyProfit>=0?'var(--green)':'var(--red)'};">${t.monthlyProfit>=0?'+':''}¥${t.monthlyProfit.toFixed(0)}</td>
     </tr>`;
   });
   document.getElementById('volumeBody').innerHTML = vhtml;
 
-  // Sensitivity
-  const maxSens = Math.max(...r.sensResults.map(s => Math.abs(s.profit)), 1);
+  // ---- Sensitivity ----
+  const prices = [29.9, 39.9, 49.9, 59.9, 69.9];
+  const sens = prices.map(sp => {
+    const ratio = sp / P;
+    const tc = (r.totalCost - r.commPerBox - r.kolPerBox) + (r.commPerBox * ratio) + (r.kolPerBox * ratio);
+    const gp = sp - tc;
+    return { price: sp, cost: tc, profit: gp, margin: sp > 0 ? gp/sp : 0 };
+  });
+  const maxS = Math.max(...sens.map(s => Math.abs(s.profit)), 1);
   let shtml = '';
-  r.sensResults.forEach(s => {
-    const pct = (s.profit / maxSens) * 100;
-    const cls = s.profit >= 0 ? 'positive' : 'negative';
-    const color = s.profit >= 0 ? 'var(--brand-green)' : 'var(--red)';
+  sens.forEach(s => {
+    const pct = Math.abs(s.profit / maxS) * 100;
     shtml += `<div class="sens-row">
-      <span class="sens-price">¥${s.price.toFixed(1)}</span>
-      <div class="sens-bar"><div class="sens-fill ${cls}" style="width:${Math.abs(pct)}%;background:${color};"></div></div>
-      <span class="sens-label" style="color:${color};">¥${s.profit.toFixed(2)} / ${(s.margin*100).toFixed(1)}%</span>
+      <span class="sp">¥${s.price.toFixed(1)}</span>
+      <div class="sb"><div class="sf ${s.profit>=0?'p':'n'}" style="width:${pct}%;"></div></div>
+      <span class="sl" style="color:${s.profit>=0?'var(--green)':'var(--red)'};">¥${s.profit.toFixed(2)} / ${(s.margin*100).toFixed(1)}%</span>
     </div>`;
   });
   document.getElementById('sensitivityChart').innerHTML = shtml;
 
-  // P&L
+  // ---- P&L ----
   document.getElementById('pnlBody').innerHTML = `
-    <tr><td>营业收入</td><td style="color:var(--brand-green);">¥${r.monthlyRevenue.toFixed(0)}</td></tr>
+    <tr><td>营业收入</td><td style="color:var(--green);">¥${pnl.revenue.toFixed(0)}</td></tr>
     <tr style="border-top:1px solid var(--border);"><td colspan="2"></td></tr>
-    <tr><td>出厂成本</td><td style="color:var(--red);">-¥${r.monthlyCOGS.toFixed(0)}</td></tr>
-    <tr><td>包装费</td><td style="color:var(--red);">-¥${((state.monthlyVolume||0)*(state.packagingCost||0)).toFixed(0)}</td></tr>
-    <tr><td>快递费</td><td style="color:var(--red);">-¥${r.monthlyShipping.toFixed(0)}</td></tr>
-    <tr><td>退货损耗</td><td style="color:var(--red);">-¥${r.monthlyReturnLoss.toFixed(0)}</td></tr>
-    <tr><td>其他变动成本</td><td style="color:var(--red);">-¥${r.monthlyOtherVar.toFixed(0)}</td></tr>
-    <tr><td>平台佣金</td><td style="color:var(--red);">-¥${r.monthlyCommission.toFixed(0)}</td></tr>
-    <tr><td>投流费用</td><td style="color:var(--red);">-¥${r.monthlyAd.toFixed(0)}</td></tr>
-    <tr><td>达人分佣</td><td style="color:var(--red);">-¥${r.monthlyKol.toFixed(0)}</td></tr>
+    <tr><td>出厂成本</td><td style="color:var(--red);">-¥${pnl.cogs.toFixed(0)}</td></tr>
+    <tr><td>包装费</td><td style="color:var(--red);">-¥${((state.monthlyVolume||0)*(activeFactory()?.packagingCost||0)).toFixed(0)}</td></tr>
+    <tr><td>快递费</td><td style="color:var(--red);">-¥${pnl.shipping.toFixed(0)}</td></tr>
+    <tr><td>退货损耗</td><td style="color:var(--red);">-¥${pnl.retLoss.toFixed(0)}</td></tr>
+    <tr><td>其他变动成本</td><td style="color:var(--red);">-¥${pnl.otherVar.toFixed(0)}</td></tr>
+    <tr><td>平台佣金</td><td style="color:var(--red);">-¥${pnl.commission.toFixed(0)}</td></tr>
+    <tr><td>投流费用</td><td style="color:var(--red);">-¥${pnl.ad.toFixed(0)}</td></tr>
+    <tr><td>达人分佣</td><td style="color:var(--red);">-¥${pnl.kol.toFixed(0)}</td></tr>
     <tr style="border-top:1px solid var(--border);"><td colspan="2"></td></tr>
     <tr><td>人力成本</td><td style="color:var(--red);">-¥${(state.fixedSalary||0).toFixed(0)}</td></tr>
     <tr><td>仓储/场地</td><td style="color:var(--red);">-¥${(state.fixedRent||0).toFixed(0)}</td></tr>
     <tr><td>其他固定</td><td style="color:var(--red);">-¥${(state.fixedOther||0).toFixed(0)}</td></tr>
-    <tr class="total"><td>净利润</td><td style="color:${r.monthlyNetProfit>=0?'var(--brand-green)':'var(--red)'};">${r.monthlyNetProfit>=0?'+':''}¥${r.monthlyNetProfit.toFixed(0)}</td></tr>
+    <tr class="total"><td>净利润</td><td style="color:${pnl.net>=0?'var(--green)':'var(--red)'};">${pnl.net>=0?'+':''}¥${pnl.net.toFixed(0)}</td></tr>
   `;
 
   // Volume profit chart
-  const vpProfits = r.volProfits;
-  const maxVp = Math.max(...vpProfits.map(Math.abs), 1);
-  vpProfits.forEach((p, i) => {
+  const volPoints = [2000, 5000, 10000, 20000, 50000];
+  const volProfits = volPoints.map(v => {
+    const rev = v * P;
+    const varC = v * (r.totalCost - r.returnLoss) + v * r.returnLoss;
+    // Simplify: just use PnL calc
+    const ratio = (state.kolShare||0)/100;
+    const k = r.kolPerBox * ratio;
+    const vc = v * ((state.stickersPerBox||1)*r.OEM + r.PKG + r.shipPerBox + r.commPerBox + (state.adCost||0) + k + r.returnLoss + (state.otherCost||0));
+    return rev - vc - pnl.fixedTotal;
+  });
+  const maxVp = Math.max(...volProfits.map(Math.abs), 1);
+  volProfits.forEach((p, i) => {
     const el = document.getElementById('pc' + (i+1));
     const elL = document.getElementById('pc' + (i+1) + 'l');
-    if (el) { el.style.width = Math.max(0, Math.abs(p/maxVp*100)) + '%'; el.style.background = p>=0 ? 'var(--brand-green)' : 'var(--red)'; }
-    if (elL) { elL.textContent = (p>=0?'+':'')+'¥'+p.toFixed(0); elL.style.color = p>=0?'var(--brand-green)':'var(--red)'; }
+    if (el) { el.style.width = Math.max(0, p/maxVp*100) + '%'; el.style.background = p>=0?'var(--green)':'var(--red)'; }
+    if (elL) { elL.textContent = (p>=0?'+':'')+'¥'+p.toFixed(0); elL.style.color = p>=0?'var(--green)':'var(--red)'; }
+  });
+
+  // ---- Factory comparison ----
+  const selFactories = selected.filter(n => factories()[n]);
+  document.getElementById('compCount').textContent = selFactories.length + ' 家';
+  const compSection = document.getElementById('comparisonSection');
+  if (selFactories.length >= 2) {
+    compSection.style.display = 'block';
+    let chtml = '<table><thead><tr><th>项目</th>';
+    selFactories.forEach((name, i) => {
+      chtml += `<th style="border-left:3px solid ${FACTORY_COLORS[i%FACTORY_COLORS.length]};">${name}</th>`;
+    });
+    chtml += '</tr></thead><tbody>';
+
+    // Rows
+    const rows = [
+      { label: '出厂单价 (¥/贴)', key: r => '¥' + r.OEM.toFixed(2) },
+      { label: '包装成本 (¥/盒)', key: r => '¥' + r.PKG.toFixed(2) },
+      { label: '快递费 (¥/单)', key: r => '¥' + (r.SHP||0).toFixed(2) },
+      { label: '单盒总成本', key: r => '¥' + r.totalCost.toFixed(2), hl: true },
+      { label: '单盒毛利', key: r => '¥' + r.profit.toFixed(2), hl: true },
+      { label: '毛利率', key: r => (r.margin*100).toFixed(1) + '%', hl: true, pct: true },
+      { label: '月净利(5000盒)', key: r => {
+        const np = (r.profit * 5000) - pnl.fixedTotal;
+        return (np>=0?'+':'') + '¥' + np.toFixed(0);
+      }, hl: true },
+    ];
+
+    rows.forEach(row => {
+      chtml += `<tr><td${row.hl?' style="font-weight:600;"':''}>${row.label}</td>`;
+      selFactories.forEach((name, i) => {
+        const rr = allResults[name];
+        if (!rr) { chtml += '<td>-</td>'; return; }
+        const val = row.key(rr);
+        const isPositive = row.pct ? parseFloat(val) >= 40 : !val.startsWith('-');
+        const color = row.hl ? (isPositive ? 'var(--green)' : 'var(--red)') : '';
+        chtml += `<td style="border-left:3px solid ${FACTORY_COLORS[i%FACTORY_COLORS.length]};${color?'color:'+color:''}">${val}</td>`;
+      });
+      chtml += '</tr>';
+    });
+
+    chtml += '</tbody></table>';
+    document.getElementById('compTable').innerHTML = chtml;
+  } else {
+    compSection.style.display = 'none';
+  }
+
+  // ---- Factory list ----
+  renderFactoryList();
+}
+
+// ============================================================
+// FACTORY LIST UI
+// ============================================================
+function renderFactoryList() {
+  const container = document.getElementById('factoryList');
+  const fs = factories();
+  const names = Object.keys(fs);
+  const selected = cur() ? (cur().selectedFactories || []) : [];
+  const active = activeFactoryName();
+
+  if (names.length === 0) {
+    container.innerHTML = '<div style="font-size:12px;color:var(--tlight);padding:8px;">暂无代工厂，点击下方添加</div>';
+    return;
+  }
+
+  let html = '';
+  names.forEach((name, i) => {
+    const f = fs[name];
+    const r = calcForFactory(f);
+    const checked = selected.includes(name) ? 'checked' : '';
+    const isActive = name === active;
+    const color = FACTORY_COLORS[i % FACTORY_COLORS.length];
+    html += `<div class="factory-item ${isActive?'active':''}" data-factory="${name}">
+      <input type="checkbox" class="fcb" ${checked} data-factory="${name}">
+      <span class="f-color" style="background:${color};"></span>
+      <span class="fi-name">${name}</span>
+      <span class="fi-price">¥${f.oemUnitPrice.toFixed(2)}/贴</span>
+      <span class="fi-margin" style="color:${r.margin>=0.4?'var(--green)':r.margin>=0.2?'var(--gold)':'var(--red)'};">${(r.margin*100).toFixed(1)}%</span>
+      <span class="fi-actions">
+        <button class="fi-edit" title="编辑">✎</button>
+      </span>
+    </div>`;
+  });
+  container.innerHTML = html;
+
+  // Bind checkbox clicks
+  container.querySelectorAll('.fcb').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const name = cb.dataset.factory;
+      const sel = cur().selectedFactories || [];
+      if (cb.checked) {
+        if (!sel.includes(name)) sel.push(name);
+      } else {
+        const idx = sel.indexOf(name);
+        if (idx >= 0) sel.splice(idx, 1);
+      }
+      cur().selectedFactories = sel;
+      saveProducts();
+      render();
+    });
+  });
+
+  // Bind click on factory item (selects it for editing)
+  container.querySelectorAll('.factory-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+      const name = item.dataset.factory;
+      if (name && name !== activeFactoryName()) {
+        cur().activeFactory = name;
+        saveProducts();
+        syncFactoryForm(name);
+        renderFactoryList();
+        render();
+      }
+    });
+  });
+
+  // Bind edit button
+  container.querySelectorAll('.fi-edit').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const name = btn.closest('.factory-item').dataset.factory;
+      cur().activeFactory = name;
+      saveProducts();
+      syncFactoryForm(name);
+      renderFactoryList();
+      render();
+    });
+  });
+
+  // Sync detail form
+  syncFactoryForm(active);
+}
+
+function syncFactoryForm(name) {
+  const f = getFactory(name);
+  const area = document.getElementById('factoryDetailArea');
+  const detail = document.getElementById('factoryDetail');
+  if (!f || !name) { area.style.display = 'none'; return; }
+
+  area.style.display = 'block';
+  detail.classList.add('open');
+  document.getElementById('fdName').textContent = name;
+  document.getElementById('fdNote').textContent = f.note || '点击添加备注';
+  document.getElementById('fdOem').value = f.oemUnitPrice;
+  document.getElementById('fdPack').value = f.packagingCost;
+  document.getElementById('fdShip').value = f.shippingCost;
+  document.getElementById('fdReturnShip').value = f.returnShipping;
+  document.getElementById('fdT1').value = f.tier1Price;
+  document.getElementById('fdT2').value = f.tier2Price;
+  document.getElementById('fdT3').value = f.tier3Price;
+}
+
+// ============================================================
+// EVENT BINDING
+// ============================================================
+function bindInputs() {
+  // Shared number inputs
+  const sharedFields = ['retailPrice','stickersPerBox','adCost','otherCost','fixedSalary','fixedRent','fixedOther','monthlyVolume','kolShare'];
+  sharedFields.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      state[id] = parseFloat(el.value) || 0;
+      render();
+    });
+  });
+
+  // Shared range inputs
+  const sharedRanges = ['boxesPerOrder','platformRate','kolRate','returnRate'];
+  sharedRanges.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      state[id] = parseFloat(el.value) || 0;
+      const valEl = document.getElementById(id + 'Val');
+      if (valEl) {
+        const v = state[id];
+        if (id === 'platformRate' || id === 'kolRate' || id === 'returnRate') valEl.textContent = v + '%';
+        else if (id === 'boxesPerOrder') valEl.textContent = v + ' 盒';
+        else valEl.textContent = v;
+      }
+      render();
+    });
+  });
+
+  // Monthly volume range
+  document.getElementById('monthlyVolume')?.addEventListener('input', function() {
+    state.monthlyVolume = parseFloat(this.value) || 0;
+    document.getElementById('monthlyVolumeVal').textContent = Number(this.value).toLocaleString() + ' 盒';
+    render();
+  });
+
+  // Kol share range
+  document.getElementById('kolShare')?.addEventListener('input', function() {
+    state.kolShare = parseFloat(this.value) || 0;
+    document.getElementById('kolShareVal').textContent = this.value + '%';
+    render();
+  });
+
+  // Factory detail inputs
+  const factoryFields = ['fdOem','fdPack','fdShip','fdReturnShip','fdT1','fdT2','fdT3'];
+  factoryFields.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', () => {
+      const f = activeFactory();
+      if (!f) return;
+      const key = id.replace('fd', '').replace(/^./, c => c.toLowerCase());
+      const mapping = { oem: 'oemUnitPrice', pack: 'packagingCost', ship: 'shippingCost', returnship: 'returnShipping', t1: 'tier1Price', t2: 'tier2Price', t3: 'tier3Price' };
+      const prop = mapping[key];
+      if (prop) { f[prop] = parseFloat(el.value) || 0; saveProducts(); }
+      render();
+    });
+  });
+
+  // Factory note
+  document.getElementById('fdNote')?.addEventListener('click', () => {
+    const f = activeFactory();
+    if (!f) return;
+    showModalText('编辑备注', f.note || '', (val) => {
+      f.note = val;
+      document.getElementById('fdNote').textContent = val || '点击添加备注';
+      saveProducts();
+    });
+  });
+
+  // Delete factory
+  document.getElementById('fdDelete')?.addEventListener('click', () => {
+    const name = activeFactoryName();
+    if (!name) return;
+    const fs = factories();
+    if (Object.keys(fs).length <= 1) { showToast('至少保留一个代工厂'); return; }
+    if (!confirm('删除代工厂「' + name + '」？')) return;
+    delete fs[name];
+    const remaining = Object.keys(fs);
+    cur().activeFactory = remaining[0];
+    cur().selectedFactories = cur().selectedFactories.filter(n => n !== name);
+    if (cur().selectedFactories.length === 0) cur().selectedFactories = [remaining[0]];
+    saveProducts();
+    syncFactoryForm(cur().activeFactory);
+    renderFactoryList();
+    render();
+    showToast('已删除「' + name + '」');
   });
 }
 
 // ============================================================
-// PRODUCT UI
+// FACTORY CRUD
+// ============================================================
+function addFactory(name) {
+  if (!name || !name.trim()) return;
+  name = name.trim();
+  const fs = factories();
+  if (fs[name]) { showToast('代工厂名已存在'); return; }
+  // Clone active factory's data
+  const src = activeFactory() || defaultFactory();
+  fs[name] = JSON.parse(JSON.stringify(src));
+  fs[name].note = '';
+  cur().activeFactory = name;
+  cur().selectedFactories.push(name);
+  saveProducts();
+  syncFactoryForm(name);
+  renderFactoryList();
+  render();
+  showToast('已添加「' + name + '」');
+}
+
+function renameFactory(oldName, newName) {
+  if (!newName || !newName.trim()) return;
+  newName = newName.trim();
+  if (oldName === newName) return;
+  const fs = factories();
+  if (fs[newName]) { showToast('代工厂名已存在'); return; }
+  fs[newName] = fs[oldName];
+  delete fs[oldName];
+  if (cur().activeFactory === oldName) cur().activeFactory = newName;
+  cur().selectedFactories = cur().selectedFactories.map(n => n === oldName ? newName : n);
+  saveProducts();
+  syncFactoryForm(newName);
+  renderFactoryList();
+  render();
+  showToast('已重命名');
+}
+
+// ============================================================
+// PRODUCT MANAGEMENT
 // ============================================================
 function renderProductTabs() {
   const container = document.getElementById('productTabs');
-  const names = getAllProductNames();
+  const names = Object.keys(products);
   const colors = ['#E8F5E1','#FDEBD0','#E3F0FA','#F5E6F0','#FCE4E4','#E8F0E3'];
-  container.innerHTML = names.map((name, i) =>
-    `<button class="product-tab ${name === currentName ? 'active' : ''}" data-name="${name}">
-      <span class="dot" style="background:${colors[i % colors.length]}"></span>${name}
+  container.innerHTML = names.map((n, i) =>
+    `<button class="product-tab ${n===currentName?'active':''}" data-name="${n}">
+      <span class="dot" style="background:${colors[i%colors.length]}"></span>${n}
     </button>`
   ).join('');
-  // Bind tab clicks
   container.querySelectorAll('.product-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      const name = tab.dataset.name;
-      if (name !== currentName) { switchProduct(name); }
-    });
+    tab.addEventListener('click', () => { const n=tab.dataset.name; if(n!==currentName) switchProduct(n); });
   });
 }
 
-function syncInputsFromState() {
-  const keys = ['retailPrice','stickersPerBox','boxesPerOrder','oemUnitPrice','packagingCost',
-    'shippingCost','returnShipping','platformRate','adCost','kolRate','returnRate','otherCost',
-    'fixedSalary','fixedRent','fixedOther','monthlyVolume','kolShare',
-    'tier1Price','tier2Price','tier3Price'];
-  keys.forEach(k => {
-    const el = document.getElementById(k);
-    if (el) el.value = state[k] !== undefined ? state[k] : '';
+function syncSharedInputs() {
+  const ids = ['retailPrice','stickersPerBox','boxesPerOrder','platformRate','adCost','kolRate','returnRate','otherCost','fixedSalary','fixedRent','fixedOther','monthlyVolume','kolShare'];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = state[id] !== undefined ? state[id] : '';
   });
-  // Update range displays
   document.querySelectorAll('input[type="range"]').forEach(el => {
     const id = el.id;
-    const valEl = document.getElementById(id + 'Val');
+    const valEl = document.getElementById(id+'Val');
     if (!valEl) return;
-    const v = state[id] !== undefined ? state[id] : el.value;
-    if (id === 'platformRate' || id === 'kolRate' || id === 'returnRate') valEl.textContent = v + '%';
-    else if (id === 'boxesPerOrder') valEl.textContent = v + ' 盒';
-    else if (id === 'monthlyVolume') valEl.textContent = Number(v).toLocaleString() + ' 盒';
-    else if (id === 'kolShare') valEl.textContent = v + '%';
-    else valEl.textContent = v;
+    const v = state[id];
+    if (id==='platformRate'||id==='kolRate'||id==='returnRate') valEl.textContent = (v||0)+'%';
+    else if (id==='boxesPerOrder') valEl.textContent = (v||1)+' 盒';
+    else if (id==='monthlyVolume') valEl.textContent = Number(v||0).toLocaleString()+' 盒';
+    else if (id==='kolShare') valEl.textContent = (v||0)+'%';
+    else valEl.textContent = v||'';
   });
 }
 
@@ -1009,198 +1253,174 @@ function switchProduct(name) {
   currentName = name;
   saveProducts();
   renderProductTabs();
-  syncInputsFromState();
+  syncSharedInputs();
+  syncFactoryForm(activeFactoryName());
+  renderFactoryList();
   render();
-  showToast('已切换到「' + name + '」');
+  showToast('已切换到「'+name+'」');
 }
 
 function addProduct(name) {
-  if (!name || name.trim() === '') return;
+  if (!name||!name.trim()) return;
   name = name.trim();
   if (products[name]) { showToast('产品名已存在'); return; }
-  // Clone current product's data
-  const src = getCurrentProduct() || DEFAULTS['蕲艾护颈贴'];
+  const src = cur() || Object.values(DEFAULT_PRODUCTS)[0];
   products[name] = JSON.parse(JSON.stringify(src));
   currentName = name;
   saveProducts();
   renderProductTabs();
-  syncInputsFromState();
+  syncSharedInputs();
+  syncFactoryForm(activeFactoryName());
+  renderFactoryList();
   render();
-  showToast('已创建「' + name + '」');
+  showToast('已创建「'+name+'」');
 }
 
 function deleteCurrentProduct() {
-  const names = getAllProductNames();
+  const names = Object.keys(products);
   if (names.length <= 1) { showToast('至少保留一个产品'); return; }
-  const name = currentName;
-  delete products[name];
-  currentName = names.find(n => n !== name) || names[0];
+  const n = currentName;
+  delete products[n];
+  currentName = names.find(x => x !== n) || names[0];
   saveProducts();
   renderProductTabs();
-  syncInputsFromState();
+  syncSharedInputs();
+  syncFactoryForm(activeFactoryName());
+  renderFactoryList();
   render();
-  showToast('已删除「' + name + '」');
+  showToast('已删除「'+n+'」');
 }
 
 function renameProduct(oldName, newName) {
-  if (!newName || newName.trim() === '') return;
+  if (!newName||!newName.trim()) return;
   newName = newName.trim();
-  if (oldName === newName) return;
+  if (oldName===newName) return;
   if (products[newName]) { showToast('产品名已存在'); return; }
   products[newName] = products[oldName];
   delete products[oldName];
-  if (currentName === oldName) currentName = newName;
+  if (currentName===oldName) currentName = newName;
   saveProducts();
   renderProductTabs();
-  if (currentName === newName) { syncInputsFromState(); render(); }
-  showToast('已重命名为「' + newName + '」');
+  if (currentName===newName) { syncSharedInputs(); syncFactoryForm(activeFactoryName()); renderFactoryList(); render(); }
+  showToast('已重命名');
 }
 
 function duplicateProduct(name) {
-  let copyName = name + ' (副本)';
+  let cn = name + ' (副本)';
   let i = 2;
-  while (products[copyName]) { copyName = name + ' (副本' + i + ')'; i++; }
-  products[copyName] = JSON.parse(JSON.stringify(products[name]));
-  currentName = copyName;
+  while (products[cn]) cn = name + ' (副本'+i+')', i++;
+  products[cn] = JSON.parse(JSON.stringify(products[name]));
+  currentName = cn;
   saveProducts();
   renderProductTabs();
-  syncInputsFromState();
+  syncSharedInputs();
+  syncFactoryForm(activeFactoryName());
+  renderFactoryList();
   render();
-  showToast('已复制为「' + copyName + '」');
+  showToast('已复制为「'+cn+'」');
 }
 
 function exportAll() {
   const data = { products, current: currentName, exportedAt: new Date().toISOString() };
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = '适元草-成本模型数据.json';
-  a.click();
+  a.href = url; a.download = '适元草-成本模型.json'; a.click();
   URL.revokeObjectURL(url);
   showToast('已导出');
 }
 
-function importData(jsonStr) {
+function importData(str) {
   try {
-    const data = JSON.parse(jsonStr);
-    if (!data.products || !data.current) { showToast('数据格式无效'); return; }
-    // Merge: add imported products, don't overwrite existing
+    const data = JSON.parse(str);
+    if (!data.products) { showToast('格式无效'); return; }
+    const migrated = migrateProductData(data.products);
     let count = 0;
-    Object.keys(data.products).forEach(name => {
-      if (!products[name]) { products[name] = data.products[name]; count++; }
+    Object.keys(migrated).forEach(name => {
+      if (!products[name]) { products[name] = migrated[name]; count++; }
     });
-    if (count > 0) {
-      saveProducts();
-      renderProductTabs();
-      showToast('成功导入 ' + count + ' 个产品');
-    } else {
-      showToast('没有新产品可导入（名称已存在则跳过）');
-    }
-  } catch (e) {
-    showToast('导入失败：文件格式错误');
-  }
+    if (count > 0) { saveProducts(); renderProductTabs(); showToast('导入 '+count+' 个产品'); }
+    else showToast('无新产品可导入');
+  } catch(e) { showToast('导入失败'); }
 }
 
 // ============================================================
-// MODAL
+// UI HELPERS
 // ============================================================
-function showModal(title, placeholder, callback) {
+function showModal(title, placeholder, cb) {
   document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalInput').style.display = 'block';
+  document.getElementById('modalTextarea').style.display = 'none';
   document.getElementById('modalInput').value = placeholder || '';
   document.getElementById('modalInput').placeholder = title;
   document.getElementById('modalOverlay').classList.add('open');
   setTimeout(() => document.getElementById('modalInput').focus(), 100);
-  activeModal = callback;
+  window._modalCb = cb;
 }
-
-function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('open');
-  activeModal = null;
+function showModalText(title, placeholder, cb) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalInput').style.display = 'none';
+  document.getElementById('modalTextarea').style.display = 'block';
+  document.getElementById('modalTextarea').value = placeholder || '';
+  document.getElementById('modalTextarea').placeholder = '输入备注…';
+  document.getElementById('modalOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('modalTextarea').focus(), 100);
+  window._modalCb = cb;
 }
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); window._modalCb = null; }
 
 document.getElementById('modalConfirm').addEventListener('click', () => {
-  const val = document.getElementById('modalInput').value.trim();
-  if (activeModal && val) { activeModal(val); }
+  const input = document.getElementById('modalInput');
+  const textarea = document.getElementById('modalTextarea');
+  const val = input.style.display !== 'none' ? input.value.trim() : textarea.value.trim();
+  if (window._modalCb && val) { window._modalCb(val); }
   closeModal();
 });
 document.getElementById('modalCancel').addEventListener('click', closeModal);
-document.getElementById('modalOverlay').addEventListener('click', (e) => {
-  if (e.target === e.currentTarget) closeModal();
-});
-document.getElementById('modalInput').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') document.getElementById('modalConfirm').click();
-  if (e.key === 'Escape') closeModal();
-});
+document.getElementById('modalOverlay').addEventListener('click', e => { if(e.target===e.currentTarget) closeModal(); });
+document.getElementById('modalInput').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('modalConfirm').click(); if(e.key==='Escape') closeModal(); });
+document.getElementById('modalTextarea').addEventListener('keydown', e => { if(e.key==='Escape') closeModal(); });
 
-// ============================================================
-// TOAST
-// ============================================================
 function showToast(msg) {
   const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
+  el.textContent = msg; el.classList.add('show');
   clearTimeout(el._timer);
   el._timer = setTimeout(() => el.classList.remove('show'), 2000);
 }
 
 // ============================================================
-// EVENT BINDING
+// BIND ACTIONS
 // ============================================================
-function bindInputs() {
-  document.querySelectorAll('input[type="number"]').forEach(el => {
-    el.addEventListener('input', () => {
-      const id = el.id;
-      if (id && state[id] !== undefined) {
-        state[id] = parseFloat(el.value) || 0;
-      }
-      render();
-    });
+function bindActions() {
+  // Add factory
+  document.getElementById('btnAddFactory').addEventListener('click', () => {
+    showModal('添加代工厂', '输入代工厂名称…', (val) => addFactory(val));
   });
-  document.querySelectorAll('input[type="range"]').forEach(el => {
-    el.addEventListener('input', () => {
-      const id = el.id;
-      if (id && state[id] !== undefined) {
-        state[id] = parseFloat(el.value) || 0;
-      }
-      const valEl = document.getElementById(id + 'Val');
-      if (valEl) {
-        const v = state[id];
-        if (id === 'platformRate' || id === 'kolRate' || id === 'returnRate') valEl.textContent = v + '%';
-        else if (id === 'boxesPerOrder') valEl.textContent = v + (v > 1 ? ' 盒' : ' 盒');
-        else if (id === 'monthlyVolume') valEl.textContent = Number(v).toLocaleString() + ' 盒';
-        else if (id === 'kolShare') valEl.textContent = v + '%';
-        else valEl.textContent = v;
-      }
-      render();
-    });
-  });
-}
 
-function bindProductActions() {
+  // New product
   document.getElementById('btnNewProduct').addEventListener('click', () => {
     showModal('新建产品', '输入产品名称…', (val) => addProduct(val));
   });
 
+  // Product menu
   document.getElementById('btnProductMenu').addEventListener('click', (e) => {
     e.stopPropagation();
     document.getElementById('productMenu').classList.toggle('open');
   });
-  document.addEventListener('click', () => {
-    document.getElementById('productMenu').classList.remove('open');
-  });
+  document.addEventListener('click', () => document.getElementById('productMenu').classList.remove('open'));
 
-  const menuActions = {
-    rename: () => showModal('重命名产品', currentName, (val) => renameProduct(currentName, val)),
+  const menu = {
+    rename: () => showModal('重命名产品', currentName, (v) => renameProduct(currentName, v)),
     duplicate: () => duplicateProduct(currentName),
-    delete: () => { if (confirm('确认删除「' + currentName + '」？')) deleteCurrentProduct(); },
+    delete: () => { if(confirm('确认删除「'+currentName+'」？')) deleteCurrentProduct(); },
     export: () => exportAll(),
     import: () => document.getElementById('importFile').click(),
   };
   document.querySelectorAll('#productMenu .dropdown-item').forEach(item => {
     item.addEventListener('click', (e) => {
       e.stopPropagation();
-      const action = item.dataset.action;
-      if (menuActions[action]) menuActions[action]();
+      const a = item.dataset.action;
+      if (menu[a]) menu[a]();
       document.getElementById('productMenu').classList.remove('open');
     });
   });
@@ -1208,33 +1428,31 @@ function bindProductActions() {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (ev) => { importData(ev.target.result); };
+    reader.onload = ev => importData(ev.target.result);
     reader.readAsText(file);
     e.target.value = '';
   });
-}
 
-function bindScenarios() {
-  const SCENARIOS = {
-    normal: { oemUnitPrice: 2.00, packagingCost: 1.50, shippingCost: 5.5, returnShipping: 6.0, platformRate: 5, adCost: 5.0, kolRate: 0, returnRate: 8, otherCost: 0.5, tier1Price: 2.20, tier2Price: 1.80, tier3Price: 1.50 },
-    optimistic: { oemUnitPrice: 1.50, packagingCost: 1.20, shippingCost: 4.5, returnShipping: 5.0, platformRate: 3, adCost: 3.0, kolRate: 0, returnRate: 5, otherCost: 0.3, tier1Price: 1.80, tier2Price: 1.40, tier3Price: 1.20 },
-    conservative: { oemUnitPrice: 2.50, packagingCost: 2.00, shippingCost: 6.5, returnShipping: 7.0, platformRate: 8, adCost: 8.0, kolRate: 0, returnRate: 15, otherCost: 0.8, tier1Price: 2.50, tier2Price: 2.20, tier3Price: 1.80 },
-  };
+  // Scenarios
   document.querySelectorAll('.scenario-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.scenario-tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
-      const data = SCENARIOS[tab.dataset.scenario];
+      const f = activeFactory();
+      if (!f) return;
+      const SCENES = {
+        normal: { oemUnitPrice: 2.00, packagingCost: 1.50, shippingCost: 5.5, returnShipping: 6.0, tier1Price: 2.20, tier2Price: 1.80, tier3Price: 1.50 },
+        optimistic: { oemUnitPrice: 1.50, packagingCost: 1.20, shippingCost: 4.5, returnShipping: 5.0, tier1Price: 1.80, tier2Price: 1.40, tier3Price: 1.20 },
+        conservative: { oemUnitPrice: 2.50, packagingCost: 2.00, shippingCost: 6.5, returnShipping: 7.0, tier1Price: 2.50, tier2Price: 2.20, tier3Price: 1.80 },
+      };
+      const data = SCENES[tab.dataset.scenario];
       if (!data) return;
       Object.keys(data).forEach(key => {
-        const el = document.getElementById(key);
-        if (el) { el.value = data[key]; state[key] = data[key]; }
-        const valEl = document.getElementById(key + 'Val');
-        if (valEl) {
-          if (key === 'platformRate' || key === 'kolRate' || key === 'returnRate') valEl.textContent = data[key] + '%';
-          else valEl.textContent = data[key];
-        }
+        f[key] = data[key];
+        const el = document.getElementById('fd' + key.charAt(0).toUpperCase() + key.slice(1));
+        if (el) el.value = data[key];
       });
+      saveProducts();
       render();
     });
   });
@@ -1246,10 +1464,10 @@ function bindScenarios() {
 document.addEventListener('DOMContentLoaded', () => {
   loadProducts();
   renderProductTabs();
-  syncInputsFromState();
+  syncSharedInputs();
+  syncFactoryForm(activeFactoryName());
   bindInputs();
-  bindProductActions();
-  bindScenarios();
+  bindActions();
   render();
 });
 </script>
