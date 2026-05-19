@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>适元草·蕲艾护颈贴 — 成本毛利率计算模型</title>
+<title>适元草 · 成本毛利率计算模型</title>
 <style>
 :root {
   --brand-green: #5A7A4A;
@@ -19,6 +19,7 @@
   --green-light: #E8F5E1;
   --red: #D35D5D;
   --blue: #4A8DB7;
+  --shadow-sm: 0 1px 4px rgba(0,0,0,0.06);
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body {
@@ -33,17 +34,153 @@ body {
 /* Header */
 .header {
   text-align: center;
-  padding: 32px 24px;
+  padding: 24px 24px 18px;
   background: linear-gradient(135deg, var(--brand-green), var(--brand-dark));
   color: #fff;
-  border-radius: 16px;
-  margin-bottom: 28px;
+  border-radius: 16px 16px 0 0;
 }
-.header h1 { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
-.header h1 small { font-size: 18px; font-weight: 400; opacity: 0.9; }
-.header p { font-size: 14px; opacity: 0.8; }
+.header h1 { font-size: 24px; font-weight: 700; }
+.header h1 small { font-size: 16px; font-weight: 400; opacity: 0.9; }
+.header p { font-size: 13px; opacity: 0.8; margin-top: 4px; }
 
-/* Grid Layout */
+/* Product Bar */
+.product-bar {
+  background: var(--brand-dark);
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  border-radius: 0 0 16px 16px;
+  margin-bottom: 24px;
+}
+.product-tabs {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+.product-tab {
+  padding: 6px 16px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.7);
+  border: 1px solid transparent;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.product-tab:hover { background: rgba(255,255,255,0.18); color: #fff; }
+.product-tab.active { background: #fff; color: var(--brand-dark); border-color: #fff; }
+.product-tab .dot {
+  display: inline-block;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  margin-right: 4px;
+}
+.btn-sm {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.3);
+  background: transparent;
+  color: rgba(255,255,255,0.85);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.btn-sm:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.5); }
+.btn-sm.primary {
+  background: var(--brand-brown);
+  border-color: var(--brand-brown);
+  color: #fff;
+}
+.btn-sm.primary:hover { background: #b8875a; }
+.btn-sm.danger:hover { background: rgba(211,93,93,0.3); border-color: var(--red); color: #fcc; }
+
+/* Context menu */
+.dropdown { position: relative; display: inline-block; }
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  z-index: 100;
+  min-width: 160px;
+  display: none;
+  overflow: hidden;
+}
+.dropdown-menu.open { display: block; }
+.dropdown-item {
+  padding: 8px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+.dropdown-item:hover { background: var(--brand-cream); }
+.dropdown-item.danger { color: var(--red); }
+.dropdown-divider { height: 1px; background: var(--border); margin: 4px 0; }
+
+/* Modal overlay */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 200;
+  justify-content: center;
+  align-items: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 420px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+.modal h3 { font-size: 16px; margin-bottom: 12px; }
+.modal input[type="text"] {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 16px;
+}
+.modal input[type="text"]:focus { outline: none; border-color: var(--brand-green); box-shadow: 0 0 0 3px rgba(90,122,74,0.1); }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.modal-actions button {
+  padding: 7px 18px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+}
+.modal-actions button.primary { background: var(--brand-green); border-color: var(--brand-green); color: #fff; }
+.modal-actions button.primary:hover { background: var(--brand-dark); }
+.modal-actions button:hover { background: var(--bg); }
+
+/* Main Grid */
 .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
 .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
 .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
@@ -53,13 +190,12 @@ body {
   background: var(--card);
   border-radius: 12px;
   padding: 20px 24px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  box-shadow: var(--shadow-sm);
   border: 1px solid var(--border);
 }
 .card h3 {
   font-size: 15px;
   font-weight: 600;
-  color: var(--text);
   margin-bottom: 16px;
   padding-bottom: 8px;
   border-bottom: 2px solid var(--brand-cream);
@@ -76,7 +212,7 @@ body {
   font-weight: 500;
 }
 
-/* Form inputs */
+/* Forms */
 .form-group { margin-bottom: 12px; }
 .form-group label {
   display: flex;
@@ -84,19 +220,10 @@ body {
   align-items: center;
   font-size: 13px;
   font-weight: 500;
-  color: var(--text);
   margin-bottom: 4px;
 }
-.form-group label .hint {
-  font-weight: 400;
-  font-size: 11px;
-  color: var(--text-light);
-}
-.input-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+.form-group label .hint { font-weight: 400; font-size: 11px; color: var(--text-light); }
+.input-row { display: flex; align-items: center; gap: 8px; }
 .input-row input[type="number"] {
   flex: 1;
   padding: 7px 10px;
@@ -104,7 +231,6 @@ body {
   border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
-  color: var(--text);
   background: #fff;
   transition: border-color 0.2s;
   min-width: 0;
@@ -115,12 +241,7 @@ body {
   border-color: var(--brand-green);
   box-shadow: 0 0 0 3px rgba(90,122,74,0.1);
 }
-.input-row .unit {
-  font-size: 13px;
-  color: var(--text-light);
-  white-space: nowrap;
-  min-width: 20px;
-}
+.input-row .unit { font-size: 13px; color: var(--text-light); white-space: nowrap; min-width: 20px; }
 input[type="range"] {
   flex: 1;
   height: 4px;
@@ -138,15 +259,9 @@ input[type="range"]::-webkit-slider-thumb {
   background: var(--brand-green);
   cursor: pointer;
 }
-.range-value {
-  min-width: 48px;
-  text-align: right;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
-}
+.range-value { min-width: 54px; text-align: right; font-size: 13px; font-weight: 600; }
 
-/* Metric Cards */
+/* Metrics */
 .metric-card {
   text-align: center;
   padding: 20px 16px;
@@ -154,197 +269,76 @@ input[type="range"]::-webkit-slider-thumb {
   background: var(--card);
   border: 1px solid var(--border);
 }
-.metric-card .label {
-  font-size: 12px;
-  color: var(--text-light);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-.metric-card .value {
-  font-size: 32px;
-  font-weight: 800;
-  margin: 4px 0;
-  letter-spacing: -0.5px;
-}
-.metric-card .sub {
-  font-size: 12px;
-  color: var(--text-light);
-}
+.metric-card .label { font-size: 12px; color: var(--text-light); font-weight: 500; letter-spacing: 0.3px; }
+.metric-card .value { font-size: 32px; font-weight: 800; margin: 4px 0; letter-spacing: -0.5px; }
+.metric-card .sub { font-size: 12px; color: var(--text-light); }
 .metric-card.green .value { color: var(--brand-green); }
 .metric-card.gold .value { color: var(--brand-gold); }
 .metric-card.red .value { color: var(--red); }
 .metric-card.blue .value { color: var(--blue); }
 
-/* Cost breakdown bar */
+/* Cost Breakdown */
 .cost-bar-container { margin: 8px 0; }
-.cost-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
-}
-.cost-item .bar-label {
-  font-size: 12px;
-  min-width: 72px;
-  text-align: right;
-  color: var(--text-light);
-}
-.cost-item .bar-track {
-  flex: 1;
-  height: 22px;
-  background: var(--bg);
-  border-radius: 4px;
-  overflow: hidden;
-  position: relative;
-}
-.cost-item .bar-fill {
-  height: 100%;
-  border-radius: 4px;
-  transition: width 0.3s ease;
-  min-width: 2px;
-}
-.cost-item .bar-value {
-  font-size: 12px;
-  min-width: 60px;
-  font-weight: 500;
-  color: var(--text);
-  text-align: right;
-}
-.cost-item .bar-pct {
-  font-size: 11px;
-  min-width: 40px;
-  color: var(--text-light);
-  text-align: right;
-}
+.cost-item { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.cost-item .bar-label { font-size: 12px; min-width: 72px; text-align: right; color: var(--text-light); }
+.cost-item .bar-track { flex: 1; height: 22px; background: var(--bg); border-radius: 4px; overflow: hidden; position: relative; }
+.cost-item .bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s ease; min-width: 2px; }
+.cost-item .bar-value { font-size: 12px; min-width: 60px; font-weight: 500; text-align: right; }
+.cost-item .bar-pct { font-size: 11px; min-width: 40px; color: var(--text-light); text-align: right; }
 
-/* Scenario Tabs */
-.scenario-tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-}
+/* Scenarios */
+.scenario-tabs { display: flex; gap: 8px; margin-bottom: 16px; }
 .scenario-tab {
-  flex: 1;
-  padding: 8px 12px;
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  background: var(--card);
-  cursor: pointer;
-  text-align: center;
-  transition: all 0.2s;
-  font-size: 13px;
-  font-weight: 500;
+  flex: 1; padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 8px;
+  background: var(--card); cursor: pointer; text-align: center; transition: all 0.2s; font-size: 13px; font-weight: 500;
 }
 .scenario-tab:hover { border-color: var(--brand-brown); }
-.scenario-tab.active {
-  border-color: var(--brand-green);
-  background: var(--green-light);
-  color: var(--brand-dark);
-}
-.scenario-tab .tag {
-  display: block;
-  font-size: 11px;
-  font-weight: 400;
-  color: var(--text-light);
-  margin-top: 2px;
-}
+.scenario-tab.active { border-color: var(--brand-green); background: var(--green-light); color: var(--brand-dark); }
+.scenario-tab .tag { display: block; font-size: 11px; font-weight: 400; color: var(--text-light); margin-top: 2px; }
 
-/* Preset Buttons */
-.preset-group {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
-.preset-btn {
-  padding: 5px 14px;
-  border: 1.5px solid var(--brand-brown);
-  border-radius: 16px;
-  background: transparent;
-  color: var(--brand-brown);
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.preset-btn:hover {
-  background: var(--brand-brown);
-  color: #fff;
-}
-.preset-btn.active {
-  background: var(--brand-brown);
-  color: #fff;
-}
-
-/* Break-even table */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-table th {
-  text-align: left;
-  padding: 8px 8px 8px 0;
-  font-weight: 600;
-  color: var(--text-light);
-  border-bottom: 2px solid var(--border);
-  font-size: 12px;
-}
-table td {
-  padding: 8px 8px 8px 0;
-  border-bottom: 1px solid var(--border);
-}
+/* Tables */
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+table th { text-align: left; padding: 8px 8px 8px 0; font-weight: 600; color: var(--text-light); border-bottom: 2px solid var(--border); font-size: 12px; }
+table td { padding: 8px 8px 8px 0; border-bottom: 1px solid var(--border); }
 table td:last-child { text-align: right; }
 table tr:last-child td { border-bottom: none; }
 table .total td { font-weight: 700; border-top: 2px solid var(--border); }
 
-/* Volume projection */
-.volume-table td:nth-child(3),
-.volume-table td:nth-child(4),
-.volume-table td:nth-child(5) { text-align: right; }
-
 /* Sensitivity */
-.sens-grid { margin-top: 8px; }
-.sens-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
-  font-size: 12px;
-}
-.sens-row .sens-price { min-width: 48px; font-weight: 500; }
-.sens-row .sens-bar {
-  flex: 1;
-  height: 18px;
-  background: var(--bg);
-  border-radius: 4px;
-  overflow: hidden;
-  position: relative;
-}
-.sens-row .sens-fill {
-  height: 100%;
-  border-radius: 4px;
-  transition: width 0.3s;
-}
+.sens-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; font-size: 12px; }
+.sens-row .sens-price { min-width: 52px; font-weight: 500; }
+.sens-row .sens-bar { flex: 1; height: 18px; background: var(--bg); border-radius: 4px; overflow: hidden; }
+.sens-row .sens-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
 .sens-row .sens-fill.positive { background: var(--brand-green); }
 .sens-row .sens-fill.negative { background: var(--red); }
-.sens-row .sens-label {
-  min-width: 60px;
-  text-align: right;
-  font-weight: 500;
+.sens-row .sens-label { min-width: 72px; text-align: right; font-weight: 500; }
+
+/* Note */
+.note {
+  background: #FFF9E6; border-left: 3px solid var(--brand-gold); padding: 10px 14px;
+  border-radius: 6px; font-size: 12px; color: #665; margin-top: 12px;
 }
 
-/* Notes */
-.note {
-  background: #FFF9E6;
-  border-left: 3px solid var(--brand-gold);
-  padding: 10px 14px;
-  border-radius: 6px;
-  font-size: 12px;
-  color: #665;
-  margin-top: 12px;
+/* Separator */
+.sep { height: 1px; background: var(--border); margin: 20px 0; }
+
+/* Batch pricing */
+.batch-input { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 8px 0; }
+.batch-input .bi { display: flex; flex-direction: column; gap: 2px; }
+.batch-input .bi label { font-size: 11px; color: var(--text-light); }
+.batch-input .bi input { padding: 5px 8px; border: 1.5px solid var(--border); border-radius: 4px; font-size: 13px; }
+
+/* Footer */
+.footer { text-align: center; padding: 20px; font-size: 12px; color: var(--text-light); }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: var(--text); color: #fff; padding: 10px 20px; border-radius: 8px;
+  font-size: 13px; font-weight: 500; z-index: 300; opacity: 0;
+  transition: opacity 0.3s; pointer-events: none;
 }
+.toast.show { opacity: 1; }
 
 /* Responsive */
 @media (max-width: 820px) {
@@ -352,59 +346,12 @@ table .total td { font-weight: 700; border-top: 2px solid var(--border); }
   .grid-3 { grid-template-columns: 1fr 1fr; }
   .grid-4 { grid-template-columns: repeat(2, 1fr); }
   body { padding: 12px; }
-  .header h1 { font-size: 22px; }
 }
 @media (max-width: 500px) {
   .grid-3 { grid-template-columns: 1fr; }
   .grid-4 { grid-template-columns: 1fr 1fr; }
+  .product-bar { flex-direction: column; align-items: stretch; }
 }
-
-/* Separator */
-.sep { height: 1px; background: var(--border); margin: 20px 0; }
-
-/* Batch pricing inline */
-.batch-input { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 8px 0; }
-.batch-input .bi { display: flex; flex-direction: column; gap: 2px; }
-.batch-input .bi label { font-size: 11px; color: var(--text-light); }
-.batch-input .bi input { padding: 5px 8px; border: 1.5px solid var(--border); border-radius: 4px; font-size: 13px; }
-
-/* Animations */
-@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-.fade-in { animation: fadeIn 0.3s ease; }
-
-/* Toggle */
-.toggle-group { display: flex; gap: 0; margin: 4px 0 12px; }
-.toggle-btn {
-  padding: 5px 14px;
-  border: 1.5px solid var(--border);
-  background: var(--card);
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.toggle-btn:first-child { border-radius: 6px 0 0 6px; }
-.toggle-btn:last-child { border-radius: 0 6px 6px 0; }
-.toggle-btn.active { background: var(--brand-green); border-color: var(--brand-green); color: #fff; }
-.toggle-btn:not(.active):hover { background: var(--brand-cream); }
-
-.sku-selector { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
-.sku-btn {
-  padding: 6px 14px;
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  background: var(--card);
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 500;
-  transition: all 0.2s;
-}
-.sku-btn.active { border-color: var(--brand-green); background: var(--green-light); color: var(--brand-dark); }
-.sku-btn:hover { border-color: var(--brand-brown); }
-.sku-btn .sku-spec { display: block; font-size: 10px; font-weight: 400; color: var(--text-light); }
-
-/* Footer */
-.footer { text-align: center; padding: 20px; font-size: 12px; color: var(--text-light); }
 </style>
 </head>
 <body>
@@ -413,34 +360,37 @@ table .total td { font-weight: 700; border-top: 2px solid var(--border); }
 
 <!-- Header -->
 <div class="header">
-  <h1>适元草 <small>· 蕲艾护颈贴</small></h1>
-  <p>成本 · 毛利率 · 保本点 — 交互测算模型 &nbsp;|&nbsp; 填入代工厂报价，结果实时更新</p>
+  <h1>适元草 <small>· 成本毛利率计算模型</small></h1>
+  <p>多产品管理 · 实时计算 · 自动保存到浏览器</p>
 </div>
 
-<!-- Quick SKU Selector -->
-<div class="card" style="margin-bottom:24px;">
-  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-    <div>
-      <strong style="font-size:15px;">选择 SKU 快速填入</strong>
-      <div class="sku-selector" style="margin-top:8px;margin-bottom:0;">
-        <button class="sku-btn active" data-sku="standard">标准装 <span class="sku-spec">5贴/盒 ¥49.9</span></button>
-        <button class="sku-btn" data-sku="trial">体验装 <span class="sku-spec">2贴/袋 ¥9.9</span></button>
-        <button class="sku-btn" data-sku="family">家庭装 <span class="sku-spec">15贴/3盒 ¥119</span></button>
-        <button class="sku-btn" data-sku="subscription">订阅季卡 <span class="sku-spec">5贴×3月 ¥129</span></button>
-      </div>
-    </div>
-    <div style="text-align:right;font-size:12px;color:var(--text-light);">
-      代工厂报价：<input type="text" id="factoryQuoteDisplay" value="待填写" readonly style="background:var(--bg);border:1px dashed var(--border);border-radius:4px;padding:4px 8px;font-size:13px;font-weight:500;color:var(--brand-brown);width:100px;">
+<!-- Product Bar -->
+<div class="product-bar" id="productBar">
+  <div class="product-tabs" id="productTabs"></div>
+  <div class="dropdown">
+    <button class="btn-sm primary" id="btnNewProduct">+ 新建产品</button>
+  </div>
+  <div class="dropdown">
+    <button class="btn-sm" id="btnProductMenu">☰ 管理 ▾</button>
+    <div class="dropdown-menu" id="productMenu">
+      <button class="dropdown-item" data-action="rename">✏️ 重命名</button>
+      <button class="dropdown-item" data-action="duplicate">📋 复制产品</button>
+      <div class="dropdown-divider"></div>
+      <button class="dropdown-item" data-action="export">📤 导出全部数据</button>
+      <button class="dropdown-item" data-action="import">📥 导入数据</button>
+      <div class="dropdown-divider"></div>
+      <button class="dropdown-item danger" data-action="delete">🗑️ 删除此产品</button>
     </div>
   </div>
+  <input type="file" id="importFile" accept=".json" style="display:none">
 </div>
 
+<!-- Main Grid -->
 <div class="grid-2">
 
-<!-- === LEFT COLUMN: Inputs === -->
+<!-- LEFT: Inputs -->
 <div>
 
-  <!-- 基础参数 -->
   <div class="card" style="margin-bottom:24px;">
     <h3>📦 基础参数</h3>
     <div class="grid-2" style="gap:12px;">
@@ -462,16 +412,13 @@ table .total td { font-weight: 700; border-top: 2px solid var(--border); }
       <label>每单发货盒数</label>
       <div class="input-row">
         <input type="range" id="boxesPerOrder" min="1" max="6" step="1" value="1">
-        <span class="range-value" id="boxesPerOrderVal">1</span>
-        <span class="unit">盒</span>
+        <span class="range-value" id="boxesPerOrderVal">1 盒</span>
       </div>
     </div>
   </div>
 
-  <!-- 成本参数 -->
   <div class="card" style="margin-bottom:24px;">
     <h3>💰 成本参数 <span class="badge">核心</span></h3>
-
     <div class="form-group">
       <label>代工厂出厂价 <span class="hint">单贴含包装</span></label>
       <div class="input-row">
@@ -479,7 +426,6 @@ table .total td { font-weight: 700; border-top: 2px solid var(--border); }
         <span class="unit">¥/贴</span>
       </div>
     </div>
-
     <div class="form-group">
       <label>外盒包装 <span class="hint">纸盒 + 铝箔袋</span></label>
       <div class="input-row">
@@ -487,7 +433,6 @@ table .total td { font-weight: 700; border-top: 2px solid var(--border); }
         <span class="unit">¥/盒</span>
       </div>
     </div>
-
     <div class="grid-2" style="gap:12px;">
       <div class="form-group">
         <label>快递费 <span class="hint">全国均价</span></label>
@@ -504,7 +449,6 @@ table .total td { font-weight: 700; border-top: 2px solid var(--border); }
         </div>
       </div>
     </div>
-
     <div class="grid-2" style="gap:12px;">
       <div class="form-group">
         <label>平台佣金率</label>
@@ -521,7 +465,6 @@ table .total td { font-weight: 700; border-top: 2px solid var(--border); }
         </div>
       </div>
     </div>
-
     <div class="grid-2" style="gap:12px;">
       <div class="form-group">
         <label>达人分佣率 <span class="hint">CPS</span></label>
@@ -538,7 +481,6 @@ table .total td { font-weight: 700; border-top: 2px solid var(--border); }
         </div>
       </div>
     </div>
-
     <div class="form-group">
       <label>其他成本 <span class="hint">耗材/打包/标签等</span></label>
       <div class="input-row">
@@ -548,7 +490,6 @@ table .total td { font-weight: 700; border-top: 2px solid var(--border); }
     </div>
   </div>
 
-  <!-- 月固定成本 -->
   <div class="card" style="margin-bottom:24px;">
     <h3>🏢 月固定成本</h3>
     <div class="grid-2" style="gap:12px;">
@@ -568,7 +509,7 @@ table .total td { font-weight: 700; border-top: 2px solid var(--border); }
       </div>
     </div>
     <div class="form-group">
-      <label>其他固定支出 <span class="hint">设备/软件/杂费等</span></label>
+      <label>其他固定支出</label>
       <div class="input-row">
         <input type="number" id="fixedOther" value="2000" step="500" min="0">
         <span class="unit">¥/月</span>
@@ -576,7 +517,6 @@ table .total td { font-weight: 700; border-top: 2px solid var(--border); }
     </div>
   </div>
 
-  <!-- 批量阶梯（可选） -->
   <div class="card" style="margin-bottom:24px;">
     <h3>📊 批量阶梯报价 <span class="badge">可选</span></h3>
     <p style="font-size:12px;color:var(--text-light);margin-bottom:10px;">不同采购量对应的出厂单价，用于预测规模效应</p>
@@ -598,30 +538,19 @@ table .total td { font-weight: 700; border-top: 2px solid var(--border); }
 
 </div>
 
-<!-- === RIGHT COLUMN: Results === -->
+<!-- RIGHT: Results -->
 <div>
 
-  <!-- Scenario Presets -->
   <div class="card" style="margin-bottom:24px;">
     <h3>🎯 场景预设</h3>
-    <p style="font-size:12px;color:var(--text-light);margin-bottom:8px;">一键填入典型场景参数对比</p>
+    <p style="font-size:12px;color:var(--text-light);margin-bottom:8px;">一键填入典型场景参数</p>
     <div class="scenario-tabs">
-      <button class="scenario-tab active" data-scenario="normal">
-        基准场景
-        <span class="tag">出厂¥2.0 | 佣金5% | 退货8%</span>
-      </button>
-      <button class="scenario-tab" data-scenario="optimistic">
-        乐观场景
-        <span class="tag">出厂¥1.5 | 免佣金 | 退货5%</span>
-      </button>
-      <button class="scenario-tab" data-scenario="conservative">
-        保守场景
-        <span class="tag">出厂¥2.5 | 佣金8% | 退货15%</span>
-      </button>
+      <button class="scenario-tab active" data-scenario="normal">基准 <span class="tag">出厂¥2.0 · 佣金5%</span></button>
+      <button class="scenario-tab" data-scenario="optimistic">乐观 <span class="tag">出厂¥1.5 · 佣金3%</span></button>
+      <button class="scenario-tab" data-scenario="conservative">保守 <span class="tag">出厂¥2.5 · 佣金8%</span></button>
     </div>
   </div>
 
-  <!-- Key Metrics -->
   <div class="card" style="margin-bottom:24px;">
     <h3>📈 核心指标</h3>
     <div class="grid-4" id="metricCards">
@@ -648,47 +577,40 @@ table .total td { font-weight: 700; border-top: 2px solid var(--border); }
     </div>
   </div>
 
-  <!-- Cost Breakdown -->
   <div class="card" style="margin-bottom:24px;">
     <h3>🔍 单盒成本结构</h3>
     <div class="cost-bar-container" id="costBreakdown"></div>
   </div>
 
-  <!-- 场景对比 -->
   <div class="card" style="margin-bottom:24px;">
     <h3>📊 批量规模预测</h3>
-    <p style="font-size:12px;color:var(--text-light);margin-bottom:10px;">不同采购量级下的成本变化（基于批量阶梯报价）</p>
-    <table class="volume-table" id="volumeTable">
-      <thead><tr><th>批次</th><th>采购量</th><th>出厂单价</th><th>单盒总成本</th><th>毛利率</th><th>月净利(5000盒)</th></tr></thead>
+    <p style="font-size:12px;color:var(--text-light);margin-bottom:10px;">不同采购量级下的成本变化</p>
+    <table class="volume-table">
+      <thead><tr><th>批次</th><th>采购量</th><th>出厂单价</th><th>单盒成本</th><th>毛利率</th><th>月净利(5000盒)</th></tr></thead>
       <tbody id="volumeBody"></tbody>
     </table>
   </div>
 
-  <!-- 售价敏感性 -->
   <div class="card" style="margin-bottom:24px;">
     <h3>📉 售价敏感性分析</h3>
-    <p style="font-size:12px;color:var(--text-light);margin-bottom:8px;">不同零售价下的毛利率变化（其他参数不变）</p>
+    <p style="font-size:12px;color:var(--text-light);margin-bottom:8px;">不同零售价下的毛利率变化</p>
     <div class="sens-grid" id="sensitivityChart"></div>
   </div>
 
-  <!-- Notes -->
   <div class="note">
-    <strong>💡 使用说明：</strong>
-    左侧所有参数调整后，右侧指标实时更新。<br>
-    · <strong>基准场景</strong>基于商业计划书 V1.0 数据<br>
-    · 拿到代工厂最新报价后，填入<strong>"出厂价"</strong>字段即可<br>
-    · 退货率直接影响有效成本，抖音建议按 8-15% 预估<br>
-    · 批量阶梯报价可填入左侧底部，自动计算规模效应
+    <strong>💡 使用说明：</strong> 所有数据自动保存到浏览器，刷新不丢失<br>
+    · 左侧参数调整后右侧实时更新<br>
+    · 点击「+ 新建产品」管理不同品类的独立模型<br>
+    · 导出为 JSON 文件可分享给他人导入<br>
+    · 数据仅存储在本地浏览器，不会上传
   </div>
-
 </div>
 </div>
 
 <hr class="sep">
 
-<!-- Full-width: 综合损益预估 -->
 <div class="card">
-  <h3>📋 月度损益预估 <span class="badge">基于上方参数</span></h3>
+  <h3>📋 月度损益预估</h3>
   <div class="grid-3" style="gap:24px;">
     <div>
       <h4 style="font-size:14px;margin-bottom:12px;">📌 场景假设</h4>
@@ -709,109 +631,149 @@ table .total td { font-weight: 700; border-top: 2px solid var(--border); }
     </div>
     <div>
       <h4 style="font-size:14px;margin-bottom:12px;">💰 月度损益表</h4>
-      <table id="pnlTable">
-        <thead><tr><th>项目</th><th style="text-align:right">金额</th></tr></thead>
-        <tbody id="pnlBody"></tbody>
-      </table>
+      <table><tbody id="pnlBody"></tbody></table>
     </div>
     <div>
       <h4 style="font-size:14px;margin-bottom:12px;">📈 销量 vs 利润</h4>
       <div id="profitChart" style="padding:4px 0;">
         <div class="sens-row"><span class="sens-price">2000盒</span><div class="sens-bar"><div class="sens-fill positive" id="pc1" style="width:0%"></div></div><span class="sens-label" id="pc1l">¥0</span></div>
         <div class="sens-row"><span class="sens-price">5000盒</span><div class="sens-bar"><div class="sens-fill positive" id="pc2" style="width:0%"></div></div><span class="sens-label" id="pc2l">¥0</span></div>
-        <div class="sens-row"><span class="sens-price">10000盒</span><div class="sens-bar"><div class="sens-fill positive" id="pc3" style="width:0%"></div></div><span class="sens-label" id="pc3l">¥0</span></div>
-        <div class="sens-row"><span class="sens-price">20000盒</span><div class="sens-bar"><div class="sens-fill positive" id="pc4" style="width:0%"></div></div><span class="sens-label" id="pc4l">¥0</span></div>
-        <div class="sens-row"><span class="sens-price">50000盒</span><div class="sens-bar"><div class="sens-fill positive" id="pc5" style="width:0%"></div></div><span class="sens-label" id="pc5l">¥0</span></div>
+        <div class="sens-row"><span class="sens-price">1万盒</span><div class="sens-bar"><div class="sens-fill positive" id="pc3" style="width:0%"></div></div><span class="sens-label" id="pc3l">¥0</span></div>
+        <div class="sens-row"><span class="sens-price">2万盒</span><div class="sens-bar"><div class="sens-fill positive" id="pc4" style="width:0%"></div></div><span class="sens-label" id="pc4l">¥0</span></div>
+        <div class="sens-row"><span class="sens-price">5万盒</span><div class="sens-bar"><div class="sens-fill positive" id="pc5" style="width:0%"></div></div><span class="sens-label" id="pc5l">¥0</span></div>
       </div>
     </div>
   </div>
 </div>
 
 <div class="footer">
-  湖北蕲愈科技有限公司 · 适元草品牌 &nbsp;|&nbsp; 数据仅供参考，以实际经营为准
+  湖北蕲愈科技有限公司 · 适元草品牌 &nbsp;|&nbsp; 数据仅存储在本地浏览器
+</div>
 </div>
 
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalContent">
+    <h3 id="modalTitle">新建产品</h3>
+    <input type="text" id="modalInput" placeholder="输入产品名称…" maxlength="30">
+    <div class="modal-actions">
+      <button id="modalCancel">取消</button>
+      <button class="primary" id="modalConfirm">确定</button>
+    </div>
+  </div>
 </div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
 <script>
 // ============================================================
-// State
+// PRODUCT MANAGEMENT
 // ============================================================
-const state = {
-  retailPrice: 49.9,
-  stickersPerBox: 5,
-  boxesPerOrder: 1,
-  oemUnitPrice: 2.00,
-  packagingCost: 1.50,
-  shippingCost: 5.5,
-  returnShipping: 6.0,
-  platformRate: 5,
-  adCost: 5.0,
-  kolRate: 0,
-  returnRate: 8,
-  otherCost: 0.5,
-  fixedSalary: 15000,
-  fixedRent: 3000,
-  fixedOther: 2000,
-  monthlyVolume: 5000,
-  kolShare: 60,
-  tier1Price: 2.20,
-  tier2Price: 1.80,
-  tier3Price: 1.50,
-};
+const STORAGE_KEY = 'qiyu_cost_model_v2';
 
-// SKU presets
-const SKUS = {
-  standard: { retailPrice: 49.9, stickersPerBox: 5, label: '标准装' },
-  trial: { retailPrice: 9.9, stickersPerBox: 2, label: '体验装' },
-  family: { retailPrice: 39.6667, stickersPerBox: 5, label: '家庭装' }, // 119/3=39.67
-  subscription: { retailPrice: 43, stickersPerBox: 5, label: '订阅季卡' }, // 129/3=43
-};
-
-// Scenarios
-const SCENARIOS = {
-  normal: {
-    label: '基准场景',
+// Default products with initial data
+const DEFAULTS = {
+  '蕲艾护颈贴': {
+    retailPrice: 49.9, stickersPerBox: 5, boxesPerOrder: 1,
     oemUnitPrice: 2.00, packagingCost: 1.50, shippingCost: 5.5, returnShipping: 6.0,
     platformRate: 5, adCost: 5.0, kolRate: 0, returnRate: 8, otherCost: 0.5,
+    fixedSalary: 15000, fixedRent: 3000, fixedOther: 2000,
+    monthlyVolume: 5000, kolShare: 60,
     tier1Price: 2.20, tier2Price: 1.80, tier3Price: 1.50,
   },
-  optimistic: {
-    label: '乐观场景',
-    oemUnitPrice: 1.50, packagingCost: 1.20, shippingCost: 4.5, returnShipping: 5.0,
-    platformRate: 3, adCost: 3.0, kolRate: 0, returnRate: 5, otherCost: 0.3,
-    tier1Price: 1.80, tier2Price: 1.40, tier3Price: 1.20,
+  '随身草灸': {
+    retailPrice: 39.9, stickersPerBox: 6, boxesPerOrder: 1,
+    oemUnitPrice: 1.80, packagingCost: 1.80, shippingCost: 5.5, returnShipping: 6.0,
+    platformRate: 5, adCost: 4.0, kolRate: 0, returnRate: 8, otherCost: 0.5,
+    fixedSalary: 15000, fixedRent: 3000, fixedOther: 2000,
+    monthlyVolume: 3000, kolShare: 60,
+    tier1Price: 2.00, tier2Price: 1.60, tier3Price: 1.30,
   },
-  conservative: {
-    label: '保守场景',
-    oemUnitPrice: 2.50, packagingCost: 2.00, shippingCost: 6.5, returnShipping: 7.0,
-    platformRate: 8, adCost: 8.0, kolRate: 0, returnRate: 15, otherCost: 0.8,
-    tier1Price: 2.50, tier2Price: 2.20, tier3Price: 1.80,
+  '三伏柔贴': {
+    retailPrice: 59.9, stickersPerBox: 5, boxesPerOrder: 1,
+    oemUnitPrice: 2.50, packagingCost: 1.80, shippingCost: 5.5, returnShipping: 6.0,
+    platformRate: 5, adCost: 6.0, kolRate: 0, returnRate: 8, otherCost: 0.5,
+    fixedSalary: 15000, fixedRent: 3000, fixedOther: 2000,
+    monthlyVolume: 2000, kolShare: 60,
+    tier1Price: 2.80, tier2Price: 2.30, tier3Price: 1.80,
   },
 };
 
+let products = {};
+let currentName = '';
+let activeModal = null; // 'new', 'rename', 'duplicate'
+
+// Load from localStorage
+function loadProducts() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const data = JSON.parse(raw);
+      if (data.products && data.current) {
+        products = data.products;
+        currentName = data.current;
+        if (!products[currentName]) currentName = Object.keys(products)[0] || '';
+        return;
+      }
+    }
+  } catch (e) { /* ignore */ }
+  // Fallback to defaults
+  products = JSON.parse(JSON.stringify(DEFAULTS));
+  currentName = Object.keys(products)[0];
+}
+
+function saveProducts() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      products: products,
+      current: currentName,
+    }));
+  } catch (e) { /* ignore */ }
+}
+
+function getCurrentProduct() {
+  return products[currentName] || null;
+}
+
+function getAllProductNames() {
+  return Object.keys(products);
+}
+
 // ============================================================
-// Calculations
+// STATE (synced to current product)
+// ============================================================
+// state is a proxy: reads from/writes to the current product object
+const state = new Proxy({}, {
+  get(target, prop) {
+    const p = getCurrentProduct();
+    return p ? p[prop] : undefined;
+  },
+  set(target, prop, value) {
+    const p = getCurrentProduct();
+    if (p) { p[prop] = value; saveProducts(); }
+    return true;
+  }
+});
+
+// ============================================================
+// CALCULATIONS
 // ============================================================
 function calc() {
-  const P = state.retailPrice;
-  const N = state.stickersPerBox;
-  const BPO = state.boxesPerOrder;
-  const OEM = state.oemUnitPrice;
-  const PKG = state.packagingCost;
-  const SHP = state.shippingCost;
-  const RSHP = state.returnShipping;
-  const COMM = state.platformRate / 100;
-  const AD = state.adCost;
-  const KOL = state.kolRate / 100;
-  const RET = state.returnRate / 100;
-  const OTH = state.otherCost;
+  const P = state.retailPrice || 0;
+  const N = state.stickersPerBox || 1;
+  const BPO = state.boxesPerOrder || 1;
+  const OEM = state.oemUnitPrice || 0;
+  const PKG = state.packagingCost || 0;
+  const SHP = state.shippingCost || 0;
+  const RSHP = state.returnShipping || 0;
+  const COMM = (state.platformRate || 0) / 100;
+  const AD = state.adCost || 0;
+  const KOL = (state.kolRate || 0) / 100;
+  const RET = (state.returnRate || 0) / 100;
+  const OTH = state.otherCost || 0;
 
-  // Per sold box (adjusted for returns)
-  // For every 1 sold box, we produce (1 + RET/(1-RET)) boxes due to returns
-  // But simpler: return loss per sold box = RET * (product + packaging + outbound shipping + return shipping)
   const returnLossPerSoldBox = RET * (N * OEM + PKG + SHP/BPO + RSHP/BPO);
-
   const shippingPerBox = SHP / BPO;
   const commissionPerBox = P * COMM;
   const kolPerBox = P * KOL;
@@ -820,21 +782,15 @@ function calc() {
   const grossProfit = P - totalVarCost;
   const grossMargin = P > 0 ? grossProfit / P : 0;
 
-  // Weighted KOL cost for P&L
-  const kolSharePct = state.kolShare / 100;
+  const kolSharePct = (state.kolShare || 0) / 100;
   const weightedKolPerBox = P * KOL * kolSharePct;
-
   const totalVarCostPnL = (N * OEM) + PKG + shippingPerBox + commissionPerBox + AD + weightedKolPerBox + OTH + returnLossPerSoldBox;
   const profitPerBoxPnL = P - totalVarCostPnL;
 
-  // Fixed costs
-  const fixedTotal = state.fixedSalary + state.fixedRent + state.fixedOther;
-
-  // Break-even (using weighted cost since KOL is optional)
+  const fixedTotal = (state.fixedSalary || 0) + (state.fixedRent || 0) + (state.fixedOther || 0);
   const beVolume = profitPerBoxPnL > 0 ? Math.ceil(fixedTotal / profitPerBoxPnL) : Infinity;
 
-  // Monthly P&L
-  const vol = state.monthlyVolume;
+  const vol = state.monthlyVolume || 0;
   const monthlyRevenue = vol * P;
   const monthlyCOGS = vol * (N * OEM + PKG);
   const monthlyShipping = vol * shippingPerBox;
@@ -847,11 +803,10 @@ function calc() {
   const monthlyGrossProfit = monthlyRevenue - monthlyTotalVar;
   const monthlyNetProfit = monthlyGrossProfit - fixedTotal;
 
-  // Volume tiers
   const tiers = [
-    { volume: '首批', qty: 5000, price: state.tier1Price },
-    { volume: '追量', qty: 20000, price: state.tier2Price },
-    { volume: '规模', qty: 50000, price: state.tier3Price },
+    { volume: '首批', qty: 5000, price: state.tier1Price || OEM },
+    { volume: '追量', qty: 20000, price: state.tier2Price || OEM },
+    { volume: '规模', qty: 50000, price: state.tier3Price || OEM },
   ];
   const tierResults = tiers.map(t => {
     const oem = t.price;
@@ -859,15 +814,13 @@ function calc() {
     const tc = (N * oem) + PKG + shippingPerBox + commissionPerBox + AD + kolPerBox + OTH + rls;
     const gp = P - tc;
     const gm = P > 0 ? gp / P : 0;
-    const np = (gp * 5000) - fixedTotal; // monthly profit at 5000 boxes
+    const np = (gp * 5000) - fixedTotal;
     return { ...t, oemPrice: oem, totalCost: tc, margin: gm, monthlyProfit: np };
   });
 
-  // Sensitivity: different price points
   const sensPrices = [29.9, 39.9, 49.9, 59.9, 69.9];
   const sensResults = sensPrices.map(sp => {
-    // Recalc with same costs but different price
-    const c = commissionPerBox / P * sp; // proportional commission
+    const c = commissionPerBox / P * sp;
     const k = kolPerBox / P * sp;
     const tc = (N * OEM) + PKG + shippingPerBox + c + AD + k + OTH + returnLossPerSoldBox;
     const gp = sp - tc;
@@ -875,14 +828,12 @@ function calc() {
     return { price: sp, cost: tc, profit: gp, margin: gm };
   });
 
-  // Volume projection chart (profit at different volumes)
   const volPoints = [2000, 5000, 10000, 20000, 50000];
   const volProfits = volPoints.map(v => {
     const rev = v * P;
     const varC = v * totalVarCostPnL;
     return rev - varC - fixedTotal;
   });
-  const maxProfit = Math.max(...volProfits.map(Math.abs), 1);
 
   return {
     totalVarCost, grossProfit, grossMargin,
@@ -890,7 +841,7 @@ function calc() {
     monthlyRevenue, monthlyCOGS, monthlyShipping, monthlyCommission,
     monthlyAd, monthlyKol, monthlyReturnLoss, monthlyOtherVar,
     monthlyTotalVar, monthlyGrossProfit, monthlyNetProfit,
-    tierResults, sensResults, volProfits, maxProfit,
+    tierResults, sensResults, volProfits,
     returnLossPerSoldBox, shippingPerBox, commissionPerBox, kolPerBox,
     weightedKolPerBox,
     breakdown: [
@@ -906,59 +857,47 @@ function calc() {
 }
 
 // ============================================================
-// Rendering
+// RENDER
 // ============================================================
 function render() {
   const r = calc();
+  const P = state.retailPrice || 0;
 
   // Metrics
   document.getElementById('mCost').textContent = '¥' + r.totalVarCost.toFixed(2);
   document.getElementById('mCostSub').textContent = `含${state.stickersPerBox}贴出厂 + 包装 + 履约`;
   document.getElementById('mProfit').textContent = '¥' + r.grossProfit.toFixed(2);
-  document.getElementById('mProfitSub').textContent = `零售价${state.retailPrice.toFixed(1)} - 总成本${r.totalVarCost.toFixed(2)}`;
+  document.getElementById('mProfitSub').textContent = `零售价${P.toFixed(1)} - 成本${r.totalVarCost.toFixed(2)}`;
   document.getElementById('mMargin').textContent = (r.grossMargin * 100).toFixed(1) + '%';
   document.getElementById('mMarginSub').textContent = (r.grossMargin * 100) >= 40 ? '✅ 健康毛利' : '⚠️ 偏低';
   document.getElementById('mBreakEven').textContent = r.beVolume === Infinity ? '∞' : r.beVolume.toLocaleString();
-  document.getElementById('mBreakEvenSub').textContent = `月固定成本 ¥${r.fixedTotal.toLocaleString()}`;
+  document.getElementById('mBreakEvenSub').textContent = `月固定 ¥${r.fixedTotal.toLocaleString()}`;
 
-  // Color metrics based on margin
-  const mm = document.getElementById('mMargin');
   const mc = document.getElementById('metricCards').children[2];
-  if (r.grossMargin >= 0.4) {
-    mc.className = 'metric-card green';
-  } else if (r.grossMargin >= 0.2) {
-    mc.className = 'metric-card gold';
-  } else {
-    mc.className = 'metric-card red';
-  }
+  if (r.grossMargin >= 0.4) mc.className = 'metric-card green';
+  else if (r.grossMargin >= 0.2) mc.className = 'metric-card gold';
+  else mc.className = 'metric-card red';
 
   // Cost breakdown
   const total = r.breakdown.reduce((s, i) => s + i.value, 0) || 1;
   const colors = ['#5A7A4A','#C4956A','#4A8DB7','#D35D5D','#8B5CF6','#E88D3B','#999'];
   let html = '';
   r.breakdown.forEach((item, i) => {
-    const pct = (item.value / total * 100);
     if (item.value <= 0) return;
-    html += `
-      <div class="cost-item">
-        <span class="bar-label">${item.label}</span>
-        <div class="bar-track">
-          <div class="bar-fill" style="width:${pct}%;background:${colors[i]};"></div>
-        </div>
-        <span class="bar-value">¥${item.value.toFixed(2)}</span>
-        <span class="bar-pct">${pct.toFixed(1)}%</span>
-      </div>
-    `;
+    const pct = (item.value / total * 100);
+    html += `<div class="cost-item">
+      <span class="bar-label">${item.label}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${colors[i]};"></div></div>
+      <span class="bar-value">¥${item.value.toFixed(2)}</span>
+      <span class="bar-pct">${pct.toFixed(1)}%</span>
+    </div>`;
   });
-  // Total
-  html += `
-    <div class="cost-item" style="font-weight:700;border-top:1px solid var(--border);padding-top:6px;">
-      <span class="bar-label">合计</span>
-      <div class="bar-track" style="background:transparent;"></div>
-      <span class="bar-value">¥${total.toFixed(2)}</span>
-      <span class="bar-pct">100%</span>
-    </div>
-  `;
+  html += `<div class="cost-item" style="font-weight:700;border-top:1px solid var(--border);padding-top:6px;">
+    <span class="bar-label">合计</span>
+    <div class="bar-track" style="background:transparent;"></div>
+    <span class="bar-value">¥${total.toFixed(2)}</span>
+    <span class="bar-pct">100%</span>
+  </div>`;
   document.getElementById('costBreakdown').innerHTML = html;
 
   // Volume tiers
@@ -967,82 +906,36 @@ function render() {
     const mClass = t.margin >= 0.4 ? 'green' : t.margin >= 0.2 ? 'gold' : 'red';
     const pClass = t.monthlyProfit >= 0 ? 'green' : 'red';
     vhtml += `<tr>
-      <td>${t.volume}</td>
-      <td>${t.qty.toLocaleString()}</td>
+      <td>${t.volume}</td><td>${t.qty.toLocaleString()}</td>
       <td>¥${t.oemPrice.toFixed(2)}</td>
       <td>¥${t.totalCost.toFixed(2)}</td>
-      <td style="color:var(--${mClass});font-weight:600;">${(t.margin * 100).toFixed(1)}%</td>
-      <td style="color:var(--${pClass});font-weight:600;">${t.monthlyProfit >= 0 ? '+' : ''}¥${t.monthlyProfit.toFixed(0)}</td>
+      <td style="color:var(--${mClass});font-weight:600;">${(t.margin*100).toFixed(1)}%</td>
+      <td style="color:var(--${pClass});font-weight:600;">${t.monthlyProfit>=0?'+':''}¥${t.monthlyProfit.toFixed(0)}</td>
     </tr>`;
   });
   document.getElementById('volumeBody').innerHTML = vhtml;
 
   // Sensitivity
-  const maxSensProfit = Math.max(...r.sensResults.map(s => Math.abs(s.profit)), 1);
+  const maxSens = Math.max(...r.sensResults.map(s => Math.abs(s.profit)), 1);
   let shtml = '';
   r.sensResults.forEach(s => {
-    const pct = (s.profit / maxSensProfit) * 100;
+    const pct = (s.profit / maxSens) * 100;
     const cls = s.profit >= 0 ? 'positive' : 'negative';
     const color = s.profit >= 0 ? 'var(--brand-green)' : 'var(--red)';
-    shtml += `
-      <div class="sens-row">
-        <span class="sens-price">¥${s.price.toFixed(1)}</span>
-        <div class="sens-bar">
-          <div class="sens-fill ${cls}" style="width:${Math.abs(pct)}%;background:${color};"></div>
-        </div>
-        <span class="sens-label" style="color:${color};">¥${s.profit.toFixed(2)} / ${(s.margin*100).toFixed(1)}%</span>
-      </div>
-    `;
+    shtml += `<div class="sens-row">
+      <span class="sens-price">¥${s.price.toFixed(1)}</span>
+      <div class="sens-bar"><div class="sens-fill ${cls}" style="width:${Math.abs(pct)}%;background:${color};"></div></div>
+      <span class="sens-label" style="color:${color};">¥${s.profit.toFixed(2)} / ${(s.margin*100).toFixed(1)}%</span>
+    </div>`;
   });
   document.getElementById('sensitivityChart').innerHTML = shtml;
 
-  // Monthly P&L
-  const pnlItems = [
-    { label: '营收', value: r.monthlyRevenue, cls: '' },
-    { label: '减：出厂成本', value: -r.monthlyCOGS, cls: '' },
-    { label: '减：包装成本', value: -r.monthlyCOGS + (state.monthlyVolume * state.stickersPerBox * state.oemUnitPrice), cls: '' },
-  ];
-  // Rebuild cleanly
-  let phtml = '';
-  const rows = [
-    { label: '营业收入', val: r.monthlyRevenue, cls: '', fmt: true },
-    { label: '营业成本', val: 0, cls: 'sep', fmt: false },
-    { label: '  出厂成本', val: -r.monthlyCOGS, cls: '', fmt: true },
-    { label: '  包装费', val: -(state.monthlyVolume * state.packagingCost), cls: '', fmt: true },
-    { label: '  快递费', val: -r.monthlyShipping, cls: '', fmt: true },
-    { label: '  退货损耗', val: -r.monthlyReturnLoss, cls: '', fmt: true },
-    { label: '  其他变动成本', val: -r.monthlyOtherVar, cls: '', fmt: true },
-    { label: '毛利', val: r.monthlyGrossProfit + r.monthlyAd + r.monthlyCommission + r.monthlyKol, cls: 'subtotal', fmt: true },
-    { label: '销售费用', val: 0, cls: 'sep', fmt: false },
-    { label: '  平台佣金', val: -r.monthlyCommission, cls: '', fmt: true },
-    { label: '  投流费用', val: -r.monthlyAd, cls: '', fmt: true },
-    { label: '  达人分佣', val: -r.monthlyKol, cls: '', fmt: true },
-    { label: '固定费用', val: 0, cls: 'sep', fmt: false },
-    { label: '  人力成本', val: -state.fixedSalary, cls: '', fmt: true },
-    { label: '  仓储/场地', val: -state.fixedRent, cls: '', fmt: true },
-    { label: '  其他固定', val: -state.fixedOther, cls: '', fmt: true },
-    { label: '净利润', val: r.monthlyNetProfit, cls: 'total', fmt: true },
-  ];
-  rows.forEach(row => {
-    if (row.cls === 'sep') {
-      phtml += `<tr style="border-top:1px solid var(--border);"><td colspan="2"></td></tr>`;
-      return;
-    }
-    const valStr = row.val >= 0 ? `¥${row.val.toFixed(0)}` : `-¥${Math.abs(row.val).toFixed(0)}`;
-    const color = row.cls === 'total' ? '' : (row.val < 0 ? 'var(--red)' : row.val > 0 ? 'var(--brand-green)' : '');
-    phtml += `<tr${row.cls === 'total' ? ' class="total"' : ''}>
-      <td style="${color ? 'color:'+color : ''}">${row.label}</td>
-      <td style="text-align:right;${color ? 'color:'+color : ''}">${valStr}</td>
-    </tr>`;
-  });
-  // Fix: add gross profit line
-  const gpRow = rows.find(r => r.label === '毛利');
-  // Actually let me just rewrite the P&L cleanly
-  phtml = `
+  // P&L
+  document.getElementById('pnlBody').innerHTML = `
     <tr><td>营业收入</td><td style="color:var(--brand-green);">¥${r.monthlyRevenue.toFixed(0)}</td></tr>
     <tr style="border-top:1px solid var(--border);"><td colspan="2"></td></tr>
     <tr><td>出厂成本</td><td style="color:var(--red);">-¥${r.monthlyCOGS.toFixed(0)}</td></tr>
-    <tr><td>包装费</td><td style="color:var(--red);">-¥${(state.monthlyVolume * state.packagingCost).toFixed(0)}</td></tr>
+    <tr><td>包装费</td><td style="color:var(--red);">-¥${((state.monthlyVolume||0)*(state.packagingCost||0)).toFixed(0)}</td></tr>
     <tr><td>快递费</td><td style="color:var(--red);">-¥${r.monthlyShipping.toFixed(0)}</td></tr>
     <tr><td>退货损耗</td><td style="color:var(--red);">-¥${r.monthlyReturnLoss.toFixed(0)}</td></tr>
     <tr><td>其他变动成本</td><td style="color:var(--red);">-¥${r.monthlyOtherVar.toFixed(0)}</td></tr>
@@ -1050,184 +943,315 @@ function render() {
     <tr><td>投流费用</td><td style="color:var(--red);">-¥${r.monthlyAd.toFixed(0)}</td></tr>
     <tr><td>达人分佣</td><td style="color:var(--red);">-¥${r.monthlyKol.toFixed(0)}</td></tr>
     <tr style="border-top:1px solid var(--border);"><td colspan="2"></td></tr>
-    <tr><td>人力成本</td><td style="color:var(--red);">-¥${state.fixedSalary.toFixed(0)}</td></tr>
-    <tr><td>仓储/场地</td><td style="color:var(--red);">-¥${state.fixedRent.toFixed(0)}</td></tr>
-    <tr><td>其他固定</td><td style="color:var(--red);">-¥${state.fixedOther.toFixed(0)}</td></tr>
-    <tr class="total"><td>净利润</td><td style="color:${r.monthlyNetProfit >= 0 ? 'var(--brand-green)' : 'var(--red)'};">${r.monthlyNetProfit >= 0 ? '+' : ''}¥${r.monthlyNetProfit.toFixed(0)}</td></tr>
+    <tr><td>人力成本</td><td style="color:var(--red);">-¥${(state.fixedSalary||0).toFixed(0)}</td></tr>
+    <tr><td>仓储/场地</td><td style="color:var(--red);">-¥${(state.fixedRent||0).toFixed(0)}</td></tr>
+    <tr><td>其他固定</td><td style="color:var(--red);">-¥${(state.fixedOther||0).toFixed(0)}</td></tr>
+    <tr class="total"><td>净利润</td><td style="color:${r.monthlyNetProfit>=0?'var(--brand-green)':'var(--red)'};">${r.monthlyNetProfit>=0?'+':''}¥${r.monthlyNetProfit.toFixed(0)}</td></tr>
   `;
-  document.getElementById('pnlBody').innerHTML = phtml;
 
   // Volume profit chart
   const vpProfits = r.volProfits;
   const maxVp = Math.max(...vpProfits.map(Math.abs), 1);
-  const vpLabels = ['2000盒','5000盒','1万盒','2万盒','5万盒'];
   vpProfits.forEach((p, i) => {
-    const pct = (p / maxVp) * 100;
     const el = document.getElementById('pc' + (i+1));
     const elL = document.getElementById('pc' + (i+1) + 'l');
-    if (el) {
-      el.style.width = Math.max(0, Math.abs(pct)) + '%';
-      el.style.background = p >= 0 ? 'var(--brand-green)' : 'var(--red)';
-    }
-    if (elL) {
-      elL.textContent = (p >= 0 ? '+' : '') + '¥' + p.toFixed(0);
-      elL.style.color = p >= 0 ? 'var(--brand-green)' : 'var(--red)';
-    }
+    if (el) { el.style.width = Math.max(0, Math.abs(p/maxVp*100)) + '%'; el.style.background = p>=0 ? 'var(--brand-green)' : 'var(--red)'; }
+    if (elL) { elL.textContent = (p>=0?'+':'')+'¥'+p.toFixed(0); elL.style.color = p>=0?'var(--brand-green)':'var(--red)'; }
   });
 }
 
 // ============================================================
-// Event Binding
+// PRODUCT UI
 // ============================================================
-function bindInputs() {
-  // Number inputs
-  document.querySelectorAll('input[type="number"]').forEach(el => {
-    el.addEventListener('input', () => {
-      const id = el.id;
-      if (state.hasOwnProperty(id)) {
-        state[id] = parseFloat(el.value) || 0;
-      }
-      render();
-      updateFactoryQuoteDisplay();
+function renderProductTabs() {
+  const container = document.getElementById('productTabs');
+  const names = getAllProductNames();
+  const colors = ['#E8F5E1','#FDEBD0','#E3F0FA','#F5E6F0','#FCE4E4','#E8F0E3'];
+  container.innerHTML = names.map((name, i) =>
+    `<button class="product-tab ${name === currentName ? 'active' : ''}" data-name="${name}">
+      <span class="dot" style="background:${colors[i % colors.length]}"></span>${name}
+    </button>`
+  ).join('');
+  // Bind tab clicks
+  container.querySelectorAll('.product-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const name = tab.dataset.name;
+      if (name !== currentName) { switchProduct(name); }
     });
   });
+}
 
-  // Range inputs
+function syncInputsFromState() {
+  const keys = ['retailPrice','stickersPerBox','boxesPerOrder','oemUnitPrice','packagingCost',
+    'shippingCost','returnShipping','platformRate','adCost','kolRate','returnRate','otherCost',
+    'fixedSalary','fixedRent','fixedOther','monthlyVolume','kolShare',
+    'tier1Price','tier2Price','tier3Price'];
+  keys.forEach(k => {
+    const el = document.getElementById(k);
+    if (el) el.value = state[k] !== undefined ? state[k] : '';
+  });
+  // Update range displays
   document.querySelectorAll('input[type="range"]').forEach(el => {
-    el.addEventListener('input', () => {
-      const id = el.id;
-      if (state.hasOwnProperty(id)) {
-        state[id] = parseFloat(el.value) || 0;
-      }
-      // Update range display
-      const valEl = document.getElementById(id + 'Val');
-      if (valEl) {
-        if (id === 'platformRate' || id === 'kolRate' || id === 'returnRate') {
-          valEl.textContent = state[id] + '%';
-        } else if (id === 'boxesPerOrder') {
-          valEl.textContent = state[id] + (state[id] > 1 ? ' 盒' : ' 盒');
-        } else if (id === 'monthlyVolume') {
-          valEl.textContent = Number(state[id]).toLocaleString() + ' 盒';
-        } else if (id === 'kolShare') {
-          valEl.textContent = state[id] + '%';
-        } else {
-          valEl.textContent = state[id];
-        }
-      }
-      render();
-      updateFactoryQuoteDisplay();
-    });
+    const id = el.id;
+    const valEl = document.getElementById(id + 'Val');
+    if (!valEl) return;
+    const v = state[id] !== undefined ? state[id] : el.value;
+    if (id === 'platformRate' || id === 'kolRate' || id === 'returnRate') valEl.textContent = v + '%';
+    else if (id === 'boxesPerOrder') valEl.textContent = v + ' 盒';
+    else if (id === 'monthlyVolume') valEl.textContent = Number(v).toLocaleString() + ' 盒';
+    else if (id === 'kolShare') valEl.textContent = v + '%';
+    else valEl.textContent = v;
   });
 }
 
-// Factory quote display
-function updateFactoryQuoteDisplay() {
-  const el = document.getElementById('factoryQuoteDisplay');
-  if (el) {
-    el.value = '¥' + state.oemUnitPrice.toFixed(2) + '/贴';
+function switchProduct(name) {
+  if (!products[name]) return;
+  currentName = name;
+  saveProducts();
+  renderProductTabs();
+  syncInputsFromState();
+  render();
+  showToast('已切换到「' + name + '」');
+}
+
+function addProduct(name) {
+  if (!name || name.trim() === '') return;
+  name = name.trim();
+  if (products[name]) { showToast('产品名已存在'); return; }
+  // Clone current product's data
+  const src = getCurrentProduct() || DEFAULTS['蕲艾护颈贴'];
+  products[name] = JSON.parse(JSON.stringify(src));
+  currentName = name;
+  saveProducts();
+  renderProductTabs();
+  syncInputsFromState();
+  render();
+  showToast('已创建「' + name + '」');
+}
+
+function deleteCurrentProduct() {
+  const names = getAllProductNames();
+  if (names.length <= 1) { showToast('至少保留一个产品'); return; }
+  const name = currentName;
+  delete products[name];
+  currentName = names.find(n => n !== name) || names[0];
+  saveProducts();
+  renderProductTabs();
+  syncInputsFromState();
+  render();
+  showToast('已删除「' + name + '」');
+}
+
+function renameProduct(oldName, newName) {
+  if (!newName || newName.trim() === '') return;
+  newName = newName.trim();
+  if (oldName === newName) return;
+  if (products[newName]) { showToast('产品名已存在'); return; }
+  products[newName] = products[oldName];
+  delete products[oldName];
+  if (currentName === oldName) currentName = newName;
+  saveProducts();
+  renderProductTabs();
+  if (currentName === newName) { syncInputsFromState(); render(); }
+  showToast('已重命名为「' + newName + '」');
+}
+
+function duplicateProduct(name) {
+  let copyName = name + ' (副本)';
+  let i = 2;
+  while (products[copyName]) { copyName = name + ' (副本' + i + ')'; i++; }
+  products[copyName] = JSON.parse(JSON.stringify(products[name]));
+  currentName = copyName;
+  saveProducts();
+  renderProductTabs();
+  syncInputsFromState();
+  render();
+  showToast('已复制为「' + copyName + '」');
+}
+
+function exportAll() {
+  const data = { products, current: currentName, exportedAt: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = '适元草-成本模型数据.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('已导出');
+}
+
+function importData(jsonStr) {
+  try {
+    const data = JSON.parse(jsonStr);
+    if (!data.products || !data.current) { showToast('数据格式无效'); return; }
+    // Merge: add imported products, don't overwrite existing
+    let count = 0;
+    Object.keys(data.products).forEach(name => {
+      if (!products[name]) { products[name] = data.products[name]; count++; }
+    });
+    if (count > 0) {
+      saveProducts();
+      renderProductTabs();
+      showToast('成功导入 ' + count + ' 个产品');
+    } else {
+      showToast('没有新产品可导入（名称已存在则跳过）');
+    }
+  } catch (e) {
+    showToast('导入失败：文件格式错误');
   }
 }
 
-// SKU selector
-function bindSKUSelector() {
-  document.querySelectorAll('.sku-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.sku-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const sku = btn.dataset.sku;
-      const data = SKUS[sku];
-      if (!data) return;
+// ============================================================
+// MODAL
+// ============================================================
+function showModal(title, placeholder, callback) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalInput').value = placeholder || '';
+  document.getElementById('modalInput').placeholder = title;
+  document.getElementById('modalOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('modalInput').focus(), 100);
+  activeModal = callback;
+}
 
-      document.getElementById('retailPrice').value = data.retailPrice.toFixed(1);
-      state.retailPrice = data.retailPrice;
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  activeModal = null;
+}
 
-      if (data.stickersPerBox) {
-        document.getElementById('stickersPerBox').value = data.stickersPerBox;
-        state.stickersPerBox = data.stickersPerBox;
+document.getElementById('modalConfirm').addEventListener('click', () => {
+  const val = document.getElementById('modalInput').value.trim();
+  if (activeModal && val) { activeModal(val); }
+  closeModal();
+});
+document.getElementById('modalCancel').addEventListener('click', closeModal);
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closeModal();
+});
+document.getElementById('modalInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') document.getElementById('modalConfirm').click();
+  if (e.key === 'Escape') closeModal();
+});
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+// ============================================================
+// EVENT BINDING
+// ============================================================
+function bindInputs() {
+  document.querySelectorAll('input[type="number"]').forEach(el => {
+    el.addEventListener('input', () => {
+      const id = el.id;
+      if (id && state[id] !== undefined) {
+        state[id] = parseFloat(el.value) || 0;
       }
-
-      // Family pack: 3 boxes per order
-      if (sku === 'family') {
-        document.getElementById('boxesPerOrder').value = 3;
-        state.boxesPerOrder = 3;
-        document.getElementById('boxesPerOrderVal').textContent = '3 盒';
-      } else {
-        document.getElementById('boxesPerOrder').value = 1;
-        state.boxesPerOrder = 1;
-        document.getElementById('boxesPerOrderVal').textContent = '1 盒';
+      render();
+    });
+  });
+  document.querySelectorAll('input[type="range"]').forEach(el => {
+    el.addEventListener('input', () => {
+      const id = el.id;
+      if (id && state[id] !== undefined) {
+        state[id] = parseFloat(el.value) || 0;
       }
-
+      const valEl = document.getElementById(id + 'Val');
+      if (valEl) {
+        const v = state[id];
+        if (id === 'platformRate' || id === 'kolRate' || id === 'returnRate') valEl.textContent = v + '%';
+        else if (id === 'boxesPerOrder') valEl.textContent = v + (v > 1 ? ' 盒' : ' 盒');
+        else if (id === 'monthlyVolume') valEl.textContent = Number(v).toLocaleString() + ' 盒';
+        else if (id === 'kolShare') valEl.textContent = v + '%';
+        else valEl.textContent = v;
+      }
       render();
     });
   });
 }
 
-// Scenario presets
+function bindProductActions() {
+  document.getElementById('btnNewProduct').addEventListener('click', () => {
+    showModal('新建产品', '输入产品名称…', (val) => addProduct(val));
+  });
+
+  document.getElementById('btnProductMenu').addEventListener('click', (e) => {
+    e.stopPropagation();
+    document.getElementById('productMenu').classList.toggle('open');
+  });
+  document.addEventListener('click', () => {
+    document.getElementById('productMenu').classList.remove('open');
+  });
+
+  const menuActions = {
+    rename: () => showModal('重命名产品', currentName, (val) => renameProduct(currentName, val)),
+    duplicate: () => duplicateProduct(currentName),
+    delete: () => { if (confirm('确认删除「' + currentName + '」？')) deleteCurrentProduct(); },
+    export: () => exportAll(),
+    import: () => document.getElementById('importFile').click(),
+  };
+  document.querySelectorAll('#productMenu .dropdown-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const action = item.dataset.action;
+      if (menuActions[action]) menuActions[action]();
+      document.getElementById('productMenu').classList.remove('open');
+    });
+  });
+  document.getElementById('importFile').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => { importData(ev.target.result); };
+    reader.readAsText(file);
+    e.target.value = '';
+  });
+}
+
 function bindScenarios() {
+  const SCENARIOS = {
+    normal: { oemUnitPrice: 2.00, packagingCost: 1.50, shippingCost: 5.5, returnShipping: 6.0, platformRate: 5, adCost: 5.0, kolRate: 0, returnRate: 8, otherCost: 0.5, tier1Price: 2.20, tier2Price: 1.80, tier3Price: 1.50 },
+    optimistic: { oemUnitPrice: 1.50, packagingCost: 1.20, shippingCost: 4.5, returnShipping: 5.0, platformRate: 3, adCost: 3.0, kolRate: 0, returnRate: 5, otherCost: 0.3, tier1Price: 1.80, tier2Price: 1.40, tier3Price: 1.20 },
+    conservative: { oemUnitPrice: 2.50, packagingCost: 2.00, shippingCost: 6.5, returnShipping: 7.0, platformRate: 8, adCost: 8.0, kolRate: 0, returnRate: 15, otherCost: 0.8, tier1Price: 2.50, tier2Price: 2.20, tier3Price: 1.80 },
+  };
   document.querySelectorAll('.scenario-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.scenario-tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
-      const sc = tab.dataset.scenario;
-      const data = SCENARIOS[sc];
+      const data = SCENARIOS[tab.dataset.scenario];
       if (!data) return;
-
       Object.keys(data).forEach(key => {
-        if (key === 'label') return;
         const el = document.getElementById(key);
-        if (el) {
-          el.value = data[key];
-          state[key] = data[key];
-          // Update range display
-          const valEl = document.getElementById(key + 'Val');
-          if (valEl) {
-            if (key === 'platformRate' || key === 'kolRate' || key === 'returnRate') {
-              valEl.textContent = data[key] + '%';
-            } else {
-              valEl.textContent = data[key];
-            }
-          }
+        if (el) { el.value = data[key]; state[key] = data[key]; }
+        const valEl = document.getElementById(key + 'Val');
+        if (valEl) {
+          if (key === 'platformRate' || key === 'kolRate' || key === 'returnRate') valEl.textContent = data[key] + '%';
+          else valEl.textContent = data[key];
         }
       });
-
-      // Recalc break-even
-      state.fixedSalary = parseFloat(document.getElementById('fixedSalary').value) || 15000;
-      state.fixedRent = parseFloat(document.getElementById('fixedRent').value) || 3000;
-      state.fixedOther = parseFloat(document.getElementById('fixedOther').value) || 2000;
-
       render();
-      updateFactoryQuoteDisplay();
     });
   });
 }
 
 // ============================================================
-// Init
+// INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
+  loadProducts();
+  renderProductTabs();
+  syncInputsFromState();
   bindInputs();
-  bindSKUSelector();
+  bindProductActions();
   bindScenarios();
-  // Update all range displays
-  document.querySelectorAll('input[type="range"]').forEach(el => {
-    const id = el.id;
-    const valEl = document.getElementById(id + 'Val');
-    if (valEl) {
-      if (id === 'platformRate' || id === 'kolRate' || id === 'returnRate') {
-        valEl.textContent = state[id] + '%';
-      } else if (id === 'boxesPerOrder') {
-        valEl.textContent = state[id] + ' 盒';
-      } else if (id === 'monthlyVolume') {
-        valEl.textContent = Number(state[id]).toLocaleString() + ' 盒';
-      } else if (id === 'kolShare') {
-        valEl.textContent = state[id] + '%';
-      }
-    }
-  });
   render();
-  updateFactoryQuoteDisplay();
 });
 </script>
-
 </body>
 </html>
