@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>适元草·蕲艾护颈贴 — 成本毛利率计算模型</title>
+<style>
+:root {
+  --brand-green: #5A7A4A;
+  --brand-brown: #C4956A;
+  --brand-cream: #F5F0E8;
+  --brand-dark: #3A5F41;
+  --brand-gold: #C5975B;
+  --text: #2C2C2C;
+  --text-light: #666;
+  --bg: #F8F6F2;
+  --card: #fff;
+  --border: #E8E3DA;
+  --green-light: #E8F5E1;
+  --red: #D35D5D;
+  --blue: #4A8DB7;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  padding: 24px;
+  line-height: 1.6;
+}
+.container { max-width: 1280px; margin: 0 auto; }
+
+/* Header */
+.header {
+  text-align: center;
+  padding: 32px 24px;
+  background: linear-gradient(135deg, var(--brand-green), var(--brand-dark));
+  color: #fff;
+  border-radius: 16px;
+  margin-bottom: 28px;
+}
+.header h1 { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+.header h1 small { font-size: 18px; font-weight: 400; opacity: 0.9; }
+.header p { font-size: 14px; opacity: 0.8; }
+
+/* Grid Layout */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+
+/* Cards */
+.card {
+  background: var(--card);
+  border-radius: 12px;
+  padding: 20px 24px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  border: 1px solid var(--border);
+}
+.card h3 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--brand-cream);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card h3 .badge {
+  font-size: 11px;
+  background: var(--brand-cream);
+  color: var(--brand-green);
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+/* Form inputs */
+.form-group { margin-bottom: 12px; }
+.form-group label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.form-group label .hint {
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--text-light);
+}
+.input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.input-row input[type="number"] {
+  flex: 1;
+  padding: 7px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  background: #fff;
+  transition: border-color 0.2s;
+  min-width: 0;
+  width: 100%;
+}
+.input-row input[type="number"]:focus {
+  outline: none;
+  border-color: var(--brand-green);
+  box-shadow: 0 0 0 3px rgba(90,122,74,0.1);
+}
+.input-row .unit {
+  font-size: 13px;
+  color: var(--text-light);
+  white-space: nowrap;
+  min-width: 20px;
+}
+input[type="range"] {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--brand-green);
+  cursor: pointer;
+}
+.range-value {
+  min-width: 48px;
+  text-align: right;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Metric Cards */
+.metric-card {
+  text-align: center;
+  padding: 20px 16px;
+  border-radius: 10px;
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+.metric-card .label {
+  font-size: 12px;
+  color: var(--text-light);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.metric-card .value {
+  font-size: 32px;
+  font-weight: 800;
+  margin: 4px 0;
+  letter-spacing: -0.5px;
+}
+.metric-card .sub {
+  font-size: 12px;
+  color: var(--text-light);
+}
+.metric-card.green .value { color: var(--brand-green); }
+.metric-card.gold .value { color: var(--brand-gold); }
+.metric-card.red .value { color: var(--red); }
+.metric-card.blue .value { color: var(--blue); }
+
+/* Cost breakdown bar */
+.cost-bar-container { margin: 8px 0; }
+.cost-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.cost-item .bar-label {
+  font-size: 12px;
+  min-width: 72px;
+  text-align: right;
+  color: var(--text-light);
+}
+.cost-item .bar-track {
+  flex: 1;
+  height: 22px;
+  background: var(--bg);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.cost-item .bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s ease;
+  min-width: 2px;
+}
+.cost-item .bar-value {
+  font-size: 12px;
+  min-width: 60px;
+  font-weight: 500;
+  color: var(--text);
+  text-align: right;
+}
+.cost-item .bar-pct {
+  font-size: 11px;
+  min-width: 40px;
+  color: var(--text-light);
+  text-align: right;
+}
+
+/* Scenario Tabs */
+.scenario-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.scenario-tab {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+  font-size: 13px;
+  font-weight: 500;
+}
+.scenario-tab:hover { border-color: var(--brand-brown); }
+.scenario-tab.active {
+  border-color: var(--brand-green);
+  background: var(--green-light);
+  color: var(--brand-dark);
+}
+.scenario-tab .tag {
+  display: block;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text-light);
+  margin-top: 2px;
+}
+
+/* Preset Buttons */
+.preset-group {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.preset-btn {
+  padding: 5px 14px;
+  border: 1.5px solid var(--brand-brown);
+  border-radius: 16px;
+  background: transparent;
+  color: var(--brand-brown);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.preset-btn:hover {
+  background: var(--brand-brown);
+  color: #fff;
+}
+.preset-btn.active {
+  background: var(--brand-brown);
+  color: #fff;
+}
+
+/* Break-even table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+table th {
+  text-align: left;
+  padding: 8px 8px 8px 0;
+  font-weight: 600;
+  color: var(--text-light);
+  border-bottom: 2px solid var(--border);
+  font-size: 12px;
+}
+table td {
+  padding: 8px 8px 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+table td:last-child { text-align: right; }
+table tr:last-child td { border-bottom: none; }
+table .total td { font-weight: 700; border-top: 2px solid var(--border); }
+
+/* Volume projection */
+.volume-table td:nth-child(3),
+.volume-table td:nth-child(4),
+.volume-table td:nth-child(5) { text-align: right; }
+
+/* Sensitivity */
+.sens-grid { margin-top: 8px; }
+.sens-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  font-size: 12px;
+}
+.sens-row .sens-price { min-width: 48px; font-weight: 500; }
+.sens-row .sens-bar {
+  flex: 1;
+  height: 18px;
+  background: var(--bg);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.sens-row .sens-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+.sens-row .sens-fill.positive { background: var(--brand-green); }
+.sens-row .sens-fill.negative { background: var(--red); }
+.sens-row .sens-label {
+  min-width: 60px;
+  text-align: right;
+  font-weight: 500;
+}
+
+/* Notes */
+.note {
+  background: #FFF9E6;
+  border-left: 3px solid var(--brand-gold);
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #665;
+  margin-top: 12px;
+}
+
+/* Responsive */
+@media (max-width: 820px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr; }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+  body { padding: 12px; }
+  .header h1 { font-size: 22px; }
+}
+@media (max-width: 500px) {
+  .grid-3 { grid-template-columns: 1fr; }
+  .grid-4 { grid-template-columns: 1fr 1fr; }
+}
+
+/* Separator */
+.sep { height: 1px; background: var(--border); margin: 20px 0; }
+
+/* Batch pricing inline */
+.batch-input { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 8px 0; }
+.batch-input .bi { display: flex; flex-direction: column; gap: 2px; }
+.batch-input .bi label { font-size: 11px; color: var(--text-light); }
+.batch-input .bi input { padding: 5px 8px; border: 1.5px solid var(--border); border-radius: 4px; font-size: 13px; }
+
+/* Animations */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in { animation: fadeIn 0.3s ease; }
+
+/* Toggle */
+.toggle-group { display: flex; gap: 0; margin: 4px 0 12px; }
+.toggle-btn {
+  padding: 5px 14px;
+  border: 1.5px solid var(--border);
+  background: var(--card);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.toggle-btn:first-child { border-radius: 6px 0 0 6px; }
+.toggle-btn:last-child { border-radius: 0 6px 6px 0; }
+.toggle-btn.active { background: var(--brand-green); border-color: var(--brand-green); color: #fff; }
+.toggle-btn:not(.active):hover { background: var(--brand-cream); }
+
+.sku-selector { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+.sku-btn {
+  padding: 6px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--card);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.sku-btn.active { border-color: var(--brand-green); background: var(--green-light); color: var(--brand-dark); }
+.sku-btn:hover { border-color: var(--brand-brown); }
+.sku-btn .sku-spec { display: block; font-size: 10px; font-weight: 400; color: var(--text-light); }
+
+/* Footer */
+.footer { text-align: center; padding: 20px; font-size: 12px; color: var(--text-light); }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<!-- Header -->
+<div class="header">
+  <h1>适元草 <small>· 蕲艾护颈贴</small></h1>
+  <p>成本 · 毛利率 · 保本点 — 交互测算模型 &nbsp;|&nbsp; 填入代工厂报价，结果实时更新</p>
+</div>
+
+<!-- Quick SKU Selector -->
+<div class="card" style="margin-bottom:24px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+    <div>
+      <strong style="font-size:15px;">选择 SKU 快速填入</strong>
+      <div class="sku-selector" style="margin-top:8px;margin-bottom:0;">
+        <button class="sku-btn active" data-sku="standard">标准装 <span class="sku-spec">5贴/盒 ¥49.9</span></button>
+        <button class="sku-btn" data-sku="trial">体验装 <span class="sku-spec">2贴/袋 ¥9.9</span></button>
+        <button class="sku-btn" data-sku="family">家庭装 <span class="sku-spec">15贴/3盒 ¥119</span></button>
+        <button class="sku-btn" data-sku="subscription">订阅季卡 <span class="sku-spec">5贴×3月 ¥129</span></button>
+      </div>
+    </div>
+    <div style="text-align:right;font-size:12px;color:var(--text-light);">
+      代工厂报价：<input type="text" id="factoryQuoteDisplay" value="待填写" readonly style="background:var(--bg);border:1px dashed var(--border);border-radius:4px;padding:4px 8px;font-size:13px;font-weight:500;color:var(--brand-brown);width:100px;">
+    </div>
+  </div>
+</div>
+
+<div class="grid-2">
+
+<!-- === LEFT COLUMN: Inputs === -->
+<div>
+
+  <!-- 基础参数 -->
+  <div class="card" style="margin-bottom:24px;">
+    <h3>📦 基础参数</h3>
+    <div class="grid-2" style="gap:12px;">
+      <div class="form-group">
+        <label>零售价 <span class="hint">¥/盒</span></label>
+        <div class="input-row">
+          <input type="number" id="retailPrice" value="49.9" step="1" min="1" max="999">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>每盒片数</label>
+        <div class="input-row">
+          <input type="number" id="stickersPerBox" value="5" step="1" min="1" max="50">
+          <span class="unit">贴</span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>每单发货盒数</label>
+      <div class="input-row">
+        <input type="range" id="boxesPerOrder" min="1" max="6" step="1" value="1">
+        <span class="range-value" id="boxesPerOrderVal">1</span>
+        <span class="unit">盒</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 成本参数 -->
+  <div class="card" style="margin-bottom:24px;">
+    <h3>💰 成本参数 <span class="badge">核心</span></h3>
+
+    <div class="form-group">
+      <label>代工厂出厂价 <span class="hint">单贴含包装</span></label>
+      <div class="input-row">
+        <input type="number" id="oemUnitPrice" value="2.00" step="0.05" min="0" max="20">
+        <span class="unit">¥/贴</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>外盒包装 <span class="hint">纸盒 + 铝箔袋</span></label>
+      <div class="input-row">
+        <input type="number" id="packagingCost" value="1.50" step="0.1" min="0" max="20">
+        <span class="unit">¥/盒</span>
+      </div>
+    </div>
+
+    <div class="grid-2" style="gap:12px;">
+      <div class="form-group">
+        <label>快递费 <span class="hint">全国均价</span></label>
+        <div class="input-row">
+          <input type="number" id="shippingCost" value="5.5" step="0.5" min="0" max="30">
+          <span class="unit">¥/单</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>退货运费 <span class="hint">往返损耗</span></label>
+        <div class="input-row">
+          <input type="number" id="returnShipping" value="6.0" step="0.5" min="0" max="30">
+          <span class="unit">¥/单</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="gap:12px;">
+      <div class="form-group">
+        <label>平台佣金率</label>
+        <div class="input-row">
+          <input type="range" id="platformRate" min="0" max="20" step="0.5" value="5">
+          <span class="range-value" id="platformRateVal">5%</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>投流成本 <span class="hint">千川/信息流</span></label>
+        <div class="input-row">
+          <input type="number" id="adCost" value="5.0" step="0.5" min="0" max="50">
+          <span class="unit">¥/盒</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="gap:12px;">
+      <div class="form-group">
+        <label>达人分佣率 <span class="hint">CPS</span></label>
+        <div class="input-row">
+          <input type="range" id="kolRate" min="0" max="40" step="1" value="0">
+          <span class="range-value" id="kolRateVal">0%</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>退货率</label>
+        <div class="input-row">
+          <input type="range" id="returnRate" min="0" max="30" step="1" value="8">
+          <span class="range-value" id="returnRateVal">8%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>其他成本 <span class="hint">耗材/打包/标签等</span></label>
+      <div class="input-row">
+        <input type="number" id="otherCost" value="0.5" step="0.1" min="0" max="20">
+        <span class="unit">¥/盒</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 月固定成本 -->
+  <div class="card" style="margin-bottom:24px;">
+    <h3>🏢 月固定成本</h3>
+    <div class="grid-2" style="gap:12px;">
+      <div class="form-group">
+        <label>人力成本</label>
+        <div class="input-row">
+          <input type="number" id="fixedSalary" value="15000" step="1000" min="0">
+          <span class="unit">¥/月</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>仓储/场地</label>
+        <div class="input-row">
+          <input type="number" id="fixedRent" value="3000" step="500" min="0">
+          <span class="unit">¥/月</span>
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>其他固定支出 <span class="hint">设备/软件/杂费等</span></label>
+      <div class="input-row">
+        <input type="number" id="fixedOther" value="2000" step="500" min="0">
+        <span class="unit">¥/月</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 批量阶梯（可选） -->
+  <div class="card" style="margin-bottom:24px;">
+    <h3>📊 批量阶梯报价 <span class="badge">可选</span></h3>
+    <p style="font-size:12px;color:var(--text-light);margin-bottom:10px;">不同采购量对应的出厂单价，用于预测规模效应</p>
+    <div class="batch-input">
+      <div class="bi">
+        <label>首批 5000盒</label>
+        <input type="number" id="tier1Price" value="2.20" step="0.05" min="0">
+      </div>
+      <div class="bi">
+        <label>追量 20000盒</label>
+        <input type="number" id="tier2Price" value="1.80" step="0.05" min="0">
+      </div>
+      <div class="bi">
+        <label>规模 50000盒</label>
+        <input type="number" id="tier3Price" value="1.50" step="0.05" min="0">
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- === RIGHT COLUMN: Results === -->
+<div>
+
+  <!-- Scenario Presets -->
+  <div class="card" style="margin-bottom:24px;">
+    <h3>🎯 场景预设</h3>
+    <p style="font-size:12px;color:var(--text-light);margin-bottom:8px;">一键填入典型场景参数对比</p>
+    <div class="scenario-tabs">
+      <button class="scenario-tab active" data-scenario="normal">
+        基准场景
+        <span class="tag">出厂¥2.0 | 佣金5% | 退货8%</span>
+      </button>
+      <button class="scenario-tab" data-scenario="optimistic">
+        乐观场景
+        <span class="tag">出厂¥1.5 | 免佣金 | 退货5%</span>
+      </button>
+      <button class="scenario-tab" data-scenario="conservative">
+        保守场景
+        <span class="tag">出厂¥2.5 | 佣金8% | 退货15%</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Key Metrics -->
+  <div class="card" style="margin-bottom:24px;">
+    <h3>📈 核心指标</h3>
+    <div class="grid-4" id="metricCards">
+      <div class="metric-card green">
+        <div class="label">单盒总成本</div>
+        <div class="value" id="mCost">¥--</div>
+        <div class="sub" id="mCostSub">含所有可变成本</div>
+      </div>
+      <div class="metric-card gold">
+        <div class="label">单盒毛利</div>
+        <div class="value" id="mProfit">¥--</div>
+        <div class="sub" id="mProfitSub">零售价 - 总成本</div>
+      </div>
+      <div class="metric-card blue">
+        <div class="label">毛利率</div>
+        <div class="value" id="mMargin">--%</div>
+        <div class="sub" id="mMarginSub">毛利 ÷ 零售价</div>
+      </div>
+      <div class="metric-card" id="metricBe">
+        <div class="label">月保本销量</div>
+        <div class="value" id="mBreakEven">--</div>
+        <div class="sub" id="mBreakEvenSub">盒/月</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cost Breakdown -->
+  <div class="card" style="margin-bottom:24px;">
+    <h3>🔍 单盒成本结构</h3>
+    <div class="cost-bar-container" id="costBreakdown"></div>
+  </div>
+
+  <!-- 场景对比 -->
+  <div class="card" style="margin-bottom:24px;">
+    <h3>📊 批量规模预测</h3>
+    <p style="font-size:12px;color:var(--text-light);margin-bottom:10px;">不同采购量级下的成本变化（基于批量阶梯报价）</p>
+    <table class="volume-table" id="volumeTable">
+      <thead><tr><th>批次</th><th>采购量</th><th>出厂单价</th><th>单盒总成本</th><th>毛利率</th><th>月净利(5000盒)</th></tr></thead>
+      <tbody id="volumeBody"></tbody>
+    </table>
+  </div>
+
+  <!-- 售价敏感性 -->
+  <div class="card" style="margin-bottom:24px;">
+    <h3>📉 售价敏感性分析</h3>
+    <p style="font-size:12px;color:var(--text-light);margin-bottom:8px;">不同零售价下的毛利率变化（其他参数不变）</p>
+    <div class="sens-grid" id="sensitivityChart"></div>
+  </div>
+
+  <!-- Notes -->
+  <div class="note">
+    <strong>💡 使用说明：</strong>
+    左侧所有参数调整后，右侧指标实时更新。<br>
+    · <strong>基准场景</strong>基于商业计划书 V1.0 数据<br>
+    · 拿到代工厂最新报价后，填入<strong>"出厂价"</strong>字段即可<br>
+    · 退货率直接影响有效成本，抖音建议按 8-15% 预估<br>
+    · 批量阶梯报价可填入左侧底部，自动计算规模效应
+  </div>
+
+</div>
+</div>
+
+<hr class="sep">
+
+<!-- Full-width: 综合损益预估 -->
+<div class="card">
+  <h3>📋 月度损益预估 <span class="badge">基于上方参数</span></h3>
+  <div class="grid-3" style="gap:24px;">
+    <div>
+      <h4 style="font-size:14px;margin-bottom:12px;">📌 场景假设</h4>
+      <div class="form-group">
+        <label>月均销量 <span class="hint">盒</span></label>
+        <div class="input-row">
+          <input type="range" id="monthlyVolume" min="500" max="50000" step="500" value="5000">
+          <span class="range-value" id="monthlyVolumeVal">5,000 盒</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>达人直播占比 <span class="hint">含分佣的渠道占比</span></label>
+        <div class="input-row">
+          <input type="range" id="kolShare" min="0" max="100" step="5" value="60">
+          <span class="range-value" id="kolShareVal">60%</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h4 style="font-size:14px;margin-bottom:12px;">💰 月度损益表</h4>
+      <table id="pnlTable">
+        <thead><tr><th>项目</th><th style="text-align:right">金额</th></tr></thead>
+        <tbody id="pnlBody"></tbody>
+      </table>
+    </div>
+    <div>
+      <h4 style="font-size:14px;margin-bottom:12px;">📈 销量 vs 利润</h4>
+      <div id="profitChart" style="padding:4px 0;">
+        <div class="sens-row"><span class="sens-price">2000盒</span><div class="sens-bar"><div class="sens-fill positive" id="pc1" style="width:0%"></div></div><span class="sens-label" id="pc1l">¥0</span></div>
+        <div class="sens-row"><span class="sens-price">5000盒</span><div class="sens-bar"><div class="sens-fill positive" id="pc2" style="width:0%"></div></div><span class="sens-label" id="pc2l">¥0</span></div>
+        <div class="sens-row"><span class="sens-price">10000盒</span><div class="sens-bar"><div class="sens-fill positive" id="pc3" style="width:0%"></div></div><span class="sens-label" id="pc3l">¥0</span></div>
+        <div class="sens-row"><span class="sens-price">20000盒</span><div class="sens-bar"><div class="sens-fill positive" id="pc4" style="width:0%"></div></div><span class="sens-label" id="pc4l">¥0</span></div>
+        <div class="sens-row"><span class="sens-price">50000盒</span><div class="sens-bar"><div class="sens-fill positive" id="pc5" style="width:0%"></div></div><span class="sens-label" id="pc5l">¥0</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  湖北蕲愈科技有限公司 · 适元草品牌 &nbsp;|&nbsp; 数据仅供参考，以实际经营为准
+</div>
+
+</div>
+
+<script>
+// ============================================================
+// State
+// ============================================================
+const state = {
+  retailPrice: 49.9,
+  stickersPerBox: 5,
+  boxesPerOrder: 1,
+  oemUnitPrice: 2.00,
+  packagingCost: 1.50,
+  shippingCost: 5.5,
+  returnShipping: 6.0,
+  platformRate: 5,
+  adCost: 5.0,
+  kolRate: 0,
+  returnRate: 8,
+  otherCost: 0.5,
+  fixedSalary: 15000,
+  fixedRent: 3000,
+  fixedOther: 2000,
+  monthlyVolume: 5000,
+  kolShare: 60,
+  tier1Price: 2.20,
+  tier2Price: 1.80,
+  tier3Price: 1.50,
+};
+
+// SKU presets
+const SKUS = {
+  standard: { retailPrice: 49.9, stickersPerBox: 5, label: '标准装' },
+  trial: { retailPrice: 9.9, stickersPerBox: 2, label: '体验装' },
+  family: { retailPrice: 39.6667, stickersPerBox: 5, label: '家庭装' }, // 119/3=39.67
+  subscription: { retailPrice: 43, stickersPerBox: 5, label: '订阅季卡' }, // 129/3=43
+};
+
+// Scenarios
+const SCENARIOS = {
+  normal: {
+    label: '基准场景',
+    oemUnitPrice: 2.00, packagingCost: 1.50, shippingCost: 5.5, returnShipping: 6.0,
+    platformRate: 5, adCost: 5.0, kolRate: 0, returnRate: 8, otherCost: 0.5,
+    tier1Price: 2.20, tier2Price: 1.80, tier3Price: 1.50,
+  },
+  optimistic: {
+    label: '乐观场景',
+    oemUnitPrice: 1.50, packagingCost: 1.20, shippingCost: 4.5, returnShipping: 5.0,
+    platformRate: 3, adCost: 3.0, kolRate: 0, returnRate: 5, otherCost: 0.3,
+    tier1Price: 1.80, tier2Price: 1.40, tier3Price: 1.20,
+  },
+  conservative: {
+    label: '保守场景',
+    oemUnitPrice: 2.50, packagingCost: 2.00, shippingCost: 6.5, returnShipping: 7.0,
+    platformRate: 8, adCost: 8.0, kolRate: 0, returnRate: 15, otherCost: 0.8,
+    tier1Price: 2.50, tier2Price: 2.20, tier3Price: 1.80,
+  },
+};
+
+// ============================================================
+// Calculations
+// ============================================================
+function calc() {
+  const P = state.retailPrice;
+  const N = state.stickersPerBox;
+  const BPO = state.boxesPerOrder;
+  const OEM = state.oemUnitPrice;
+  const PKG = state.packagingCost;
+  const SHP = state.shippingCost;
+  const RSHP = state.returnShipping;
+  const COMM = state.platformRate / 100;
+  const AD = state.adCost;
+  const KOL = state.kolRate / 100;
+  const RET = state.returnRate / 100;
+  const OTH = state.otherCost;
+
+  // Per sold box (adjusted for returns)
+  // For every 1 sold box, we produce (1 + RET/(1-RET)) boxes due to returns
+  // But simpler: return loss per sold box = RET * (product + packaging + outbound shipping + return shipping)
+  const returnLossPerSoldBox = RET * (N * OEM + PKG + SHP/BPO + RSHP/BPO);
+
+  const shippingPerBox = SHP / BPO;
+  const commissionPerBox = P * COMM;
+  const kolPerBox = P * KOL;
+
+  const totalVarCost = (N * OEM) + PKG + shippingPerBox + commissionPerBox + AD + kolPerBox + OTH + returnLossPerSoldBox;
+  const grossProfit = P - totalVarCost;
+  const grossMargin = P > 0 ? grossProfit / P : 0;
+
+  // Weighted KOL cost for P&L
+  const kolSharePct = state.kolShare / 100;
+  const weightedKolPerBox = P * KOL * kolSharePct;
+
+  const totalVarCostPnL = (N * OEM) + PKG + shippingPerBox + commissionPerBox + AD + weightedKolPerBox + OTH + returnLossPerSoldBox;
+  const profitPerBoxPnL = P - totalVarCostPnL;
+
+  // Fixed costs
+  const fixedTotal = state.fixedSalary + state.fixedRent + state.fixedOther;
+
+  // Break-even (using weighted cost since KOL is optional)
+  const beVolume = profitPerBoxPnL > 0 ? Math.ceil(fixedTotal / profitPerBoxPnL) : Infinity;
+
+  // Monthly P&L
+  const vol = state.monthlyVolume;
+  const monthlyRevenue = vol * P;
+  const monthlyCOGS = vol * (N * OEM + PKG);
+  const monthlyShipping = vol * shippingPerBox;
+  const monthlyCommission = vol * commissionPerBox;
+  const monthlyAd = vol * AD;
+  const monthlyKol = vol * weightedKolPerBox;
+  const monthlyReturnLoss = vol * returnLossPerSoldBox;
+  const monthlyOtherVar = vol * OTH;
+  const monthlyTotalVar = monthlyCOGS + monthlyShipping + monthlyCommission + monthlyAd + monthlyKol + monthlyReturnLoss + monthlyOtherVar;
+  const monthlyGrossProfit = monthlyRevenue - monthlyTotalVar;
+  const monthlyNetProfit = monthlyGrossProfit - fixedTotal;
+
+  // Volume tiers
+  const tiers = [
+    { volume: '首批', qty: 5000, price: state.tier1Price },
+    { volume: '追量', qty: 20000, price: state.tier2Price },
+    { volume: '规模', qty: 50000, price: state.tier3Price },
+  ];
+  const tierResults = tiers.map(t => {
+    const oem = t.price;
+    const rls = RET * (N * oem + PKG + shippingPerBox + RSHP/BPO);
+    const tc = (N * oem) + PKG + shippingPerBox + commissionPerBox + AD + kolPerBox + OTH + rls;
+    const gp = P - tc;
+    const gm = P > 0 ? gp / P : 0;
+    const np = (gp * 5000) - fixedTotal; // monthly profit at 5000 boxes
+    return { ...t, oemPrice: oem, totalCost: tc, margin: gm, monthlyProfit: np };
+  });
+
+  // Sensitivity: different price points
+  const sensPrices = [29.9, 39.9, 49.9, 59.9, 69.9];
+  const sensResults = sensPrices.map(sp => {
+    // Recalc with same costs but different price
+    const c = commissionPerBox / P * sp; // proportional commission
+    const k = kolPerBox / P * sp;
+    const tc = (N * OEM) + PKG + shippingPerBox + c + AD + k + OTH + returnLossPerSoldBox;
+    const gp = sp - tc;
+    const gm = sp > 0 ? gp / sp : 0;
+    return { price: sp, cost: tc, profit: gp, margin: gm };
+  });
+
+  // Volume projection chart (profit at different volumes)
+  const volPoints = [2000, 5000, 10000, 20000, 50000];
+  const volProfits = volPoints.map(v => {
+    const rev = v * P;
+    const varC = v * totalVarCostPnL;
+    return rev - varC - fixedTotal;
+  });
+  const maxProfit = Math.max(...volProfits.map(Math.abs), 1);
+
+  return {
+    totalVarCost, grossProfit, grossMargin,
+    profitPerBoxPnL, fixedTotal, beVolume,
+    monthlyRevenue, monthlyCOGS, monthlyShipping, monthlyCommission,
+    monthlyAd, monthlyKol, monthlyReturnLoss, monthlyOtherVar,
+    monthlyTotalVar, monthlyGrossProfit, monthlyNetProfit,
+    tierResults, sensResults, volProfits, maxProfit,
+    returnLossPerSoldBox, shippingPerBox, commissionPerBox, kolPerBox,
+    weightedKolPerBox,
+    breakdown: [
+      { label: '出厂成本', value: N * OEM, color: '#5A7A4A' },
+      { label: '包装成本', value: PKG, color: '#C4956A' },
+      { label: '快递费', value: shippingPerBox, color: '#4A8DB7' },
+      { label: '平台佣金', value: commissionPerBox, color: '#D35D5D' },
+      { label: '投流成本', value: AD, color: '#8B5CF6' },
+      { label: '退货损耗', value: returnLossPerSoldBox, color: '#E88D3B' },
+      { label: '其他成本', value: OTH, color: '#999' },
+    ],
+  };
+}
+
+// ============================================================
+// Rendering
+// ============================================================
+function render() {
+  const r = calc();
+
+  // Metrics
+  document.getElementById('mCost').textContent = '¥' + r.totalVarCost.toFixed(2);
+  document.getElementById('mCostSub').textContent = `含${state.stickersPerBox}贴出厂 + 包装 + 履约`;
+  document.getElementById('mProfit').textContent = '¥' + r.grossProfit.toFixed(2);
+  document.getElementById('mProfitSub').textContent = `零售价${state.retailPrice.toFixed(1)} - 总成本${r.totalVarCost.toFixed(2)}`;
+  document.getElementById('mMargin').textContent = (r.grossMargin * 100).toFixed(1) + '%';
+  document.getElementById('mMarginSub').textContent = (r.grossMargin * 100) >= 40 ? '✅ 健康毛利' : '⚠️ 偏低';
+  document.getElementById('mBreakEven').textContent = r.beVolume === Infinity ? '∞' : r.beVolume.toLocaleString();
+  document.getElementById('mBreakEvenSub').textContent = `月固定成本 ¥${r.fixedTotal.toLocaleString()}`;
+
+  // Color metrics based on margin
+  const mm = document.getElementById('mMargin');
+  const mc = document.getElementById('metricCards').children[2];
+  if (r.grossMargin >= 0.4) {
+    mc.className = 'metric-card green';
+  } else if (r.grossMargin >= 0.2) {
+    mc.className = 'metric-card gold';
+  } else {
+    mc.className = 'metric-card red';
+  }
+
+  // Cost breakdown
+  const total = r.breakdown.reduce((s, i) => s + i.value, 0) || 1;
+  const colors = ['#5A7A4A','#C4956A','#4A8DB7','#D35D5D','#8B5CF6','#E88D3B','#999'];
+  let html = '';
+  r.breakdown.forEach((item, i) => {
+    const pct = (item.value / total * 100);
+    if (item.value <= 0) return;
+    html += `
+      <div class="cost-item">
+        <span class="bar-label">${item.label}</span>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${pct}%;background:${colors[i]};"></div>
+        </div>
+        <span class="bar-value">¥${item.value.toFixed(2)}</span>
+        <span class="bar-pct">${pct.toFixed(1)}%</span>
+      </div>
+    `;
+  });
+  // Total
+  html += `
+    <div class="cost-item" style="font-weight:700;border-top:1px solid var(--border);padding-top:6px;">
+      <span class="bar-label">合计</span>
+      <div class="bar-track" style="background:transparent;"></div>
+      <span class="bar-value">¥${total.toFixed(2)}</span>
+      <span class="bar-pct">100%</span>
+    </div>
+  `;
+  document.getElementById('costBreakdown').innerHTML = html;
+
+  // Volume tiers
+  let vhtml = '';
+  r.tierResults.forEach(t => {
+    const mClass = t.margin >= 0.4 ? 'green' : t.margin >= 0.2 ? 'gold' : 'red';
+    const pClass = t.monthlyProfit >= 0 ? 'green' : 'red';
+    vhtml += `<tr>
+      <td>${t.volume}</td>
+      <td>${t.qty.toLocaleString()}</td>
+      <td>¥${t.oemPrice.toFixed(2)}</td>
+      <td>¥${t.totalCost.toFixed(2)}</td>
+      <td style="color:var(--${mClass});font-weight:600;">${(t.margin * 100).toFixed(1)}%</td>
+      <td style="color:var(--${pClass});font-weight:600;">${t.monthlyProfit >= 0 ? '+' : ''}¥${t.monthlyProfit.toFixed(0)}</td>
+    </tr>`;
+  });
+  document.getElementById('volumeBody').innerHTML = vhtml;
+
+  // Sensitivity
+  const maxSensProfit = Math.max(...r.sensResults.map(s => Math.abs(s.profit)), 1);
+  let shtml = '';
+  r.sensResults.forEach(s => {
+    const pct = (s.profit / maxSensProfit) * 100;
+    const cls = s.profit >= 0 ? 'positive' : 'negative';
+    const color = s.profit >= 0 ? 'var(--brand-green)' : 'var(--red)';
+    shtml += `
+      <div class="sens-row">
+        <span class="sens-price">¥${s.price.toFixed(1)}</span>
+        <div class="sens-bar">
+          <div class="sens-fill ${cls}" style="width:${Math.abs(pct)}%;background:${color};"></div>
+        </div>
+        <span class="sens-label" style="color:${color};">¥${s.profit.toFixed(2)} / ${(s.margin*100).toFixed(1)}%</span>
+      </div>
+    `;
+  });
+  document.getElementById('sensitivityChart').innerHTML = shtml;
+
+  // Monthly P&L
+  const pnlItems = [
+    { label: '营收', value: r.monthlyRevenue, cls: '' },
+    { label: '减：出厂成本', value: -r.monthlyCOGS, cls: '' },
+    { label: '减：包装成本', value: -r.monthlyCOGS + (state.monthlyVolume * state.stickersPerBox * state.oemUnitPrice), cls: '' },
+  ];
+  // Rebuild cleanly
+  let phtml = '';
+  const rows = [
+    { label: '营业收入', val: r.monthlyRevenue, cls: '', fmt: true },
+    { label: '营业成本', val: 0, cls: 'sep', fmt: false },
+    { label: '  出厂成本', val: -r.monthlyCOGS, cls: '', fmt: true },
+    { label: '  包装费', val: -(state.monthlyVolume * state.packagingCost), cls: '', fmt: true },
+    { label: '  快递费', val: -r.monthlyShipping, cls: '', fmt: true },
+    { label: '  退货损耗', val: -r.monthlyReturnLoss, cls: '', fmt: true },
+    { label: '  其他变动成本', val: -r.monthlyOtherVar, cls: '', fmt: true },
+    { label: '毛利', val: r.monthlyGrossProfit + r.monthlyAd + r.monthlyCommission + r.monthlyKol, cls: 'subtotal', fmt: true },
+    { label: '销售费用', val: 0, cls: 'sep', fmt: false },
+    { label: '  平台佣金', val: -r.monthlyCommission, cls: '', fmt: true },
+    { label: '  投流费用', val: -r.monthlyAd, cls: '', fmt: true },
+    { label: '  达人分佣', val: -r.monthlyKol, cls: '', fmt: true },
+    { label: '固定费用', val: 0, cls: 'sep', fmt: false },
+    { label: '  人力成本', val: -state.fixedSalary, cls: '', fmt: true },
+    { label: '  仓储/场地', val: -state.fixedRent, cls: '', fmt: true },
+    { label: '  其他固定', val: -state.fixedOther, cls: '', fmt: true },
+    { label: '净利润', val: r.monthlyNetProfit, cls: 'total', fmt: true },
+  ];
+  rows.forEach(row => {
+    if (row.cls === 'sep') {
+      phtml += `<tr style="border-top:1px solid var(--border);"><td colspan="2"></td></tr>`;
+      return;
+    }
+    const valStr = row.val >= 0 ? `¥${row.val.toFixed(0)}` : `-¥${Math.abs(row.val).toFixed(0)}`;
+    const color = row.cls === 'total' ? '' : (row.val < 0 ? 'var(--red)' : row.val > 0 ? 'var(--brand-green)' : '');
+    phtml += `<tr${row.cls === 'total' ? ' class="total"' : ''}>
+      <td style="${color ? 'color:'+color : ''}">${row.label}</td>
+      <td style="text-align:right;${color ? 'color:'+color : ''}">${valStr}</td>
+    </tr>`;
+  });
+  // Fix: add gross profit line
+  const gpRow = rows.find(r => r.label === '毛利');
+  // Actually let me just rewrite the P&L cleanly
+  phtml = `
+    <tr><td>营业收入</td><td style="color:var(--brand-green);">¥${r.monthlyRevenue.toFixed(0)}</td></tr>
+    <tr style="border-top:1px solid var(--border);"><td colspan="2"></td></tr>
+    <tr><td>出厂成本</td><td style="color:var(--red);">-¥${r.monthlyCOGS.toFixed(0)}</td></tr>
+    <tr><td>包装费</td><td style="color:var(--red);">-¥${(state.monthlyVolume * state.packagingCost).toFixed(0)}</td></tr>
+    <tr><td>快递费</td><td style="color:var(--red);">-¥${r.monthlyShipping.toFixed(0)}</td></tr>
+    <tr><td>退货损耗</td><td style="color:var(--red);">-¥${r.monthlyReturnLoss.toFixed(0)}</td></tr>
+    <tr><td>其他变动成本</td><td style="color:var(--red);">-¥${r.monthlyOtherVar.toFixed(0)}</td></tr>
+    <tr><td>平台佣金</td><td style="color:var(--red);">-¥${r.monthlyCommission.toFixed(0)}</td></tr>
+    <tr><td>投流费用</td><td style="color:var(--red);">-¥${r.monthlyAd.toFixed(0)}</td></tr>
+    <tr><td>达人分佣</td><td style="color:var(--red);">-¥${r.monthlyKol.toFixed(0)}</td></tr>
+    <tr style="border-top:1px solid var(--border);"><td colspan="2"></td></tr>
+    <tr><td>人力成本</td><td style="color:var(--red);">-¥${state.fixedSalary.toFixed(0)}</td></tr>
+    <tr><td>仓储/场地</td><td style="color:var(--red);">-¥${state.fixedRent.toFixed(0)}</td></tr>
+    <tr><td>其他固定</td><td style="color:var(--red);">-¥${state.fixedOther.toFixed(0)}</td></tr>
+    <tr class="total"><td>净利润</td><td style="color:${r.monthlyNetProfit >= 0 ? 'var(--brand-green)' : 'var(--red)'};">${r.monthlyNetProfit >= 0 ? '+' : ''}¥${r.monthlyNetProfit.toFixed(0)}</td></tr>
+  `;
+  document.getElementById('pnlBody').innerHTML = phtml;
+
+  // Volume profit chart
+  const vpProfits = r.volProfits;
+  const maxVp = Math.max(...vpProfits.map(Math.abs), 1);
+  const vpLabels = ['2000盒','5000盒','1万盒','2万盒','5万盒'];
+  vpProfits.forEach((p, i) => {
+    const pct = (p / maxVp) * 100;
+    const el = document.getElementById('pc' + (i+1));
+    const elL = document.getElementById('pc' + (i+1) + 'l');
+    if (el) {
+      el.style.width = Math.max(0, Math.abs(pct)) + '%';
+      el.style.background = p >= 0 ? 'var(--brand-green)' : 'var(--red)';
+    }
+    if (elL) {
+      elL.textContent = (p >= 0 ? '+' : '') + '¥' + p.toFixed(0);
+      elL.style.color = p >= 0 ? 'var(--brand-green)' : 'var(--red)';
+    }
+  });
+}
+
+// ============================================================
+// Event Binding
+// ============================================================
+function bindInputs() {
+  // Number inputs
+  document.querySelectorAll('input[type="number"]').forEach(el => {
+    el.addEventListener('input', () => {
+      const id = el.id;
+      if (state.hasOwnProperty(id)) {
+        state[id] = parseFloat(el.value) || 0;
+      }
+      render();
+      updateFactoryQuoteDisplay();
+    });
+  });
+
+  // Range inputs
+  document.querySelectorAll('input[type="range"]').forEach(el => {
+    el.addEventListener('input', () => {
+      const id = el.id;
+      if (state.hasOwnProperty(id)) {
+        state[id] = parseFloat(el.value) || 0;
+      }
+      // Update range display
+      const valEl = document.getElementById(id + 'Val');
+      if (valEl) {
+        if (id === 'platformRate' || id === 'kolRate' || id === 'returnRate') {
+          valEl.textContent = state[id] + '%';
+        } else if (id === 'boxesPerOrder') {
+          valEl.textContent = state[id] + (state[id] > 1 ? ' 盒' : ' 盒');
+        } else if (id === 'monthlyVolume') {
+          valEl.textContent = Number(state[id]).toLocaleString() + ' 盒';
+        } else if (id === 'kolShare') {
+          valEl.textContent = state[id] + '%';
+        } else {
+          valEl.textContent = state[id];
+        }
+      }
+      render();
+      updateFactoryQuoteDisplay();
+    });
+  });
+}
+
+// Factory quote display
+function updateFactoryQuoteDisplay() {
+  const el = document.getElementById('factoryQuoteDisplay');
+  if (el) {
+    el.value = '¥' + state.oemUnitPrice.toFixed(2) + '/贴';
+  }
+}
+
+// SKU selector
+function bindSKUSelector() {
+  document.querySelectorAll('.sku-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.sku-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const sku = btn.dataset.sku;
+      const data = SKUS[sku];
+      if (!data) return;
+
+      document.getElementById('retailPrice').value = data.retailPrice.toFixed(1);
+      state.retailPrice = data.retailPrice;
+
+      if (data.stickersPerBox) {
+        document.getElementById('stickersPerBox').value = data.stickersPerBox;
+        state.stickersPerBox = data.stickersPerBox;
+      }
+
+      // Family pack: 3 boxes per order
+      if (sku === 'family') {
+        document.getElementById('boxesPerOrder').value = 3;
+        state.boxesPerOrder = 3;
+        document.getElementById('boxesPerOrderVal').textContent = '3 盒';
+      } else {
+        document.getElementById('boxesPerOrder').value = 1;
+        state.boxesPerOrder = 1;
+        document.getElementById('boxesPerOrderVal').textContent = '1 盒';
+      }
+
+      render();
+    });
+  });
+}
+
+// Scenario presets
+function bindScenarios() {
+  document.querySelectorAll('.scenario-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.scenario-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const sc = tab.dataset.scenario;
+      const data = SCENARIOS[sc];
+      if (!data) return;
+
+      Object.keys(data).forEach(key => {
+        if (key === 'label') return;
+        const el = document.getElementById(key);
+        if (el) {
+          el.value = data[key];
+          state[key] = data[key];
+          // Update range display
+          const valEl = document.getElementById(key + 'Val');
+          if (valEl) {
+            if (key === 'platformRate' || key === 'kolRate' || key === 'returnRate') {
+              valEl.textContent = data[key] + '%';
+            } else {
+              valEl.textContent = data[key];
+            }
+          }
+        }
+      });
+
+      // Recalc break-even
+      state.fixedSalary = parseFloat(document.getElementById('fixedSalary').value) || 15000;
+      state.fixedRent = parseFloat(document.getElementById('fixedRent').value) || 3000;
+      state.fixedOther = parseFloat(document.getElementById('fixedOther').value) || 2000;
+
+      render();
+      updateFactoryQuoteDisplay();
+    });
+  });
+}
+
+// ============================================================
+// Init
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  bindInputs();
+  bindSKUSelector();
+  bindScenarios();
+  // Update all range displays
+  document.querySelectorAll('input[type="range"]').forEach(el => {
+    const id = el.id;
+    const valEl = document.getElementById(id + 'Val');
+    if (valEl) {
+      if (id === 'platformRate' || id === 'kolRate' || id === 'returnRate') {
+        valEl.textContent = state[id] + '%';
+      } else if (id === 'boxesPerOrder') {
+        valEl.textContent = state[id] + ' 盒';
+      } else if (id === 'monthlyVolume') {
+        valEl.textContent = Number(state[id]).toLocaleString() + ' 盒';
+      } else if (id === 'kolShare') {
+        valEl.textContent = state[id] + '%';
+      }
+    }
+  });
+  render();
+  updateFactoryQuoteDisplay();
+});
+</script>
+
+</body>
+</html>
