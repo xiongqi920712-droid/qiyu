@@ -541,16 +541,6 @@ function render() {
     tierOpts += '<option value="-1"' + (p.selectedTier === -1 ? ' selected' : '') + '>手动输入</option>';
   }
 
-  // Build tier options
-  const hasTiers = p.tiers && p.tiers.length > 0;
-  let tierOpts = '';
-  if (hasTiers) {
-    p.tiers.forEach((t, ti) => {
-      tierOpts += '<option value="' + ti + '"' + (ti === p.selectedTier ? ' selected' : '') + '>' + t.label + ' ¥' + t.oem.toFixed(2) + '</option>';
-    });
-    tierOpts += '<option value="-1"' + (p.selectedTier === -1 ? ' selected' : '') + '>手动输入</option>';
-  }
-
     phtml += `<div class="prod-card">
       <div class="pname">${p.name}</div>
       <div class="pfactory">
