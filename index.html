@@ -559,40 +559,50 @@ function defaultFactory(name) {
 }
 
 const DEFAULT_PRODUCTS = {
-  '蕲艾护颈贴': {
-    retailPrice: 49.9, stickersPerBox: 5, boxesPerOrder: 1,
-    platformRate: 5, adCost: 5.0, kolRate: 0, returnRate: 8, otherCost: 0.5,
+  '艾草精华贴': {
+    retailPrice: 79, stickersPerBox: 1, boxesPerOrder: 1,
+    platformRate: 5, adCost: 6, kolRate: 0, returnRate: 8, otherCost: 0.5,
     fixedSalary: 15000, fixedRent: 3000, fixedOther: 2000,
-    monthlyVolume: 5000, kolShare: 60,
+    monthlyVolume: 8000, kolShare: 60,
     factories: {
-      '李时珍国灸集团': { oemUnitPrice: 2.00, packagingCost: 1.50, shippingCost: 5.5, returnShipping: 6.0, tier1Price: 2.20, tier2Price: 1.80, tier3Price: 1.50, note: '龙头企业，资质完整' },
-      '蕲春艾生堂':     { oemUnitPrice: 1.80, packagingCost: 1.30, shippingCost: 5.0, returnShipping: 5.5, tier1Price: 2.00, tier2Price: 1.60, tier3Price: 1.30, note: '支持OEM定制' },
-      '南阳嵘祥药业':   { oemUnitPrice: 1.50, packagingCost: 1.20, shippingCost: 5.0, returnShipping: 5.5, tier1Price: 1.70, tier2Price: 1.40, tier3Price: 1.20, note: '8年老厂，艾灸贴专业' },
+      '来艾·10万级': { oemUnitPrice: 12.66, packagingCost: 0, shippingCost: 0, returnShipping: 6.0, tier1Price: 12.66, tier2Price: 12.66, tier3Price: 12.66, note: '含税运到库，起订10万盒' },
+      '来艾·5万级':  { oemUnitPrice: 13.69, packagingCost: 0, shippingCost: 0, returnShipping: 6.0, tier1Price: 13.69, tier2Price: 13.69, tier3Price: 13.69, note: '含税运到库，起订5万盒' },
+      '来艾·1万级':  { oemUnitPrice: 14.86, packagingCost: 0, shippingCost: 0, returnShipping: 6.0, tier1Price: 14.86, tier2Price: 14.86, tier3Price: 14.86, note: '含税运到库，起订1万盒（首单推荐）' },
+      '艾艾贴·10万级': { oemUnitPrice: 15.77, packagingCost: 0, shippingCost: 0, returnShipping: 6.0, tier1Price: 15.77, tier2Price: 15.77, tier3Price: 15.77, note: '1贴+草本精华/袋，10袋/盒' },
+      '艾艾贴·5万级':  { oemUnitPrice: 17.13, packagingCost: 0, shippingCost: 0, returnShipping: 6.0, tier1Price: 17.13, tier2Price: 17.13, tier3Price: 17.13, note: '含税运到库' },
+      '艾艾贴·1万级':  { oemUnitPrice: 18.61, packagingCost: 0, shippingCost: 0, returnShipping: 6.0, tier1Price: 18.61, tier2Price: 18.61, tier3Price: 18.61, note: '含税运到库' },
     },
-    selectedFactories: ['李时珍国灸集团', '蕲春艾生堂'],
-    activeFactory: '李时珍国灸集团',
+    selectedFactories: ['来艾·10万级', '来艾·1万级'],
+    activeFactory: '来艾·10万级',
   },
-  '随身草灸': {
-    retailPrice: 39.9, stickersPerBox: 6, boxesPerOrder: 1,
-    platformRate: 5, adCost: 4.0, kolRate: 0, returnRate: 8, otherCost: 0.5,
+  '艾灸器': {
+    retailPrice: 49.9, stickersPerBox: 1, boxesPerOrder: 1,
+    platformRate: 5, adCost: 4, kolRate: 0, returnRate: 8, otherCost: 0.5,
     fixedSalary: 15000, fixedRent: 3000, fixedOther: 2000,
     monthlyVolume: 3000, kolShare: 60,
     factories: {
-      '蕲春千年艾': { oemUnitPrice: 1.80, packagingCost: 1.80, shippingCost: 5.5, returnShipping: 6.0, tier1Price: 2.00, tier2Price: 1.60, tier3Price: 1.30, note: '综合产品线' },
+      '时珍本草·5000': { oemUnitPrice: 10.92, packagingCost: 0, shippingCost: 0, returnShipping: 6.0, tier1Price: 10.92, tier2Price: 10.82, tier3Price: 10.62, note: '30粒/盒，含税含到库运费' },
+      '时珍本草·1万':  { oemUnitPrice: 10.82, packagingCost: 0, shippingCost: 0, returnShipping: 6.0, tier1Price: 10.92, tier2Price: 10.82, tier3Price: 10.62, note: '含税含到库运费' },
+      '时珍本草·10万': { oemUnitPrice: 10.62, packagingCost: 0, shippingCost: 0, returnShipping: 6.0, tier1Price: 10.92, tier2Price: 10.82, tier3Price: 10.62, note: '含税含到库运费' },
+      '艾艾贴·5000':  { oemUnitPrice: 16.80, packagingCost: 0, shippingCost: 0, returnShipping: 6.0, tier1Price: 16.80, tier2Price: 15.36, tier3Price: 14.16, note: '30粒/盒，含税含到库运费' },
+      '艾艾贴·1万':   { oemUnitPrice: 15.36, packagingCost: 0, shippingCost: 0, returnShipping: 6.0, tier1Price: 16.80, tier2Price: 15.36, tier3Price: 14.16, note: '含税含到库运费' },
+      '艾艾贴·10万':  { oemUnitPrice: 14.16, packagingCost: 0, shippingCost: 0, returnShipping: 6.0, tier1Price: 16.80, tier2Price: 15.36, tier3Price: 14.16, note: '含税含到库运费' },
     },
-    selectedFactories: ['蕲春千年艾'],
-    activeFactory: '蕲春千年艾',
+    selectedFactories: ['时珍本草·5000', '艾艾贴·1万'],
+    activeFactory: '时珍本草·5000',
   },
-  '三伏柔贴': {
-    retailPrice: 59.9, stickersPerBox: 5, boxesPerOrder: 1,
-    platformRate: 5, adCost: 6.0, kolRate: 0, returnRate: 8, otherCost: 0.5,
+  '60艾条': {
+    retailPrice: 29.9, stickersPerBox: 1, boxesPerOrder: 1,
+    platformRate: 5, adCost: 3, kolRate: 0, returnRate: 8, otherCost: 0.5,
     fixedSalary: 15000, fixedRent: 3000, fixedOther: 2000,
     monthlyVolume: 2000, kolShare: 60,
     factories: {
-      '河南赫艾堂': { oemUnitPrice: 2.50, packagingCost: 1.80, shippingCost: 5.5, returnShipping: 6.0, tier1Price: 2.80, tier2Price: 2.30, tier3Price: 1.80, note: '价格低，适合测品' },
+      '时珍本草·1万起': { oemUnitPrice: 12.70, packagingCost: 1.0, shippingCost: 5.5, returnShipping: 6.0, tier1Price: 12.70, tier2Price: 12.32, tier3Price: 11.95, note: '60艾条4道绒，含税不含运' },
+      '时珍本草·5万起': { oemUnitPrice: 12.32, packagingCost: 1.0, shippingCost: 5.5, returnShipping: 6.0, tier1Price: 12.70, tier2Price: 12.32, tier3Price: 11.95, note: '含税不含运' },
+      '时珍本草·10万起': { oemUnitPrice: 11.95, packagingCost: 1.0, shippingCost: 5.5, returnShipping: 6.0, tier1Price: 12.70, tier2Price: 12.32, tier3Price: 11.95, note: '含税不含运' },
     },
-    selectedFactories: ['河南赫艾堂'],
-    activeFactory: '河南赫艾堂',
+    selectedFactories: ['时珍本草·1万起'],
+    activeFactory: '时珍本草·1万起',
   },
 };
 
