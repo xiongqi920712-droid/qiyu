@@ -222,8 +222,8 @@ table .neg { color:var(--red); }
     </div>
     <div class="control-group">
       <label>月固定成本</label>
-      <input type="range" id="ctrlFixed" min="10000" max="50000" step="1000" value="20000">
-      <div class="cval" id="ctrlFixedVal">¥20,000</div>
+      <input type="range" id="ctrlFixed" min="1" max="1000000" step="1000" value="20000">
+      <div class="cval" id="ctrlFixedVal"><input type="number" id="ctrlFixedInput" value="20000" step="1000" min="1" max="10000000" style="width:90px;padding:1px 4px;border:1px solid var(--border);border-radius:3px;font-size:12px;font-weight:600;text-align:center;"></div>
     </div>
     <div class="control-group">
       <label>达人分佣率</label>
@@ -385,6 +385,7 @@ function resetToDefaults() {
   document.getElementById('ctrlRet').value = 8;
   document.getElementById('ctrlOther').value = 0.5;
   document.getElementById('ctrlFixed').value = 20000;
+  document.getElementById('ctrlFixedInput').value = 20000;
   document.getElementById('ctrlKol').value = 0;
   document.getElementById('ctrlKolShare').value = 0;
   updateSliderLabels();
@@ -837,7 +838,7 @@ function bindControls() {
     ctrlComm: { prop: 'commRate', fmt: v => v + '%' },
     ctrlRet: { prop: 'retRate', fmt: v => v + '%' },
     ctrlOther: { prop: 'otherCost', fmt: v => '¥' + parseFloat(v).toFixed(1) },
-    ctrlFixed: { prop: 'fixedCost', fmt: v => '¥' + Number(v).toLocaleString() },
+    ctrlFixed: { prop: 'fixedCost', fmt: v => { document.getElementById('ctrlFixedInput').value = v; return '¥' + Number(v).toLocaleString(); } },
     ctrlKol: { prop: 'kolRate', fmt: v => v + '%' },
     ctrlKolShare: { prop: 'kolShare', fmt: v => v + '%' },
   };
@@ -868,10 +869,20 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('ctrlComm').value = ctrl.commRate;
   document.getElementById('ctrlRet').value = ctrl.retRate;
   document.getElementById('ctrlOther').value = ctrl.otherCost;
-  document.getElementById('ctrlFixed').value = ctrl.fixedCost;
+  document.getElementById('ctrlFixed').value = Math.min(Math.max(ctrl.fixedCost, 1), 1000000);
+  document.getElementById('ctrlFixedInput').value = ctrl.fixedCost;
   document.getElementById('ctrlKol').value = ctrl.kolRate;
   document.getElementById('ctrlKolShare').value = ctrl.kolShare;
   updateSliderLabels();
+
+  // Manual input for fixed cost
+  document.getElementById('ctrlFixedInput').addEventListener('input', function() {
+    const v = parseInt(this.value) || 0;
+    ctrl.fixedCost = v;
+    document.getElementById('ctrlFixed').value = Math.min(Math.max(v, 1), 1000000);
+    saveState();
+    render();
+  });
 
   bindControls();
   render();
