@@ -360,13 +360,31 @@ function loadState() {
     if (raw) {
       const data = JSON.parse(raw);
       if (data.prods && data.prods.essence) {
-        prods = data.prods;
+        // Merge saved data over defaults so missing fields get filled
+        const merged = JSON.parse(JSON.stringify(PRODUCT_DEFAULTS));
         ['essence', 'moxa', 'stick'].forEach(key => {
-          if (!prods[key].tiers && PRODUCT_DEFAULTS[key]) {
-            prods[key].tiers = JSON.parse(JSON.stringify(PRODUCT_DEFAULTS[key].tiers));
-            prods[key].selectedTier = -1;
+          const saved = data.prods[key];
+          const def = PRODUCT_DEFAULTS[key];
+          if (saved) {
+            // Overlay saved values onto defaults
+            Object.keys(def).forEach(k => {
+              if (saved[k] !== undefined) merged[key][k] = saved[k];
+            });
+            // Migration: add tiers if missing
+            if (!saved.tiers && def) {
+              merged[key].tiers = JSON.parse(JSON.stringify(def.tiers));
+              merged[key].selectedTier = -1;
+            }
+            // Ensure oem from tier if missing or selectedTier is -1
+            if (merged[key].oem === undefined || merged[key].selectedTier === -1) {
+              if (merged[key].tiers && merged[key].tiers.length > 0) {
+                merged[key].oem = merged[key].tiers[0].oem;
+                if (merged[key].selectedTier === -1) merged[key].selectedTier = 0;
+              }
+            }
           }
         });
+        prods = merged;
         if (data.ctrl) {
           Object.keys(data.ctrl).forEach(k => {
             if (ctrl.hasOwnProperty(k)) ctrl[k] = data.ctrl[k];
@@ -845,6 +863,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const p = prods[key];
     if (p.tiers && p.tiers.length > 0 && p.selectedTier >= 0 && p.selectedTier < p.tiers.length) {
       p.oem = p.tiers[p.selectedTier].oem;
+    }
+    // Safety net: ensure oem is always set
+    if (p.oem === undefined && p.tiers && p.tiers.length > 0) {
+      p.oem = p.tiers[0].oem;
+      p.selectedTier = 0;
     }
   });
   // Sync slider positions from loaded ctrl
