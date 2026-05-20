@@ -233,7 +233,7 @@ table .neg { color:var(--red); }
     <div class="control-group">
       <label>月固定成本 <span style="font-weight:400;color:#999;">(基准¥20,000)</span></label>
       <input type="range" id="ctrlFixed" min="1" max="1000000" step="1000" value="20000">
-      <div class="cval" id="ctrlFixedVal"><input type="number" id="ctrlFixedInput" value="20000" step="1000" min="1" max="10000000" style="width:90px;padding:1px 4px;border:1px solid var(--border);border-radius:3px;font-size:12px;font-weight:600;text-align:center;"></div>
+      <div class="cval" id="ctrlFixedVal"><span id="ctrlFixedDisplay">¥20,000</span> <input type="number" id="ctrlFixedInput" value="20000" step="1000" min="1" max="10000000" style="width:90px;padding:1px 4px;border:1px solid var(--border);border-radius:3px;font-size:12px;font-weight:600;text-align:center;"></div>
     </div>
     <div class="control-group">
       <label>达人分佣率 <span style="font-weight:400;color:#999;">(按渠道策略调整)</span></label>
@@ -425,7 +425,7 @@ function updateSliderLabels() {
   document.getElementById('ctrlCommVal').textContent = ctrl.commRate + '%';
   document.getElementById('ctrlRetVal').textContent = ctrl.retRate + '%';
   document.getElementById('ctrlOtherVal').textContent = '¥' + ctrl.otherCost.toFixed(1);
-  document.getElementById('ctrlFixedVal').textContent = '¥' + Number(ctrl.fixedCost).toLocaleString();
+  document.getElementById('ctrlFixedDisplay').textContent = '¥' + Number(ctrl.fixedCost).toLocaleString();
   document.getElementById('ctrlKolVal').textContent = ctrl.kolRate + '%';
   document.getElementById('ctrlKolShareVal').textContent = ctrl.kolShare + '%';
 }
@@ -834,7 +834,7 @@ function bindControls() {
     ctrlComm: { prop: 'commRate', fmt: v => v + '%' },
     ctrlRet: { prop: 'retRate', fmt: v => v + '%' },
     ctrlOther: { prop: 'otherCost', fmt: v => '¥' + parseFloat(v).toFixed(1) },
-    ctrlFixed: { prop: 'fixedCost', fmt: v => { document.getElementById('ctrlFixedInput').value = v; return '¥' + Number(v).toLocaleString(); } },
+    ctrlFixed: { prop: 'fixedCost', fmt: v => { document.getElementById('ctrlFixedInput').value = v; document.getElementById('ctrlFixedDisplay').textContent = '¥' + Number(v).toLocaleString(); return ''; } },
     ctrlKol: { prop: 'kolRate', fmt: v => v + '%' },
     ctrlKolShare: { prop: 'kolShare', fmt: v => v + '%' },
   };
