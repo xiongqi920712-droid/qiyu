@@ -854,6 +854,11 @@ function bindControls() {
 // INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
+  // ?reset in URL clears localStorage
+  if (window.location.search.includes('reset')) {
+    localStorage.removeItem(STORAGE_KEY);
+    window.history.replaceState({}, '', window.location.pathname);
+  }
   // Always start from PRODUCT_DEFAULTS
   prods = JSON.parse(JSON.stringify(PRODUCT_DEFAULTS));
   // Overlay saved state if available (preserves OEM from selected tier)
