@@ -368,7 +368,7 @@ function loadState() {
           if (saved) {
             // Overlay saved values onto defaults
             Object.keys(def).forEach(k => {
-              if (saved[k] !== undefined) merged[key][k] = saved[k];
+              if (saved[k] !== undefined && saved[k] !== null) merged[key][k] = saved[k];
             });
             // Migration: add tiers if missing
             if (!saved.tiers && def) {
