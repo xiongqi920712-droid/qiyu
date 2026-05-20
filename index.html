@@ -71,27 +71,36 @@ table .num { text-align:right; font-variant-numeric:tabular-nums; }
 table .pos { color:var(--green); }
 table .neg { color:var(--red); }
 
-/* Product cards */
+/* Product cards - 横排三栏卡片视窗 */
 .prod-card {
-  border:1px solid var(--border); border-radius:8px; padding:14px;
-  background:var(--card);
+  border:1px solid var(--border); border-radius:10px;
+  background:var(--card); box-shadow:0 2px 8px rgba(0,0,0,0.04);
+  display:flex; flex-direction:column;
 }
-.prod-card .pname { font-weight:600; font-size:14px; }
-.prod-card .pfactory { display:flex; gap:4px; align-items:center; font-size:11px; color:var(--tlight); margin-bottom:6px; }
-.prod-card .pfactory input { flex:1; min-width:0; }
-.prod-card .prow { display:flex; justify-content:space-between; align-items:center; padding:3px 0; font-size:12px; border-bottom:1px dotted var(--cream); }
-.prod-card .prow:last-child { border-bottom:none; }
+.prod-card .phead {
+  background:linear-gradient(135deg,var(--green),var(--dark));
+  color:#fff; padding:10px 14px; border-radius:10px 10px 0 0;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.prod-card .pname { font-weight:700; font-size:14px; letter-spacing:.5px; }
+.prod-card .pfactory { font-size:10px; opacity:.8; display:flex; gap:6px; align-items:center; }
+.prod-card .pfactory input { background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.2); border-radius:3px; color:#fff; padding:1px 6px; font-size:10px; width:auto; }
+.prod-card .pfactory input::placeholder { color:rgba(255,255,255,0.5); }
+.prod-card .pbody { padding:10px 12px 12px; flex:1; display:flex; flex-direction:column; }
+.prod-card .prow { display:flex; justify-content:space-between; align-items:center; padding:2px 0; font-size:12px; }
+.prod-card .plabel { color:var(--tlight); white-space:nowrap; font-size:11px; }
+.prod-card .pval { font-weight:500; display:flex; align-items:center; gap:2px; font-size:12px; }
+.prod-card .pval input { border:1px solid var(--border); border-radius:3px; padding:2px 4px; font-size:11px; font-weight:500; text-align:center; background:#fff; width:56px; }
+.prod-card .pval input:focus { outline:2px solid var(--brown); outline-offset:0; border-color:var(--brown); }
+.prod-card .pval select { border:1px solid var(--border); border-radius:3px; padding:2px 4px; font-size:11px; font-weight:500; background:#fff; }
 
-/* Input/Output group styling */
-.input-group { background:#FAF8F4; border-radius:6px; padding:6px 10px 2px; margin:6px 0 4px; border:1px solid #EFEBE0; }
-.input-group .ig-title { font-size:10px; font-weight:600; color:var(--brown); margin-bottom:4px; letter-spacing:.5px; }
-.output-group { background:#F4F8F2; border-radius:6px; padding:6px 10px 2px; margin:4px 0; border:1px solid #E0EBE0; }
-.output-group .og-title { font-size:10px; font-weight:600; color:var(--green); margin-bottom:4px; letter-spacing:.5px; }
-.prod-card .prow input:focus { outline:2px solid var(--brown); outline-offset:1px; border-color:var(--brown); }
-.prod-card .plabel { color:var(--tlight); white-space:nowrap; }
-.prod-card .pval { font-weight:500; display:flex; align-items:center; gap:2px; }
-.prod-card .pval input::-webkit-inner-spin-button { opacity:0.5; }
-.prod-card .pval input:focus { outline:2px solid var(--green); outline-offset:1px; border-color:var(--green); }
+/* Input/Output groups */
+.prod-card .ig { background:#FAF8F4; border-radius:6px; padding:5px 8px; margin:2px 0; border:1px solid #EFEBE0; }
+.prod-card .ig-title { font-size:10px; font-weight:600; color:var(--brown); margin-bottom:2px; }
+.prod-card .og { background:#F4F8F2; border-radius:6px; padding:5px 8px; margin:2px 0; border:1px solid #E0EBE0; }
+.prod-card .og-title { font-size:10px; font-weight:600; color:var(--green); margin-bottom:2px; }
+.prod-card .prow .num-lg { font-size:16px; font-weight:700; }
+.prod-card .prow .num-sm { font-size:11px; color:var(--tlight); }
 
 /* Chart bars */
 .bar-chart { margin:8px 0; }
@@ -155,9 +164,6 @@ table .neg { color:var(--red); }
 </head>
 <body>
 
-<div id="jsStatus" style="background:#fff3cd;border:1px solid #ffc107;padding:8px 12px;border-radius:6px;margin-bottom:10px;font-size:12px;color:#856404;">
-⏳ JS 加载中...<span id="jsStep"></span>
-</div>
 <div class="container">
 
 <div class="header">
@@ -236,6 +242,11 @@ table .neg { color:var(--red); }
       <div class="cval" id="ctrlFixedVal"><span id="ctrlFixedDisplay">¥20,000</span> <input type="number" id="ctrlFixedInput" value="20000" step="1000" min="1" max="10000000" style="width:90px;padding:1px 4px;border:1px solid var(--border);border-radius:3px;font-size:12px;font-weight:600;text-align:center;"></div>
     </div>
     <div class="control-group">
+      <label>首批备货量 <span style="font-weight:400;color:#999;">(每品件数)</span></label>
+      <input type="range" id="ctrlBatch" min="500" max="20000" step="500" value="5000">
+      <div class="cval" id="ctrlBatchVal">5000件</div>
+    </div>
+    <div class="control-group">
       <label>达人分佣率 <span style="font-weight:400;color:#999;">(按渠道策略调整)</span></label>
       <input type="range" id="ctrlKol" min="0" max="30" step="1" value="0">
       <div class="cval" id="ctrlKolVal">0%</div>
@@ -259,7 +270,7 @@ table .neg { color:var(--red); }
   </div>
   <div class="note" style="margin-top:10px;">
     <strong>增长假设：</strong> M1-M2 筹备（打样/备货），M3 首月开售，M4-M6 爬坡期，M7+ 稳态。
-    首批货款按各产品 3000 件计算，投流费用随销量递增。
+    首批货款按各产品 <span id="batchNote">5,000</span> 件计算，投流费用随销量递增。
   </div>
 </div>
 
@@ -344,7 +355,7 @@ const STORAGE_KEY = 'qiyu_financial_model_v2';
 let prods = {};
 let ctrl = {
   commRate: 5, retRate: 8, otherCost: 0.5,
-  fixedCost: 20000, kolRate: 0, kolShare: 0,
+  fixedCost: 20000, kolRate: 0, kolShare: 0, initBatch: 5000,
 };
 
 // ============================================================
@@ -405,7 +416,7 @@ function resetToDefaults() {
   prods = JSON.parse(JSON.stringify(PRODUCT_DEFAULTS));
   ctrl = {
     commRate: 5, retRate: 8, otherCost: 0.5,
-    fixedCost: 20000, kolRate: 0, kolShare: 0,
+    fixedCost: 20000, kolRate: 0, kolShare: 0, initBatch: 5000,
   };
   // Reset slider UI
   document.getElementById('ctrlComm').value = 5;
@@ -548,7 +559,6 @@ function render() {
   // ---- Product Cards ----
   const keys = ['essence', 'moxa', 'stick'];
   let phtml = '';
-  const istyle = 'width:56px;padding:1px 4px;border:1px solid var(--border);border-radius:3px;font-size:11px;font-weight:500;text-align:center;';
   keys.forEach(key => {
     const p = prods[key];
     const u = calcUnit(p);
@@ -563,40 +573,33 @@ function render() {
   }
 
     phtml += `<div class="prod-card">
-      <div class="pname">${p.name}</div>
-      <div class="pfactory">
-        <input type="text" value="${escAttr(p.factory)}" style="width:auto;min-width:50px;flex:1;${istyle}" data-key="${key}" data-field="factory" placeholder="代工厂">
-        <span style="color:var(--tlight);">·</span>
-        <input type="text" value="${escAttr(p.factoryNote)}" style="width:auto;min-width:50px;flex:1;${istyle}" data-key="${key}" data-field="factoryNote" placeholder="备注">
-      ${hasTiers ? `<div class="prow" style="margin-bottom:4px;"><span class="plabel">批量阶梯</span><span class="pval"><select style="padding:1px 4px;border:1px solid var(--border);border-radius:3px;font-size:11px;font-weight:500;background:var(--card);" data-key="${key}" data-field="tierSelect">${tierOpts}</select></span></div>` : ''}
-      <div class="input-group">
-        <div class="ig-title">📝 输入参数</div>
-        <div class="prow"><span class="plabel">出厂成本</span>
-          <span class="pval">¥<input type="number" value="${p.oem}" step="0.01" min="0" style="${istyle}" data-key="${key}" data-field="oem"></span>
-        </div>
-        <div class="prow"><span class="plabel">投流成本</span>
-          <span class="pval">¥<input type="number" value="${p.ad}" step="0.5" min="0" style="${istyle}" data-key="${key}" data-field="ad"></span>
-        </div>
-        <div class="prow"><span class="plabel">包装费</span>
-          <span class="pval">¥<input type="number" value="${p.packaging}" step="0.1" min="0" style="${istyle}" data-key="${key}" data-field="packaging"></span>
-        </div>
-        <div class="prow"><span class="plabel">快递费</span>
-          <span class="pval">¥<input type="number" value="${p.shipping}" step="0.1" min="0" style="${istyle}" data-key="${key}" data-field="shipping"></span>
-        </div>
-        <div class="prow"><span class="plabel">零售价</span>
-          <span class="pval">¥<input type="number" value="${p.price}" step="1" min="1" style="width:62px;padding:1px 4px;border:1px solid var(--border);border-radius:3px;font-size:12px;font-weight:700;text-align:center;" data-key="${key}" data-field="price"></span>
-        </div>
-        <div class="prow"><span class="plabel">月销量</span>
-          <span class="pval"><input type="number" value="${p.vol}" step="500" min="0" style="width:66px;padding:1px 4px;border:1px solid var(--border);border-radius:3px;font-size:11px;font-weight:500;text-align:center;" data-key="${key}" data-field="vol"></span>
-        </div>
+      <div class="phead">
+        <span class="pname">${p.name}</span>
+        <span class="pfactory">
+          <input type="text" value="${escAttr(p.factory)}" data-key="${key}" data-field="factory" placeholder="代工厂">
+          <span style="opacity:.5;">|</span>
+          <input type="text" value="${escAttr(p.factoryNote)}" data-key="${key}" data-field="factoryNote" placeholder="备注">
+        </span>
       </div>
-      <div class="output-group">
-        <div class="og-title">📊 计算结果</div>
-        <div class="prow"><span class="plabel">单件总成本</span><span class="pval">¥${u.totalCost.toFixed(2)}</span></div>
-        <div class="prow"><span class="plabel">单件毛利</span><span class="pval" style="color:${color};">¥${u.unitProfit.toFixed(2)}</span></div>
-        <div class="prow"><span class="plabel">毛利率</span><span class="pval" style="color:${color};font-size:16px;font-weight:700;">${u.margin.toFixed(1)}%</span></div>
-        <div class="prow"><span class="plabel">月营收</span><span class="pval">¥${(p.price*p.vol).toLocaleString()}</span></div>
-        <div class="prow"><span class="plabel">贡献毛利<sup style="color:var(--tlight);font-size:9px;">①</sup></span><span class="pval">¥${(u.unitProfit*p.vol).toLocaleString()}</span></div>
+      <div class="pbody">
+      ${hasTiers ? `<div class="prow" style="margin-bottom:4px;"><span class="plabel">批量阶梯</span><span class="pval"><select data-key="${key}" data-field="tierSelect">${tierOpts}</select></span></div>` : ''}
+        <div class="ig">
+          <div class="ig-title">📝 输入参数</div>
+          <div class="prow"><span class="plabel">出厂成本</span><span class="pval">¥<input type="number" value="${p.oem}" step="0.01" min="0" data-key="${key}" data-field="oem"></span></div>
+          <div class="prow"><span class="plabel">投流成本</span><span class="pval">¥<input type="number" value="${p.ad}" step="0.5" min="0" data-key="${key}" data-field="ad"></span></div>
+          <div class="prow"><span class="plabel">包装费</span><span class="pval">¥<input type="number" value="${p.packaging}" step="0.1" min="0" data-key="${key}" data-field="packaging"></span></div>
+          <div class="prow"><span class="plabel">快递费</span><span class="pval">¥<input type="number" value="${p.shipping}" step="0.1" min="0" data-key="${key}" data-field="shipping"></span></div>
+          <div class="prow"><span class="plabel">零售价</span><span class="pval">¥<input type="number" value="${p.price}" step="1" min="1" style="width:62px;font-weight:700;" data-key="${key}" data-field="price"></span></div>
+          <div class="prow"><span class="plabel">月销量</span><span class="pval"><input type="number" value="${p.vol}" step="500" min="0" style="width:66px;" data-key="${key}" data-field="vol"></span></div>
+        </div>
+        <div class="og">
+          <div class="og-title">📊 计算结果</div>
+          <div class="prow"><span class="plabel">单件总成本</span><span class="pval">¥${u.totalCost.toFixed(2)}</span></div>
+          <div class="prow"><span class="plabel">单件毛利</span><span class="pval" style="color:${color};">¥${u.unitProfit.toFixed(2)}</span></div>
+          <div class="prow"><span class="plabel">毛利率</span><span class="pval num-lg" style="color:${color};">${u.margin.toFixed(1)}%</span></div>
+          <div class="prow"><span class="plabel">月营收</span><span class="pval">¥${(p.price*p.vol).toLocaleString()}</span></div>
+          <div class="prow"><span class="plabel">贡献毛利<sup>①</sup></span><span class="pval" style="font-weight:700;">¥${(u.unitProfit*p.vol).toLocaleString()}</span></div>
+        </div>
       </div>
     </div>`;
   });
@@ -639,6 +642,7 @@ function render() {
   // ---- Comprehensive P&L Summary ----
   renderSummary(m);
   document.getElementById('fixedCostDisplay').textContent = ctrl.fixedCost.toLocaleString();
+  const bn = document.getElementById('batchNote'); if (bn) bn.textContent = Number(ctrl.initBatch || 5000).toLocaleString();
 
   // ---- 12-Month P&L ----
   let head = '<tr><th>项目</th>';
@@ -762,10 +766,11 @@ function renderSummary(m) {
 
 
 function calcInvest() {
+  const ib = ctrl.initBatch || 3000;
   const items = [
-    { label: '艾草精华贴（首批3000件）', val: prods.essence.oem * 3000 },
-    { label: '艾灸器（首批3000件）', val: prods.moxa.oem * 3000 },
-    { label: '艾条（首批3000件）', val: (prods.stick.oem + prods.stick.packaging) * 3000 },
+    { label: '艾草精华贴（首批' + ib + '件）', val: prods.essence.oem * ib },
+    { label: '艾灸器（首批' + ib + '件）', val: prods.moxa.oem * ib },
+    { label: '艾条（首批' + ib + '件）', val: (prods.stick.oem + prods.stick.packaging) * ib },
     { label: '包装设计+打样', val: 15000 },
     { label: '消字号申请', val: 35000 },
     { label: '首批投流预算', val: 30000 },
@@ -835,6 +840,7 @@ function bindControls() {
     ctrlRet: { prop: 'retRate', fmt: v => v + '%' },
     ctrlOther: { prop: 'otherCost', fmt: v => '¥' + parseFloat(v).toFixed(1) },
     ctrlFixed: { prop: 'fixedCost', fmt: v => { document.getElementById('ctrlFixedInput').value = v; document.getElementById('ctrlFixedDisplay').textContent = '¥' + Number(v).toLocaleString(); return ''; } },
+    ctrlBatch: { prop: 'initBatch', fmt: v => Number(v).toLocaleString() + '件' },
     ctrlKol: { prop: 'kolRate', fmt: v => v + '%' },
     ctrlKolShare: { prop: 'kolShare', fmt: v => v + '%' },
   };
@@ -858,9 +864,7 @@ function bindControls() {
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
   // ?reset in URL clears localStorage
-  let _st = document.getElementById('jsStatus');
-if (_st) { _st.style.background='#d4edda'; _st.style.borderColor='#28a745'; _st.style.color='#155724'; _st.innerHTML='✅ JS 已加载 (v2.2)'; }
-console.log('适元草财务模型 v2.2 loaded, STORAGE_KEY:', STORAGE_KEY); if (window.location.search.includes('reset')) {
+  console.log('适元草财务模型 v2.2 loaded, STORAGE_KEY:', STORAGE_KEY); if (window.location.search.includes('reset')) {
     localStorage.removeItem(STORAGE_KEY);
     window.history.replaceState({}, '', window.location.pathname);
   }
@@ -886,6 +890,7 @@ console.log('适元草财务模型 v2.2 loaded, STORAGE_KEY:', STORAGE_KEY); if 
   document.getElementById('ctrlOther').value = ctrl.otherCost;
   document.getElementById('ctrlFixed').value = Math.min(Math.max(ctrl.fixedCost, 1), 1000000);
   document.getElementById('ctrlFixedInput').value = ctrl.fixedCost;
+  document.getElementById('ctrlBatch').value = ctrl.initBatch || 5000;
   document.getElementById('ctrlKol').value = ctrl.kolRate;
   document.getElementById('ctrlKolShare').value = ctrl.kolShare;
   updateSliderLabels();
