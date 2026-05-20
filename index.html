@@ -160,7 +160,7 @@ table .neg { color:var(--red); }
 <div class="header">
   <h1>适元草 <small>· 财务测算模型</small></h1>
   <p>基于代工厂最新报价 + 商业计划书运营成本 &nbsp;|&nbsp; 三产品（艾草精华贴 / 艾灸器 / 艾条）</p>
-  <div class="date">生成日期：2026年5月19日 &nbsp;|&nbsp; 数据版本 V2.1（代工厂参数可编辑）</div>
+  <div class="date">生成日期：2026年5月19日 &nbsp;|&nbsp; 数据版本 V2.2（修复迁移bug）<span id="versionCheck" style="display:none;">v2.2</span></div>
 </div>
 
 <!-- ======== 核心指标看板 ======== -->
@@ -178,7 +178,7 @@ table .neg { color:var(--red); }
 <div class="card">
   <h2>📦 产品参数 <span class="badge">全部可编辑</span></h2>
   <div class="toolbar" style="margin-bottom:10px;">
-    <span style="font-size:11px;color:var(--tlight);">代工厂单价/包装/快递/投流/售价/销量均可修改，实时更新模型</span>
+    <span style="font-size:11px;color:var(--tlight);">代工厂单价/包装/快递/投流/售价/销量均可修改，实时更新模型</span> <span style="font-size:10px;color:#999;float:right;" id="verDisplay"></span>
     <button onclick="resetToDefaults()">↺ 恢复默认</button>
     <button onclick="exportData()">⬇ 导出数据</button>
   </div>
@@ -855,7 +855,7 @@ function bindControls() {
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
   // ?reset in URL clears localStorage
-  if (window.location.search.includes('reset')) {
+  console.log('适元草财务模型 v2.2 loaded, STORAGE_KEY:', STORAGE_KEY); if (window.location.search.includes('reset')) {
     localStorage.removeItem(STORAGE_KEY);
     window.history.replaceState({}, '', window.location.pathname);
   }
